@@ -2,6 +2,7 @@ import { useState } from "react";
 import Map, { Source, Layer, Popup } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import MarkerLugar from "./MarkerLugar";
+import StyledMarker from "./StyledMarker";
 
 const TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -105,7 +106,7 @@ export default function App() {
             key={place.id}
             onClick={(e) => handleSelectedMarker(e, place.id)}
           >
-            <MarkerLugar place={place} zoom={viewport.zoom} />
+            <StyledMarker place={place} zoom={viewport.zoom} />
           </button>
         ))}
         <Source
