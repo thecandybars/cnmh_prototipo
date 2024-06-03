@@ -63,7 +63,6 @@ const StyledMarker = (props) => {
 };
 
 StyledMarker.propTypes = {
-  label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   place: PropTypes.object,
   zoom: PropTypes.number,
 };
