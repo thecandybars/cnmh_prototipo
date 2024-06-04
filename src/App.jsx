@@ -22,7 +22,7 @@ const App = () => {
               <Link to="/regiones">Regiones</Link>
             </li>
             <li>
-              <Link to="/espacio">Regiones</Link>
+              <Link to="/espacio">Espacio</Link>
             </li>
           </ul>
         </nav>
