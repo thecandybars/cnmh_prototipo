@@ -21,6 +21,9 @@ const App = () => {
             <li>
               <Link to="/regiones">Regiones</Link>
             </li>
+            <li>
+              <Link to="/espacio">Regiones</Link>
+            </li>
           </ul>
         </nav>
         <Routes>
