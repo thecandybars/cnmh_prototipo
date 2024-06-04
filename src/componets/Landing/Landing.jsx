@@ -1,7 +1,8 @@
 import Map, { Source, Layer } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useCallback, useRef } from "react";
 import geojsonData from "./col.json";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -70,11 +71,6 @@ const departamentos = [
     id: 17,
     name: "Caldas",
     region: "Andina",
-  },
-  {
-    id: 86,
-    name: "Putumayo",
-    region: "Amazonía",
   },
   {
     id: 25,
@@ -204,90 +200,25 @@ const regions = [
   },
 ];
 
-// const zones = [
-//   {
-//     id: "caribe",
-//     name: "Caribe",
-//     coordinates: [
-//       [-75.0, 13.0],
-//       [-74.5, 10.0],
-//       [-73.0, 10.0],
-//       [-72.5, 11.0],
-//       [-74.0, 12.0],
-//     ],
-//     color: "yellow",
-//   },
-//   {
-//     id: "pacifico",
-//     name: "Pacifico",
-//     coordinates: [
-//       [-78.0, 5.0],
-//       [-77.5, 3.0],
-//       [-76.0, 3.0],
-//       [-75.5, 4.0],
-//       [-77.0, 5.0],
-//     ],
-//     color: "purple",
-//   },
-//   {
-//     id: "andes",
-//     name: "Andes",
-//     coordinates: [
-//       [-75.0, 5.0],
-//       [-74.5, 2.0],
-//       [-73.0, 2.0],
-//       [-72.5, 3.0],
-//       [-74.0, 4.0],
-//     ],
-//     color: "brown",
-//   },
-//   {
-//     id: "orinoquia",
-//     name: "Orinoquia",
-//     coordinates: [
-//       [-72.0, 7.0],
-//       [-71.5, 4.0],
-//       [-70.0, 4.0],
-//       [-69.5, 5.0],
-//       [-71.0, 6.0],
-//     ],
-//     color: "lightgreen",
-//   },
-//   {
-//     id: "amazonia",
-//     name: "Amazonia",
-//     coordinates: [
-//       [-70.0, 0.0],
-//       [-69.5, -3.0],
-//       [-68.0, -3.0],
-//       [-67.5, -2.0],
-//       [-69.0, -1.0],
-//     ],
-//     color: "darkgreen",
-//   },
-// ];
-
 const Landing = () => {
+  const navigate = useNavigate();
   const mapInit = {
     latitude: 4.5709,
     longitude: -74.2973,
     zoom: 5,
   };
 
-  const mapRef = useRef();
+  const [clickedFeature, setClickedFeature] = useState(null);
 
-  //   const handleZoneClick = useCallback((event) => {
-  //     const features = mapRef.current.queryRenderedFeatures(event.point, {
-  //       layers: geojsonData.features.map(
-  //         (feature, index) => `zone-${index}-fill`
-  //       ),
-  //     });
-
-  //     if (features.length > 0) {
-  //       const clickedFeature = features[0];
-  //       console.log(`You clicked on the ${clickedFeature.properties.name} zone`);
-  //     }
-  //   }, []);
+  const handleMapClick = (event) => {
+    console.log("🚀 ~ handleMapClick ~ event:", event.features);
+    if (event.features.length > 0) {
+      const clickedId = parseInt(event.features[0].properties.dpto);
+      setClickedFeature(clickedId);
+      console.log("Clicked on region with ID:", clickedId);
+      navigate("/regiones");
+    }
+  };
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
@@ -295,25 +226,26 @@ const Landing = () => {
         initialViewState={mapInit}
         mapStyle="mapbox://styles/mapbox/light-v10"
         mapboxAccessToken={TOKEN}
-        ref={mapRef}
+        onClick={handleMapClick}
+        interactiveLayerIds={departamentos.map(
+          (dpto) => `zone-${dpto.id}-fill`
+        )}
       >
-        {geojsonData.features.map((feature, index) => {
+        {geojsonData.features.map((feature) => {
           const id = parseInt(feature.properties.dpto);
-          console.log("🚀 ~ {geojsonData.features.map ~ id:", id);
           const depto = departamentos.find((dpto) => dpto.id === id);
-          console.log("🚀 ~ {geojsonData.features.map ~ depto:", depto);
           const color =
             regions.find((region) => region.name === depto.region)?.color ||
             "pink";
           return (
             <Source
-              key={`zone-${index}`}
-              id={`zone-${index}`}
+              key={`zone-${id}`}
+              id={`zone-${id}`}
               type="geojson"
               data={feature}
             >
               <Layer
-                id={`zone-${index}-fill`}
+                id={`zone-${id}-fill`}
                 type="fill"
                 paint={{
                   "fill-color": color,
@@ -321,7 +253,7 @@ const Landing = () => {
                 }}
               />
               <Layer
-                id={`zone-${index}-line`}
+                id={`zone-${id}-line`}
                 type="line"
                 paint={{
                   "line-color": "#008888",
