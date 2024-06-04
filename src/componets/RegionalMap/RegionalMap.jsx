@@ -125,7 +125,7 @@ export default function RegionalMap() {
           >
             <h3 style={{ color: "black" }}>{selectedPlace.name}</h3>
             <p style={{ color: "black" }}>{selectedPlace.shortText}</p>
-            <a href="#">Visitar</a>
+            <a href="/espacio">Visitar</a>
           </Popup>
         )}
       </Map>

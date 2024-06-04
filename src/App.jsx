@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import RegionalMap from "./componets/RegionalMap";
 import Landing from "./componets/Landing";
+import Espacio from "./componets/Espacio/Espacio";
 
 const NotFoundPage = () => (
   <div>
@@ -25,6 +26,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/regiones" element={<RegionalMap />} />
+          <Route path="/espacio" element={<Espacio />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
