@@ -15,6 +15,10 @@ export default function MainNav() {
       title: "Espacio",
       link: "/espacio",
     },
+    {
+      title: "Landing2",
+      link: "/landing2",
+    },
   ];
   const renderMenuItems = items.map((item) => (
     <li className={styles.menuItem} key={item.title}>
