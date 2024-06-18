@@ -20,11 +20,11 @@ const StyledMarker = (props) => {
     boxShadow: "0 0 5px rgba(0,0,0,0.5)",
   };
 
-  const imgStyle = {
-    width: props.zoom * 10,
-    height: props.zoom * 10,
-    objectFit: "cover",
-  };
+  // const imgStyle = {
+  //   width: props.zoom * 10,
+  //   height: props.zoom * 10,
+  //   objectFit: "cover",
+  // };
 
   const arrowStyle = {
     width: 0,
@@ -35,36 +35,41 @@ const StyledMarker = (props) => {
     marginTop: "-2px",
   };
 
-  const labelStyle = {
-    marginTop: "5px",
-    padding: "2px 6px",
-    background: "#222",
-    color: "white",
-    borderRadius: "10px",
-    fontSize: "12px",
-    textAlign: "center",
-  };
+  // const labelStyle = {
+  //   marginTop: "5px",
+  //   padding: "2px 6px",
+  //   background: "#222",
+  //   color: "white",
+  //   borderRadius: "10px",
+  //   fontSize: "12px",
+  //   textAlign: "center",
+  // };
 
   return (
     <Marker
-      latitude={props.place.latitude}
-      longitude={props.place.longitude}
+      latitude={props.marca.latitud}
+      longitude={props.marca.longitud}
       anchor="bottom"
+      // onClick={(e) => {
+      //   console.log("🚀 ~ StyledMarker ~ e:", e);
+      //   props.onClick(e, props.marca.id);
+      // }}
     >
       <div style={markerStyle}>
         <div style={circleStyle}>
-          <img src={props.place.image} alt="Marker" style={imgStyle} />
+          {/* <img src={props.marca.image} alt="Marker" style={imgStyle} /> */}
         </div>
-        <div style={arrowStyle}></div>
-        <div style={labelStyle}>{props.place.name}</div>
+        <div style={arrowStyle} />
+        {/* <div style={labelStyle}>{props.marca.nombre}</div> */}
       </div>
     </Marker>
   );
 };
 
 StyledMarker.propTypes = {
-  place: PropTypes.object,
+  marca: PropTypes.object,
   zoom: PropTypes.number,
+  onClick: PropTypes.func,
 };
 
 export default StyledMarker;

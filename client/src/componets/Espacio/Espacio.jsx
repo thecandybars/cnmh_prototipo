@@ -7,6 +7,7 @@ import { MarkersPlugin } from "@photo-sphere-viewer/markers-plugin";
 import { PlanPlugin } from "@photo-sphere-viewer/plan-plugin";
 // import { CompassPlugin } from "@photo-sphere-viewer/compass-plugin";
 import { useState } from "react";
+import Dialog from "../common/UI/Dialog";
 
 export default function Espacio() {
   const handleOnClick = (markersPlugs) => console.log(markersPlugs);

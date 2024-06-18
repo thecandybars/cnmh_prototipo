@@ -1,8 +1,17 @@
-import { useState } from "react";
-import Map, { Source, Layer, Popup, NavigationControl } from "react-map-gl";
+import { useCallback, useRef, useState } from "react";
+import Map, {
+  Source,
+  Popup,
+  NavigationControl,
+  Layer,
+  ScaleControl,
+} from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import StyledMarker from "./StyledMarker";
 import getEnv from "../../utils/getEnv";
+import MapAnimate from "./MapAnimate";
+import useFetch from "../common/customHooks/useFetch";
+import { getAllLugares } from "../../services/lugares";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -16,60 +25,12 @@ const skyLayer = {
   },
 };
 
-const places = [
-  {
-    id: 1,
-    name: "Quibdó",
-    latitude: 5.6956,
-    longitude: -76.6498,
-    image: "choco.png",
-    shortText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  },
-  {
-    id: 2,
-    name: "Sierra Nevada de Santa Marta",
-    latitude: 10.8292,
-    longitude: -73.6923,
-    image: "sierra-nevada.png",
-    shortText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  },
-  {
-    id: 3,
-    name: "Comuna 13, Medellín",
-    latitude: 6.2557,
-    longitude: -75.6186,
-    image: "comuna13.png",
-    shortText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  },
-  {
-    id: 4,
-    name: "Pasto",
-    latitude: 1.2059,
-    longitude: -77.2858,
-    image: "pasto.png",
-    shortText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  },
-  {
-    id: 5,
-    name: "Florencia",
-    latitude: 1.6154,
-    longitude: -75.6042,
-    image: "florencia.png",
-    shortText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  },
-];
-
 const mapInit = {
-  latitude: 5.9575184,
-  longitude: -75.58821,
-  zoom: 12.4,
-  bearing: -26,
-  pitch: 76,
+  latitude: 9.33968,
+  longitude: -75.107065,
+  zoom: 7.4,
+  bearing: 0,
+  pitch: 48,
 };
 
 const colombiaBounds = [
@@ -81,18 +42,71 @@ export default function RegionalMap() {
   const [viewport, setViewport] = useState(mapInit);
   const [selectedPlace, setSelectedPlace] = useState(null);
 
-  const handleViewportChange = (newViewport) => {
-    setViewport(newViewport);
-  };
+  // const { current: map } = useMap();
+  const map = useRef();
 
-  const handleSelectedMarker = (e, id) => {
-    e.stopPropagation();
-    setSelectedPlace(places.find((place) => place.id === id));
-  };
+  const handleViewportChange = useCallback((newViewport) => {
+    setViewport(newViewport);
+  }, []);
+
+  // MARKERS
+  const [lugares] = useFetch(() => getAllLugares());
+  const renderMarkers = lugares?.map((lugar) => (
+    // <StyledMarker
+    //   key={lugar.id}
+    //   marca={lugar}
+    //   zoom={viewport.zoom}
+    //   onClick={(e,id) => handleSelectedMarker(e, id)}
+    // />
+    <button key={lugar.id} onClick={(e) => handleSelectedMarker(e, lugar.id)}>
+      <StyledMarker marca={lugar} zoom={viewport.zoom} />
+    </button>
+  ));
+
+  // POPUPS
+  const renderPopup = selectedPlace && (
+    <Popup
+      latitude={selectedPlace.latitud}
+      longitude={selectedPlace.longitud}
+      anchor="top"
+      onClose={() => setSelectedPlace(null)}
+    >
+      <h3 style={{ color: "black" }}>{selectedPlace.nombre}</h3>
+      {/* <p style={{ color: "black" }}>{selectedPlace.shortText}</p> */}
+      <a href="/espacio">Visitar</a>
+    </Popup>
+  );
+
+  // ZOOM INTO SELECTED PLACE
+  const flyToSelectedPlace = selectedPlace && (
+    <MapAnimate
+      centerPoint={{
+        latitude: selectedPlace.latitud,
+        longitude: selectedPlace.longitud,
+        zoom: 12,
+        bearing: 0,
+        pitch: 0,
+      }}
+    />
+  );
+  // ZOOM INTO REGION
+  const flyToRegion = !selectedPlace && <MapAnimate centerPoint={mapInit} />;
+
+  // HANDLERS
+  const handleSelectedMarker = useCallback(
+    (e, id) => {
+      e.stopPropagation();
+      id &&
+        lugares &&
+        setSelectedPlace(lugares.find((lugar) => lugar.id === id));
+    },
+    [lugares]
+  );
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
       <Map
+        ref={map}
         {...viewport}
         onMove={(evt) => handleViewportChange(evt.viewState)}
         maxPitch={85}
@@ -102,14 +116,8 @@ export default function RegionalMap() {
         terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}
         maxBounds={colombiaBounds}
       >
-        {places.map((place) => (
-          <button
-            key={place.id}
-            onClick={(e) => handleSelectedMarker(e, place.id)}
-          >
-            <StyledMarker place={place} zoom={viewport.zoom} />
-          </button>
-        ))}
+        <ScaleControl />
+        {renderMarkers}
         <Source
           id="mapbox-dem"
           type="raster-dem"
@@ -118,18 +126,9 @@ export default function RegionalMap() {
           maxzoom={14}
         />
         <Layer {...skyLayer} />
-        {selectedPlace && (
-          <Popup
-            latitude={selectedPlace.latitude}
-            longitude={selectedPlace.longitude}
-            anchor="top"
-            onClose={() => setSelectedPlace(null)}
-          >
-            <h3 style={{ color: "black" }}>{selectedPlace.name}</h3>
-            <p style={{ color: "black" }}>{selectedPlace.shortText}</p>
-            <a href="/espacio">Visitar</a>
-          </Popup>
-        )}
+        {renderPopup}
+        {flyToRegion}
+        {flyToSelectedPlace}
         <NavigationControl />
       </Map>
 

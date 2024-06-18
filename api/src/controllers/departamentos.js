@@ -2,7 +2,6 @@
 const { Departamentos, Regions } = require("../db.js");
 const response = require("../common/response");
 const { conn } = require("../db.js");
-const { getRegions } = require("./regions.js");
 
 ////////////////////////////////// DEPARTAMENTOS //////////////////////////////////
 

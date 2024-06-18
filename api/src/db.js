@@ -30,9 +30,22 @@ let capsEntries = entries.map((entry) => [
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-const { Regions, Departamentos } = sequelize.models;
-// Regions.hasMany(Departamentos, { foreignKey: "regionId" });
+const {
+  Regions,
+  Departamentos,
+  Lugares,
+  Municipios,
+  TipologiasLugares,
+  TipologiasGenerales,
+} = sequelize.models;
+Municipios.belongsTo(Departamentos);
 Departamentos.belongsTo(Regions);
+Lugares.belongsTo(TipologiasLugares);
+Lugares.belongsTo(Municipios);
+Lugares.belongsTo(TipologiasGenerales);
+TipologiasLugares.hasMany(Lugares);
+Municipios.hasMany(Lugares);
+TipologiasGenerales.hasMany(Lugares);
 
 module.exports = {
   ...sequelize.models,
