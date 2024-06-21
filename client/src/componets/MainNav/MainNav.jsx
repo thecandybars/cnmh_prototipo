@@ -1,29 +1,36 @@
 import { Link } from "react-router-dom";
 import styles from "./styles/MainNav.module.css";
+import { Typography } from "@mui/material";
 
 export default function MainNav() {
   const items = [
     {
-      title: "Home",
+      title: "HOME",
       link: "/",
     },
     {
-      title: "Region",
+      title: "REGIONES",
       link: "/regiones",
     },
     {
-      title: "Espacio",
+      title: "ESPACIO",
       link: "/espacio",
     },
     {
-      title: "Landing2",
+      title: "GUARDIANES DE LA MEMORIA",
       link: "/landing2",
     },
   ];
   const renderMenuItems = items.map((item) => (
     <li className={styles.menuItem} key={item.title}>
       <Link className={styles.menuLink} to={item.link}>
-        {item.title}
+        <Typography
+          variant="h3"
+          color="amazonia.first"
+          sx={{ lineHeight: 3, textAlign: "center" }}
+        >
+          {item.title}
+        </Typography>
       </Link>
     </li>
   ));

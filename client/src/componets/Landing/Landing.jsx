@@ -1,13 +1,88 @@
 import Map, { Source, Layer } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import geojsonData from "./col.json";
-// import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import getEnv from "../../utils/getEnv";
 import useFetch from "../common/customHooks/useFetch";
 import { getAllDepartamentos } from "../../services/departamentos";
+import { theme } from "../../utils/theme";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { getAllLugares } from "../../services/lugares";
+import StyledMarker from "./StyledMarker";
 
 const TOKEN = getEnv("mapboxToken");
+
+// const views = [
+//   {
+//     id: 0,
+//     name: "pais",
+//   },
+//   {
+//     id: 1,
+//     name: "region",
+//   },
+//   {
+//     id: 2,
+//     name: "lugar",
+//   },
+// ];
+
+const viewports = [
+  {
+    id: 0,
+    name: "init",
+    latitude: 5.432533819636163,
+    longitude: -73.64605127345608,
+    bearing: 0,
+    pitch: 0,
+    zoom: 4.74,
+  },
+  {
+    id: 1,
+    name: "atlantica",
+    latitude: 9.623258819486551,
+    longitude: -74.34607646380869,
+    bearing: 0,
+    pitch: 55.5,
+    zoom: 6.8,
+  },
+  {
+    id: 2,
+    name: "andina",
+    latitude: 4.6031532264371435,
+    longitude: -75.18776978314327,
+    bearing: -12,
+    pitch: 68,
+    zoom: 6.8,
+  },
+  {
+    id: 3,
+    name: "orinoquia",
+    latitude: 4.070452284593742,
+    longitude: -71.6532422060435,
+    bearing: 0,
+    pitch: 57.5,
+    zoom: 6.9,
+  },
+  {
+    id: 4,
+    name: "pacifica",
+    latitude: 4.558676216895876,
+    longitude: -77.6577498889891,
+    bearing: -90.4,
+    pitch: 57,
+    zoom: 6.8,
+  },
+  {
+    id: 5,
+    name: "amazonia",
+    latitude: 1.6282593079443473,
+    longitude: -71.20728998905867,
+    bearing: 39,
+    pitch: 66.5,
+    zoom: 6.16,
+  },
+];
 
 // const departamentos = [
 //   {
@@ -178,68 +253,151 @@ const TOKEN = getEnv("mapboxToken");
 // ];
 
 const Landing = () => {
+  const mapRef = useRef();
   const navigate = useNavigate();
   const [departamentos] = useFetch(() => getAllDepartamentos());
+  const [actualRegion, setActualRegion] = useState(null);
+  console.log("🚀 ~ Landing ~ actualRegion:", actualRegion);
 
-  const mapInit = {
-    latitude: 4.5709,
-    longitude: -74.2973,
-    zoom: 5,
-  };
+  // HANDLE MOVE
+  const [actualViewport, setActualViewport] = useState(viewports[0]);
+  const handleViewportChange = useCallback((newViewport) => {
+    setActualViewport(newViewport);
+  }, []);
 
-  // const [clickedFeature, setClickedFeature] = useState(null);
+  // VIEWS
+  const [actualView, setActualView] = useState(0); //0:pais, 1:region, 2:lugar
 
+  // HANDLE CLICKS ON MAP
   const handleMapClick = (event) => {
     if (event.features.length > 0) {
+      // CLICKED ON INTERACTIVE REGION
       const clickedId = parseInt(event.features[0].properties.dpto);
-      // setClickedFeature(clickedId);
-      console.log("Clicked on region with ID:", clickedId);
-      navigate("/regiones");
+      const clickedRegion = departamentos.find(
+        (dpto) => dpto.geoId === clickedId
+      );
+      setFly(
+        viewports.find((viewport) => viewport.id === clickedRegion.RegionId)
+      );
+      setActualView(1);
+      setActualRegion(clickedRegion.Region);
     }
   };
 
+  // ZOOM INTO SELECTED REGION
+  const [fly, setFly] = useState(null);
+  const flyTo = useMemo(() => {
+    mapRef.current?.flyTo({
+      center: [fly.longitude, fly.latitude],
+      zoom: fly.zoom,
+      speed: 0.4,
+      curve: 2.42,
+      bearing: fly.bearing,
+      pitch: fly.pitch,
+      essential: true,
+    });
+  }, [fly]);
+
+  // INTERACTIVE DEPARTAMENTOS
+  const interactiveLayerIds = departamentos?.map(
+    (dpto) => `zone-${dpto.geoId}-fill`
+  );
+
+  // COLOR REGIONS
+  const drawRegions =
+    departamentos?.length &&
+    geojsonData.features.map((feature) => {
+      const id = parseInt(feature.properties.dpto);
+      const region = departamentos?.find((dpto) => dpto.geoId === id)?.Region;
+      const regionColor = {
+        color: theme.palette[region.name]?.first || "pink",
+        opacity: 0.5,
+      };
+      if (region) {
+        if (actualView === 1) {
+          if (region.id === actualRegion.id) regionColor.opacity = 0.2;
+        }
+      }
+      return (
+        <Source
+          key={`zone-${id}`}
+          id={`zone-${id}`}
+          type="geojson"
+          data={feature}
+        >
+          <Layer
+            id={`zone-${id}-fill`}
+            type="fill"
+            paint={{
+              "fill-color": regionColor.color,
+              "fill-opacity": regionColor.opacity,
+            }}
+          />
+          {/* <Layer
+          id={`zone-${id}-line`}
+          type="line"
+          paint={{
+            "line-color": colorRegion,
+            "line-width": 1,
+          }}
+        /> */}
+        </Source>
+      );
+    });
+
+  // MARKERS
+  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [lugares] = useFetch(() => getAllLugares());
+  const renderMarkers =
+    actualView !== 0 &&
+    lugares?.map((lugar) => (
+      // <StyledMarker
+      //   key={lugar.id}
+      //   marca={lugar}
+      //   zoom={viewport.zoom}
+      //   onClick={(e,id) => handleSelectedMarker(e, id)}
+      // />
+      <button key={lugar.id} onClick={(e) => handleSelectedMarker(e, lugar.id)}>
+        <StyledMarker marca={lugar} zoom={actualViewport.zoom} />
+      </button>
+    ));
+  // HANDLERS
+  const handleSelectedMarker = useCallback(
+    (e, id) => {
+      e.stopPropagation();
+      id &&
+        lugares &&
+        setSelectedPlace(lugares.find((lugar) => lugar.id === id));
+    },
+    [lugares]
+  );
+
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
+      <div style={{ position: "absolute", zIndex: 100 }}>
+        <button
+          onClick={() => {
+            setFly(viewports[0]);
+            setActualView(0);
+          }}
+          style={{ marginTop: "100px" }}
+        >
+          HOME
+        </button>
+      </div>
       <Map
-        initialViewState={mapInit}
-        mapStyle="mapbox://styles/mapbox/light-v10"
+        ref={mapRef}
+        initialViewState={viewports[0]}
+        mapStyle="mapbox://styles/juancortes79/clxbt6q9w09jt01ql089jau20"
+        // mapStyle="mapbox://styles/mapbox/light-v10"
         mapboxAccessToken={TOKEN}
         onClick={handleMapClick}
-        interactiveLayerIds={departamentos?.map(
-          (dpto) => `zone-${dpto.id}-fill`
-        )}
+        onMove={(evt) => handleViewportChange(evt.viewState)}
+        interactiveLayerIds={interactiveLayerIds}
       >
-        {geojsonData.features.map((feature) => {
-          const id = parseInt(feature.properties.dpto);
-          const color =
-            departamentos?.find((dpto) => dpto.geoId === id)?.Region.color ||
-            "pink";
-          return (
-            <Source
-              key={`zone-${id}`}
-              id={`zone-${id}`}
-              type="geojson"
-              data={feature}
-            >
-              <Layer
-                id={`zone-${id}-fill`}
-                type="fill"
-                paint={{
-                  "fill-color": color,
-                  "fill-opacity": 0.5,
-                }}
-              />
-              <Layer
-                id={`zone-${id}-line`}
-                type="line"
-                paint={{
-                  "line-color": "#008888",
-                  "line-width": 1,
-                }}
-              />
-            </Source>
-          );
-        })}
+        {flyTo}
+        {drawRegions}
+        {renderMarkers}
       </Map>
     </div>
   );

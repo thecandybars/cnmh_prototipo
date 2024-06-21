@@ -22,7 +22,7 @@ async function createRegion(req) {
     //Create row in database
     const newRegion = await Regions.create({
       name: req.body.name,
-      color: req.body.color || "pink",
+      fullName: req.body.fullName,
     });
 
     if (newRegion === null)
