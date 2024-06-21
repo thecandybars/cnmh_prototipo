@@ -72,7 +72,6 @@ export default function RegionalMap() {
       onClose={() => setSelectedPlace(null)}
     >
       <h3 style={{ color: "black" }}>{selectedPlace.nombre}</h3>
-      {/* <p style={{ color: "black" }}>{selectedPlace.shortText}</p> */}
       <a href="/espacio">Visitar</a>
     </Popup>
   );
@@ -83,9 +82,9 @@ export default function RegionalMap() {
       centerPoint={{
         latitude: selectedPlace.latitud,
         longitude: selectedPlace.longitud,
-        zoom: 12,
+        zoom: 15,
         bearing: 0,
-        pitch: 0,
+        pitch: 70,
       }}
     />
   );

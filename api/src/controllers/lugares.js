@@ -134,7 +134,7 @@ async function getLugares(req) {
                 {
                   model: Regions,
                   required: false,
-                  attributes: ["id", "name", "color"],
+                  attributes: ["id", "name", "fullName"],
                 },
               ],
             },

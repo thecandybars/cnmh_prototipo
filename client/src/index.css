@@ -120,7 +120,7 @@ img {
 a,
 a:hover,
 a:visited {
-  color: unset;
+  color: "red";
   text-decoration: none;
 }
 #root {

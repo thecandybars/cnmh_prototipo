@@ -7,17 +7,32 @@ import { MarkersPlugin } from "@photo-sphere-viewer/markers-plugin";
 import { PlanPlugin } from "@photo-sphere-viewer/plan-plugin";
 // import { CompassPlugin } from "@photo-sphere-viewer/compass-plugin";
 import { useState } from "react";
-import Dialog from "../common/UI/Dialog";
+import photo from "../../../public/mavicure4k.png";
+import { Dialog } from "@mui/material";
 
 export default function Espacio() {
-  const handleOnClick = (markersPlugs) => console.log(markersPlugs);
+  const [clickedMarker, setClickedMarker] = useState(null);
+
+  // HANDLERS
+  const handleOnClick = (markerData) => {
+    setClickedMarker(markerData);
+  };
   const handleReady = (instance) => {
     const markersPlugs = instance.getPlugin(MarkersPlugin);
     if (!markersPlugs) return;
     markersPlugs.addEventListener("select-marker", () =>
-      handleOnClick(markersPlugs)
+      handleOnClick(markersPlugs.state.currentMarker.config)
     );
   };
+
+  // DIALOG
+  const renderDialog = (
+    <Dialog open={!!clickedMarker} onClose={() => setClickedMarker(null)}>
+      {clickedMarker && clickedMarker.texto}
+    </Dialog>
+  );
+
+  // PLUGINS
   const plugins = [
     [
       PlanPlugin,
@@ -62,19 +77,31 @@ export default function Espacio() {
             id: 1,
             name: "choco",
             position: { yaw: "18.5deg", pitch: "-5.1deg" },
-            imageLayer: "/choco.png", // Adjusted path
+            imageLayer: "/choco.png",
             anchor: "bottom center",
             size: { width: 120, height: 120 },
-            tooltip: "Tooltip para Choco",
+            tooltip: "Tooltip para Marker 1",
+            texto: "Text for Marker 1",
           },
           {
             id: 2,
             name: "cucuta",
             position: { yaw: "100.5deg", pitch: "-10deg" },
-            imageLayer: "/cucuta.png", // Adjusted path
+            imageLayer: "/cucuta.png",
             anchor: "bottom center",
             size: { width: 120, height: 120 },
-            tooltip: "Tooltip para Cucuta",
+            tooltip: "Tooltip para Marker 2",
+            texto: "Text for Marker 2",
+          },
+          {
+            id: 3,
+            name: "comuna13",
+            position: { yaw: "0deg", pitch: "0deg" },
+            imageLayer: "/comuna13.png",
+            anchor: "bottom center",
+            size: { width: 120, height: 120 },
+            tooltip: "Tooltip para Marker 3",
+            texto: "Text for Marker 3",
           },
         ],
       },
@@ -82,20 +109,20 @@ export default function Espacio() {
   ];
 
   // ZOOM
-  const [zoomLevel, setZoomLevel] = useState(50);
-  console.log("🚀 ~ Espacio ~ zoomLevel:", zoomLevel);
-  const handleZoomChange = (e) => setZoomLevel(e.zoomLevel);
+  // const [zoomLevel, setZoomLevel] = useState(50);
+  // const handleZoomChange = (e) => setZoomLevel(e.zoomLevel);
 
   return (
     <div>
       <ReactPhotoSphereViewer
-        src="../../../public/mavicure4k.png"
+        src={photo}
         height={"100vh"}
         width={"100vw"}
         plugins={plugins}
         onReady={handleReady}
-        onZoomChange={(e) => handleZoomChange(e)}
+        // onZoomChange={(e) => handleZoomChange(e)}
       />
+      {renderDialog}
     </div>
   );
 }

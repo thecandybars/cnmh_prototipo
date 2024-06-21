@@ -82,9 +82,7 @@ async function getDepartamentos(req) {
     let departamentos = await Departamentos.findAll({
       where,
       // order,
-      include: [
-        { model: Regions, required: false, attributes: ["name", "color"] },
-      ],
+      include: [{ model: Regions, required: false }],
     });
 
     const data = where.id ? departamentos[0] : departamentos;

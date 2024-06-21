@@ -8,9 +8,9 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(20),
         allowNull: false,
       },
-      color: {
-        type: DataTypes.STRING(10),
-        allowNull: false,
+      fullName: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
       },
     },
     {
