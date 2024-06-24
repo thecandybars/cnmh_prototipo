@@ -41,6 +41,7 @@ const colombiaBounds = [
 export default function RegionalMap() {
   const [viewport, setViewport] = useState(mapInit);
   const [selectedPlace, setSelectedPlace] = useState(null);
+  console.log("🚀 ~ RegionalMap ~ selectedPlace:", selectedPlace);
 
   // const { current: map } = useMap();
   const map = useRef();
@@ -109,7 +110,8 @@ export default function RegionalMap() {
         {...viewport}
         onMove={(evt) => handleViewportChange(evt.viewState)}
         maxPitch={85}
-        mapStyle="mapbox://styles/juancortes79/clxbt6q9w09jt01ql089jau20"
+        mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
+        // mapStyle="mapbox://styles/juancortes79/clxbt6q9w09jt01ql089jau20"
         // mapStyle="mapbox://styles/mapbox/satellite-v9"
         mapboxAccessToken={TOKEN}
         terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}

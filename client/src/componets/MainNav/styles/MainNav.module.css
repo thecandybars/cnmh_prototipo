@@ -5,8 +5,9 @@
   left: 0;
   width: 100%;
   z-index: 1000;
-  background-color: #000000ee;
-  padding: 10px;
+  /* background-color: #000000ee; */
+  /* padding: 10px; */
+  padding-top: 40px;
 }
 
 .menu {
@@ -18,13 +19,13 @@
 
 .menuItem {
   display: inline-block;
-  margin-right: 20px;
+  margin-right: 80px;
   position: relative;
 }
 
 .menuLink {
   text-decoration: none;
-  padding: 10px 15px;
+  /* padding: 10px 15px; */
   display: block;
   color: #000;
 }
