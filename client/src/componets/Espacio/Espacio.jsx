@@ -69,43 +69,43 @@ export default function Espacio() {
         // ],
       },
     ],
-    [
-      MarkersPlugin,
-      {
-        markers: [
-          {
-            id: 1,
-            name: "choco",
-            position: { yaw: "18.5deg", pitch: "-5.1deg" },
-            imageLayer: "/choco.png",
-            anchor: "bottom center",
-            size: { width: 120, height: 120 },
-            tooltip: "Tooltip para Marker 1",
-            texto: "Text for Marker 1",
-          },
-          {
-            id: 2,
-            name: "cucuta",
-            position: { yaw: "100.5deg", pitch: "-10deg" },
-            imageLayer: "/cucuta.png",
-            anchor: "bottom center",
-            size: { width: 120, height: 120 },
-            tooltip: "Tooltip para Marker 2",
-            texto: "Text for Marker 2",
-          },
-          {
-            id: 3,
-            name: "comuna13",
-            position: { yaw: "0deg", pitch: "0deg" },
-            imageLayer: "/comuna13.png",
-            anchor: "bottom center",
-            size: { width: 120, height: 120 },
-            tooltip: "Tooltip para Marker 3",
-            texto: "Text for Marker 3",
-          },
-        ],
-      },
-    ],
+    // [
+    //   MarkersPlugin,
+    //   {
+    //     markers: [
+    //       {
+    //         id: 1,
+    //         name: "choco",
+    //         position: { yaw: "18.5deg", pitch: "-5.1deg" },
+    //         imageLayer: "/choco.png",
+    //         anchor: "bottom center",
+    //         size: { width: 120, height: 120 },
+    //         tooltip: "Tooltip para Marker 1",
+    //         texto: "Text for Marker 1",
+    //       },
+    //       {
+    //         id: 2,
+    //         name: "cucuta",
+    //         position: { yaw: "100.5deg", pitch: "-10deg" },
+    //         imageLayer: "/cucuta.png",
+    //         anchor: "bottom center",
+    //         size: { width: 120, height: 120 },
+    //         tooltip: "Tooltip para Marker 2",
+    //         texto: "Text for Marker 2",
+    //       },
+    //       {
+    //         id: 3,
+    //         name: "comuna13",
+    //         position: { yaw: "0deg", pitch: "0deg" },
+    //         imageLayer: "/comuna13.png",
+    //         anchor: "bottom center",
+    //         size: { width: 120, height: 120 },
+    //         tooltip: "Tooltip para Marker 3",
+    //         texto: "Text for Marker 3",
+    //       },
+    //     ],
+    //   },
+    // ],
   ];
 
   // ZOOM

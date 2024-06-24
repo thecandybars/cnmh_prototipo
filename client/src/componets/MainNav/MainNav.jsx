@@ -1,24 +1,18 @@
 import { Link } from "react-router-dom";
 import styles from "./styles/MainNav.module.css";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { theme } from "../../utils/theme";
 
 export default function MainNav() {
   const items = [
     {
-      title: "HOME",
+      title: "LUGARES",
       link: "/",
     },
     {
-      title: "REGIONES",
-      link: "/regiones",
-    },
-    {
-      title: "ESPACIO",
-      link: "/espacio",
-    },
-    {
       title: "GUARDIANES DE LA MEMORIA",
-      link: "/landing2",
+      link: "/regiones",
+      // link: "/landing2",
     },
   ];
   const renderMenuItems = items.map((item) => (
@@ -26,7 +20,7 @@ export default function MainNav() {
       <Link className={styles.menuLink} to={item.link}>
         <Typography
           variant="h3"
-          color="amazonia.first"
+          color="primary"
           sx={{ lineHeight: 3, textAlign: "center" }}
         >
           {item.title}
@@ -35,8 +29,26 @@ export default function MainNav() {
     </li>
   ));
   return (
-    <nav className={styles.navContainer}>
-      <ul className={styles.menu}>{renderMenuItems}</ul>
+    <nav
+      className={styles.navContainer}
+      style={{
+        display: "flex",
+        justifyContent: "end",
+        margin: 0,
+      }}
+    >
+      <Box
+        sx={{
+          backgroundColor: theme.palette.secondary.main,
+          display: "flex",
+          paddingLeft: "100px",
+          justifyContent: "start",
+          borderTopLeftRadius: "50px",
+          borderBottomLeftRadius: "50px",
+        }}
+      >
+        <ul className={styles.menu}>{renderMenuItems}</ul>
+      </Box>
     </nav>
   );
 }

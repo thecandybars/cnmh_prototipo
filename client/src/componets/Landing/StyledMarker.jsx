@@ -14,26 +14,42 @@ const StyledMarker = (props) => {
   const circleStyle = {
     width: "50px",
     height: "50px",
+    backgroundColor: "#ebaa44",
     borderRadius: "50%",
     overflow: "hidden",
-    border: "5px solid #ebaa44",
-    boxShadow: "0 0 5px rgba(0,0,0,0.5)",
+    border: "3px solid #ebaa44",
+    boxShadow: "0 0 5px rgba(127, 125, 0, 0.405)",
   };
 
-  // const imgStyle = {
-  //   width: props.zoom * 10,
-  //   height: props.zoom * 10,
-  //   objectFit: "cover",
-  // };
+  const imgStyle = {
+    marginTop: "5px",
+    marginLeft: "5px",
+    width: props.zoom * 5,
+    height: props.zoom * 5,
+    objectFit: "cover",
+    filter:
+      "invert(100%) sepia(0%) saturate(7490%) hue-rotate(254deg) brightness(105%) contrast(99%)",
+    // filter:
+    //   "invert(91%) sepia(8%) saturate(6446%) hue-rotate(325deg) brightness(97%) contrast(90%)",
+  };
 
   const arrowStyle = {
-    width: 0,
-    height: 0,
-    borderLeft: "10px solid transparent",
-    borderRight: "10px solid transparent",
-    borderTop: "15px solid #ebaa44",
-    marginTop: "-2px",
+    width: "10px",
+    height: "10px",
+    backgroundColor: "#ebaa44",
+    borderRadius: "50%",
+    overflow: "hidden",
+    boxShadow: "0 0 5px rgba(127, 125, 0, 0.405)",
+    marginTop: "2px",
   };
+  // const arrowStyle = {
+  //   width: 0,
+  //   height: 0,
+  //   borderLeft: "10px solid transparent",
+  //   borderRight: "10px solid transparent",
+  //   borderTop: "15px solid #ebaa44",
+  //   marginTop: "-2px",
+  // };
 
   // const labelStyle = {
   //   marginTop: "5px",
@@ -57,7 +73,11 @@ const StyledMarker = (props) => {
     >
       <div style={markerStyle}>
         <div style={circleStyle}>
-          {/* <img src={props.marca.image} alt="Marker" style={imgStyle} /> */}
+          <img
+            src="../../../public/markerMuseoMemoria.png"
+            alt="Marker"
+            style={imgStyle}
+          />
         </div>
         <div style={arrowStyle} />
         {/* <div style={labelStyle}>{props.marca.nombre}</div> */}
