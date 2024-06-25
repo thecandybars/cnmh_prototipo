@@ -1,16 +1,15 @@
 import Map, { Source, Layer, Popup } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import geojsonData from "./col.json";
-// import { useNavigate } from "react-router-dom";
 import getEnv from "../../utils/getEnv";
 import useFetch from "../common/customHooks/useFetch";
 import { getAllDepartamentos } from "../../services/departamentos";
 import { theme } from "../../utils/theme";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
-// import StyledMarker from "../RegionalMap/StyledMarker";
-import StyledMarker from "./StyledMarker";
-// import { MarkerMuseoMemoria } from "../common/icons";
+import StyledMarker from "./components/StyledMarker";
+import Supercluster from "supercluster";
+import { Box } from "@mui/material";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -111,9 +110,25 @@ const viewports = [
 
 const Landing = () => {
   const mapRef = useRef();
-  // const navigate = useNavigate();
+  const [fetchedLugares] = useFetch(() => getAllLugares());
   const [departamentos] = useFetch(() => getAllDepartamentos());
   const [actualRegion, setActualRegion] = useState(null);
+
+  // FILTER LUGARES
+  const lugares = useMemo(
+    () =>
+      actualRegion !== null
+        ? fetchedLugares.filter(
+            (lugar) =>
+              lugar.Municipio.Departamento.Region.id === actualRegion.id
+          )
+        : fetchedLugares,
+    [fetchedLugares, actualRegion]
+  );
+
+  // CLUSTER
+  const [clusters, setClusters] = useState([]);
+  const [supercluster, setSupercluster] = useState(null);
 
   // HANDLE MOVE
   const [actualViewport, setActualViewport] = useState(viewports[0]);
@@ -190,22 +205,91 @@ const Landing = () => {
     });
 
   // MARKERS
-  const [lugares] = useFetch(() => getAllLugares());
   const renderMarkers =
     actualView !== 0 &&
     actualRegion &&
-    lugares
-      ?.filter(
-        (lugar) => lugar.Municipio.Departamento.Region.id === actualRegion.id
-      )
-      .map((lugar) => (
-        <button
-          key={lugar.id}
-          onClick={(e) => handleSelectedMarker(e, lugar.id)}
-        >
-          <StyledMarker marca={lugar} zoom={actualViewport.zoom} />
-        </button>
-      ));
+    clusters.map((cluster) => {
+      const [longitude, latitude] = cluster.geometry.coordinates;
+      const { cluster: isCluster, point_count: pointCount } =
+        cluster.properties;
+
+      if (isCluster) {
+        return (
+          <Box
+            key={`cluster-${cluster.id}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              const expansionZoom = Math.min(
+                supercluster.getClusterExpansionZoom(cluster.id),
+                20
+              );
+              setDestination({
+                ...actualViewport,
+                latitude,
+                longitude,
+                zoom: expansionZoom,
+                transitionDuration: 500,
+              });
+            }}
+          >
+            <StyledMarker
+              marca={{ latitud: latitude, longitud: longitude }}
+              zoom={actualViewport.zoom}
+              text={pointCount}
+            />
+          </Box>
+        );
+      } else {
+        return (
+          <Box
+            key={`marker-${cluster.properties.id}`}
+            onClick={(e) => handleSelectedMarker(e, cluster.properties.id)}
+          >
+            <StyledMarker
+              marca={cluster.properties}
+              zoom={actualViewport.zoom}
+            />
+          </Box>
+        );
+      }
+    });
+
+  // CREATE MARKERS SUPERCLUSTER
+
+  useEffect(() => {
+    const index = new Supercluster({
+      radius: 50, //40,
+      maxZoom: 10, //16,
+    });
+    lugares?.length > 0 &&
+      index.load(
+        lugares.map((lugar) => ({
+          type: "Feature",
+          properties: { cluster: false, ...lugar },
+          geometry: {
+            type: "Point",
+            coordinates: [lugar.longitud, lugar.latitud],
+          },
+        }))
+      );
+
+    setSupercluster(index);
+  }, [lugares]);
+
+  useEffect(() => {
+    if (
+      mapRef?.current !== null &&
+      supercluster &&
+      Object.keys(supercluster).length > 0 &&
+      supercluster.points?.length > 0 &&
+      Object.keys(actualViewport).length > 0
+    ) {
+      const bounds = mapRef.current.getBounds().toArray().flat();
+      const zoom = Math.floor(actualViewport.zoom);
+      const clusters = supercluster.getClusters(bounds, zoom);
+      setClusters(clusters);
+    }
+  }, [supercluster, actualViewport, actualViewport.zoom, mapRef]);
 
   // HANDLERS MARKERS
   const [selectedMarker, setSelectedMarker] = useState(null);
@@ -234,12 +318,13 @@ const Landing = () => {
   const flyToDestination = useMemo(() => {
     destination &&
       mapRef.current?.flyTo({
+        ...actualViewport,
         center: [destination.longitude, destination.latitude],
         speed: destination.speed || 0.4,
         curve: destination.curve || 1.42,
         zoom: destination.zoom || 15,
         bearing: destination.bearing || 0,
-        pitch: destination.pitch || 70,
+        pitch: destination.pitch,
         essential: true,
       });
   }, [destination]);
@@ -272,7 +357,7 @@ const Landing = () => {
           onClick={() => {
             setActualView(0);
             setActualRegion(null);
-            setDestination(viewports[0]);
+            setDestination({ ...viewports[0], pitch: 0 });
           }}
           style={{ marginTop: "100px" }}
         >
@@ -282,15 +367,15 @@ const Landing = () => {
       <Map
         ref={mapRef}
         initialViewState={viewports[0]}
-        // {...actualViewport}
+        {...actualViewport}
         maxBounds={colombiaBounds}
         // mapStyle="mapbox://styles/mapbox/satellite-v9"
         mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
         // mapStyle="mapbox://styles/mapbox/light-v10"
         mapboxAccessToken={TOKEN}
         onClick={handleMapClick}
-        // onMove={(evt) => handleViewportChange(evt.viewState)}
-        onViewportChange={(nextViewport) => handleViewportChange(nextViewport)}
+        onMove={(evt) => handleViewportChange(evt.viewState)}
+        // onViewportChange={(nextViewport) => handleViewportChange(nextViewport)}
         interactiveLayerIds={interactiveLayerIds}
         terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}
       >
