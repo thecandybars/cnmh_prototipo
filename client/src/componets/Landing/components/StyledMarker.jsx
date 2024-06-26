@@ -79,11 +79,7 @@ const StyledMarker = (props) => {
   const renderContent = props.text ? (
     <Typography> {props.text}</Typography>
   ) : (
-    <img
-      src={`../../../public/${sources[index]}.png`}
-      alt="Marker"
-      style={imgStyle}
-    />
+    <img src={`${sources[index]}.png`} alt="Marker" style={imgStyle} />
   );
 
   return (
@@ -91,15 +87,10 @@ const StyledMarker = (props) => {
       latitude={props.marca.latitud}
       longitude={props.marca.longitud}
       anchor="bottom"
-      // onClick={(e) => {
-      //   console.log("🚀 ~ StyledMarker ~ e:", e);
-      //   props.onClick(e, props.marca.id);
-      // }}
     >
       <div style={markerStyle}>
         <div style={circleStyle}>{renderContent}</div>
         <div style={arrowStyle} />
-        {/* <div style={labelStyle}>{props.marca.nombre}</div> */}
       </div>
     </Marker>
   );
@@ -109,7 +100,7 @@ StyledMarker.propTypes = {
   marca: PropTypes.object,
   zoom: PropTypes.number,
   onClick: PropTypes.func,
-  text: PropTypes.string,
+  text: PropTypes.any,
 };
 
 export default StyledMarker;
