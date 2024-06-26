@@ -1,9 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import RegionalMap from "./componets/RegionalMap";
 import Landing from "./componets/Landing";
 import Espacio from "./componets/Espacio/Espacio";
-import MainNav from "./componets/MainNav/MainNav";
-import Landing2 from "./componets/Landing2/Landing2";
+import MainNav from "./componets/MainNav";
+import Testpacio from "./componets/Espacio";
 
 const NotFoundPage = () => (
   <div>
@@ -18,9 +17,8 @@ const App = () => {
         <MainNav />
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/regiones" element={<RegionalMap />} />
-          <Route path="/espacio" element={<Espacio />} />
-          <Route path="/landing2" element={<Landing2 />} />
+          <Route path="/espacio" element={<Testpacio />} />
+          <Route path="/espacio/test" element={<Espacio />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
