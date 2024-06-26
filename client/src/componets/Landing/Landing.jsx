@@ -43,6 +43,7 @@ const colombiaBounds = [
 // ];
 
 const viewports = [
+  // THIS
   {
     id: 0,
     name: "init",
@@ -52,6 +53,16 @@ const viewports = [
     bearing: 0,
     pitch: 0,
   },
+  // map to the left
+  // {
+  //   id: 0,
+  //   name: "init",
+  //   latitude: 4.2111294898549545,
+  //   longitude: -66.87627193940398,
+  //   zoom: 4.8,
+  //   bearing: 0,
+  //   pitch: 0,
+  // },
   // {
   //   id: 0,
   //   name: "init",
@@ -131,8 +142,7 @@ const Landing = () => {
   const [supercluster, setSupercluster] = useState(null);
 
   // HANDLE MOVE
-  const [actualViewport, setActualViewport] = useState(viewports[0]);
-  console.log("🚀 ~ Landing ~ actualViewport:", actualViewport);
+  const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
   const handleViewportChange = (newViewport) => {
     setActualViewport(newViewport);
   };
