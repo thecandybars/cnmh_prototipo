@@ -1,5 +1,6 @@
 const server = require("./src/app.js");
 const { conn } = require("./src/db.js");
+const { Regions } = require("./src/db.js");
 
 require("dotenv").config();
 
@@ -10,5 +11,12 @@ const alter = true;
 conn.sync({ force, alter }).then(() => {
   server.listen(port, async () => {
     console.log(`Listening at ${port}`);
+    // const bulk = await Regions.bulkCreate([
+    //   {
+    //     id: 7,
+    //     name: "test",
+    //     fullName: "Tes",
+    //   },
+    // ]);
   });
 });
