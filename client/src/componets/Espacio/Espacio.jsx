@@ -7,7 +7,7 @@ import { MarkersPlugin } from "@photo-sphere-viewer/markers-plugin";
 import { PlanPlugin } from "@photo-sphere-viewer/plan-plugin";
 // import { CompassPlugin } from "@photo-sphere-viewer/compass-plugin";
 import { useState } from "react";
-import photo from "../../../public/mavicure4k.png";
+import photo from "../../assets/mavicure4k.png";
 import { Dialog } from "@mui/material";
 
 export default function Espacio() {
