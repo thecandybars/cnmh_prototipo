@@ -349,7 +349,7 @@ const Landing = () => {
       onClose={() => handleClosePopup()}
     >
       <h3 style={{ color: "black" }}>{selectedMarker.nombre}</h3>
-      <a href="/espacio">Visitar</a>
+      <a href="/foto360">Visitar</a>
     </Popup>
   );
 
