@@ -111,7 +111,9 @@ const viewports = [
 const Landing = () => {
   const mapRef = useRef();
   const [fetchedLugares] = useFetch(() => getAllLugares());
+  console.log("🚀 ~ Landing ~ fetchedLugares:", fetchedLugares);
   const [departamentos] = useFetch(() => getAllDepartamentos());
+  console.log("🚀 ~ Landing ~ departamentos:", departamentos);
   const [actualRegion, setActualRegion] = useState(null);
 
   // FILTER LUGARES
