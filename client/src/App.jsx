@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Landing from "./componets/Landing";
-import Espacio from "./componets/Espacio/Espacio";
 import MainNav from "./componets/MainNav";
-import Testpacio from "./componets/Espacio";
+import Landing from "./componets/Landing";
+import Photo360 from "./componets/Lugares/Photo360/Photo360";
+import PhotoGallery from "./componets/Lugares/PhotoGallery/PhotoGallery";
 
 const NotFoundPage = () => (
   <div>
@@ -17,8 +17,8 @@ const App = () => {
         <MainNav />
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/espacio" element={<Testpacio />} />
-          <Route path="/espacio/test" element={<Espacio />} />
+          <Route path="/foto360" element={<Photo360 />} />
+          <Route path="/galeria" element={<PhotoGallery />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>

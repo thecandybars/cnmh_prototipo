@@ -1,16 +1,16 @@
 import "@photo-sphere-viewer/markers-plugin/index.css";
 import "@photo-sphere-viewer/plan-plugin/index.css";
 import { TileLayer } from "leaflet";
-// import "@photo-sphere-viewer/compass-plugin/index.css";
 import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
 import { MarkersPlugin } from "@photo-sphere-viewer/markers-plugin";
 import { PlanPlugin } from "@photo-sphere-viewer/plan-plugin";
-// import { CompassPlugin } from "@photo-sphere-viewer/compass-plugin";
 import { useState } from "react";
-import photo from "../../assets/mavicure4k.png";
+import photo from "../../../assets/mavicure4k.png";
 import { Dialog } from "@mui/material";
+// import "@photo-sphere-viewer/compass-plugin/index.css";
+// import { CompassPlugin } from "@photo-sphere-viewer/compass-plugin";
 
-export default function Espacio() {
+export default function Photo360() {
   const [clickedMarker, setClickedMarker] = useState(null);
 
   // HANDLERS
