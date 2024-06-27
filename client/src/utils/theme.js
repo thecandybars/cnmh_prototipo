@@ -3,8 +3,16 @@ import { createTheme } from "@mui/material";
 // GENERAL USE THEME
 const theme = {
   palette: {
-    primary: {
+    title: {
       main: "#1b3832",
+      light: "#459282",
+      dark: "#122522",
+      transparent: {
+        light: "#459282aa",
+      },
+    },
+    primary: {
+      main: "#fafafa",
       light: "#eee",
       dark: "#999",
     },
@@ -13,6 +21,7 @@ const theme = {
       light: "#e6c87f",
       dark: "#734D1F",
     },
+    yellowCNMH: "#fdb519",
     atlantica: {
       second: "rgb(73,61,134)",
       first: "rgb(0,147,212)",
