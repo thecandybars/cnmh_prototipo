@@ -28,7 +28,9 @@
     "react-photo-sphere-viewer": "^5.0.2-psv5.7.1",
     "react-router-dom": "^6.23.1",
     "supercluster": "^8.0.1",
+    "swiper": "^11.1.4",
     "three": "^0.165.0",
+    "uuid": "^10.0.0",
     "vite-plugin-svgr": "^4.2.0"
   },
   "devDependencies": {
