@@ -1,7 +1,13 @@
 import { Box, Stack, Typography } from "@mui/material";
 import PhotoGallery from "./PhotoGallery/PhotoGallery";
+import CloseCancelButton from "../common/buttons/CloseCancelButton";
+import PropTypes from "prop-types";
 
-export default function CasaMemoriaTumaco() {
+CasaMemoriaTumaco.propTypes = {
+  onClose: PropTypes.func,
+};
+
+export default function CasaMemoriaTumaco(props) {
   const images = [
     "/casamemoriatumaco/photos/00.mp4",
     "/casamemoriatumaco/photos/01.jpg",
@@ -25,6 +31,13 @@ export default function CasaMemoriaTumaco() {
     "/casamemoriatumaco/photos/19.jpeg",
   ];
 
+  const renderCloseButton = (
+    <CloseCancelButton
+      onClick={props.onClose}
+      sx={{ position: "absolute", right: 0 }}
+    />
+  );
+
   return (
     <Box width="100vw" height="100vh" sx={{ display: "flex" }}>
       <Box display="flex" flex={2}>
@@ -38,6 +51,7 @@ export default function CasaMemoriaTumaco() {
           backgroundSize: "cover",
         }}
       >
+        {renderCloseButton}
         <Box margin="0 auto">
           <img alt="Logo lugar" src="/casamemoriatumaco/logo.jpg" />
         </Box>

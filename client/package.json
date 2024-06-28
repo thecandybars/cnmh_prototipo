@@ -12,7 +12,8 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
-    "@mui/material": "^5.15.20",
+    "@mui/icons-material": "^5.15.21",
+    "@mui/material": "^5.15.21",
     "@photo-sphere-viewer/compass-plugin": "^5.7.4",
     "@photo-sphere-viewer/core": "^5.7.4",
     "@photo-sphere-viewer/markers-plugin": "^5.7.4",
