@@ -9,7 +9,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
 import StyledMarker from "./components/StyledMarker";
 import Supercluster from "supercluster";
-import { Box } from "@mui/material";
+import { Box, Dialog } from "@mui/material";
+import CasaMemoriaTumaco from "../Lugares/CasaMemoriaTumaco";
+import Photo360 from "../Lugares/Photo360/Photo360";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -340,6 +342,31 @@ const Landing = () => {
       });
   }, [destination]);
 
+  // DIALOG LUGAR
+  const [openDialogLugar, setOpenDialogLugar] = useState(false);
+  const handleOpenDialogLugar = () => {
+    setOpenDialogLugar(true);
+  };
+  const handleCloseDialogLugar = () => {
+    setOpenDialogLugar(false);
+  };
+  const index =
+    selectedMarker && Math.floor(Math.abs(selectedMarker.latitud * 100)) % 2;
+  const renderDialogContent =
+    index === 0 ? (
+      <CasaMemoriaTumaco onClose={() => handleCloseDialogLugar()} />
+    ) : (
+      <Photo360 onClose={() => handleCloseDialogLugar()} />
+    );
+  const renderDialogLugar = (
+    <Dialog
+      open={openDialogLugar}
+      onClose={() => handleCloseDialogLugar()}
+      fullScreen
+    >
+      {renderDialogContent}
+    </Dialog>
+  );
   // POPUPS
   const renderPopup = selectedMarker && (
     <Popup
@@ -349,7 +376,7 @@ const Landing = () => {
       onClose={() => handleClosePopup()}
     >
       <h3 style={{ color: "black" }}>{selectedMarker.nombre}</h3>
-      <a href="/foto360">Visitar</a>
+      <button onClick={handleOpenDialogLugar}>Visitar</button>
     </Popup>
   );
 
@@ -403,6 +430,7 @@ const Landing = () => {
         {flyToDestination}
         <Layer {...skyLayer} />
         {renderMarkers}
+        {renderDialogLugar}
       </Map>
     </div>
   );

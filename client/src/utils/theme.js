@@ -23,13 +23,13 @@ const theme = {
     },
     yellowCNMH: "#fdb519",
     atlantica: {
+      first: "rgb(0, 147, 212)",
       second: "rgb(73,61,134)",
-      first: "rgb(0,147,212)",
       third: "rgb(108,228,229)",
     },
     pacifica: {
       second: "rgb(59,128,77)",
-      first: "rgb(57,177,74)",
+      first: "#39b14a",
       third: "rgb(255,194,66)",
     },
     andina: {
@@ -38,7 +38,7 @@ const theme = {
       third: "rgb(221,132,174)",
     },
     amazonia: {
-      first: "rgb(191,4,19)",
+      first: "rgb(191, 4, 19)",
       second: "rgb(242,182,96)",
       third: "rgb(3,10,140)",
     },

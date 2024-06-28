@@ -7,10 +7,10 @@ import { PlanPlugin } from "@photo-sphere-viewer/plan-plugin";
 import { useState } from "react";
 import photo from "../../../assets/mavicure4k.png";
 import { Dialog } from "@mui/material";
-// import "@photo-sphere-viewer/compass-plugin/index.css";
-// import { CompassPlugin } from "@photo-sphere-viewer/compass-plugin";
+import CloseCancelButton from "../../common/buttons/CloseCancelButton";
+import PropTypes from "prop-types";
 
-export default function Photo360() {
+export default function Photo360(props) {
   const [clickedMarker, setClickedMarker] = useState(null);
 
   // HANDLERS
@@ -108,12 +108,16 @@ export default function Photo360() {
     ],
   ];
 
-  // ZOOM
-  // const [zoomLevel, setZoomLevel] = useState(50);
-  // const handleZoomChange = (e) => setZoomLevel(e.zoomLevel);
+  const renderCloseButton = (
+    <CloseCancelButton
+      onClick={props.onClose}
+      sx={{ position: "absolute", right: 0, zIndex: 100 }}
+    />
+  );
 
   return (
     <div>
+      {renderCloseButton}
       <ReactPhotoSphereViewer
         src={photo}
         height={"100vh"}
@@ -126,3 +130,7 @@ export default function Photo360() {
     </div>
   );
 }
+
+Photo360.propTypes = {
+  onClose: PropTypes.func,
+};
