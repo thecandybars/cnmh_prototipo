@@ -258,6 +258,8 @@ const Landing = () => {
           <Box
             key={`marker-${cluster.properties.id}`}
             onClick={(e) => handleSelectedMarker(e, cluster.properties.id)}
+            onMouseOver={(e) => handlePreviewMarker(e, cluster.properties.id)}
+            onMouseOut={() => setPreviewMarker(null)}
           >
             <StyledMarker
               marca={cluster.properties}
@@ -326,6 +328,16 @@ const Landing = () => {
     },
     [lugares]
   );
+  //
+  const [previewMarker, setPreviewMarker] = useState(null);
+  const handlePreviewMarker = useCallback(
+    (e, id) => {
+      e.stopPropagation();
+      const lugar = lugares.find((lugar) => lugar.id === id);
+      setPreviewMarker(lugar);
+    },
+    [lugares]
+  );
 
   // FLY TO DESTINATION
   const [destination, setDestination] = useState(null);
@@ -355,9 +367,9 @@ const Landing = () => {
     selectedMarker && Math.floor(Math.abs(selectedMarker.latitud * 100)) % 2;
   const renderDialogContent =
     index === 0 ? (
-      <CasaMemoriaTumaco onClose={() => handleCloseDialogLugar()} />
-    ) : (
       <Photo_360 onClose={() => handleCloseDialogLugar()} />
+    ) : (
+      <CasaMemoriaTumaco onClose={() => handleCloseDialogLugar()} />
     );
   const renderDialogLugar = (
     <Dialog
@@ -369,7 +381,7 @@ const Landing = () => {
     </Dialog>
   );
   // POPUPS
-  const renderPopup = selectedMarker && (
+  const renderLongPopup = selectedMarker && (
     <Popup
       latitude={selectedMarker.latitud}
       longitude={selectedMarker.longitud}
@@ -377,7 +389,23 @@ const Landing = () => {
       onClose={() => handleClosePopup()}
     >
       <h3 style={{ color: "black" }}>{selectedMarker.nombre}</h3>
+      <p style={{ color: "black" }}>
+        has fjkhads fhhgadsfjh gsd fgasdgfasgfjh asdfgashjfg asjhfgjahsdgfjhasg
+        fjgasdjff jashg fdja
+      </p>
       <button onClick={handleOpenDialogLugar}>Visitar</button>
+    </Popup>
+  );
+  const renderShortPopup = previewMarker && (
+    <Popup
+      latitude={previewMarker.latitud}
+      longitude={previewMarker.longitud}
+      anchor="top"
+      onClose={() => setPreviewMarker(null)}
+    >
+      <h3 style={{ color: "black" }}>{previewMarker.nombre}</h3>
+
+      {/* <button onClick={handleOpenDialogLugar}>Visitar</button> */}
     </Popup>
   );
 
@@ -428,7 +456,8 @@ const Landing = () => {
         /> */}
 
         {drawRegions}
-        {renderPopup}
+        {renderLongPopup}
+        {renderShortPopup}
         {flyToDestination}
         <Layer {...skyLayer} />
         {renderMarkers}
