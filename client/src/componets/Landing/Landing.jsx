@@ -11,7 +11,8 @@ import StyledMarker from "./components/StyledMarker";
 import Supercluster from "supercluster";
 import { Box, Dialog } from "@mui/material";
 import CasaMemoriaTumaco from "../Lugares/CasaMemoriaTumaco";
-import Photo360 from "../Lugares/Photo360/Photo360";
+// import Photo360 from "../Lugares/Photo360/Photo360";
+import { Photo_360 } from "../../App";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -356,7 +357,7 @@ const Landing = () => {
     index === 0 ? (
       <CasaMemoriaTumaco onClose={() => handleCloseDialogLugar()} />
     ) : (
-      <Photo360 onClose={() => handleCloseDialogLugar()} />
+      <Photo_360 onClose={() => handleCloseDialogLugar()} />
     );
   const renderDialogLugar = (
     <Dialog
@@ -395,6 +396,7 @@ const Landing = () => {
           onClick={() => {
             setActualView(0);
             setActualRegion(null);
+            setSelectedMarker(null);
             setDestination({ ...viewports[0], pitch: 0 });
           }}
           style={{ marginTop: "100px" }}
