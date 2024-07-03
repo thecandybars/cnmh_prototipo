@@ -13,6 +13,8 @@ import { Box, Button, Dialog, Drawer, Stack, Typography } from "@mui/material";
 import CasaMemoriaTumaco from "../Lugares/CasaMemoriaTumaco";
 // import Photo360 from "../Lugares/Photo360/Photo360";
 import { Photo_360 } from "../../App";
+import { ExpandIcon } from "../common/icons";
+import useViewport from "../common/customHooks/useViewport";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -128,10 +130,13 @@ const Landing = () => {
   const [departamentos] = useFetch(() => getAllDepartamentos());
   const [actualRegion, setActualRegion] = useState(null);
 
+  const { vh } = useViewport();
+  // const vh = window.innerHeight;
+
   // FILTER LUGARES
   const lugares = useMemo(
     () =>
-      actualRegion !== null
+      actualRegion !== null && fetchedLugares?.length
         ? fetchedLugares.filter(
             (lugar) =>
               lugar.Municipio.Departamento.Region.id === actualRegion.id
@@ -142,9 +147,7 @@ const Landing = () => {
 
   // CLUSTER STATE
   const [clusters, setClusters] = useState([]);
-  console.log("🚀 ~ Landing ~ clusters:", clusters);
   const [supercluster, setSupercluster] = useState(null);
-  console.log("🚀 ~ Landing ~ supercluster:", supercluster);
 
   // HANDLE MOVE
   const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
@@ -189,7 +192,7 @@ const Landing = () => {
         opacity: 0.5,
       };
       if (region) {
-        if (actualView === 1) {
+        if (actualView !== 0) {
           if (region.id === actualRegion.id) regionColor.opacity = 0.2;
         }
       }
@@ -262,10 +265,20 @@ const Landing = () => {
       );
     else setActiveFilters((prev) => prev.concat([id]));
   };
-  const convertToGreen =
-    "brightness(0) saturate(100%) invert(14%) sepia(5%) saturate(4383%) hue-rotate(118deg) brightness(101%) contrast(86%)";
-  const convertToYellow =
-    "brightness(0) saturate(100%) invert(86%) sepia(20%) saturate(6492%) hue-rotate(346deg) brightness(102%) contrast(106%)";
+  const renderCloseFilterButton = (
+    <Button onClick={() => setOpenFilterDrawer(false)}>
+      <ExpandIcon size="large" color="title" />
+    </Button>
+  );
+  const renderOpenFilterButton = (
+    <Button onClick={() => setOpenFilterDrawer(true)} sx={{ height: "100%" }}>
+      <ExpandIcon
+        size="large"
+        color="title"
+        sx={{ transform: "rotate(180deg)" }}
+      />
+    </Button>
+  );
   const renderFilters = (
     <Stack
       spacing={1}
@@ -274,11 +287,6 @@ const Landing = () => {
       alignItems="center"
     >
       {tipologiasLugares.map((tipologia) => (
-        // <Button
-        //   key={tipologia.id}
-        //   onClick={() => handleActiveFilters(tipologia.id)}
-        //   sx={{ width: "100%" }}
-        // >
         <Box
           key={tipologia.id}
           onClick={() => handleActiveFilters(tipologia.id)}
@@ -291,6 +299,7 @@ const Landing = () => {
               : "transparent",
             cursor: "pointer",
             paddingRight: 2,
+            borderRadius: "20px 0 0 20px",
           }}
         >
           <img
@@ -299,20 +308,57 @@ const Landing = () => {
             width="80px"
             style={{
               filter: activeFilters.includes(tipologia.id)
-                ? convertToYellow
-                : convertToGreen,
+                ? "brightness(0) saturate(100%) invert(86%) sepia(20%) saturate(6492%) hue-rotate(346deg) brightness(102%) contrast(106%)" // to yellow
+                : "brightness(0) saturate(100%) invert(14%) sepia(5%) saturate(4383%) hue-rotate(118deg) brightness(101%) contrast(86%)", // to green
             }}
           />
-          <Typography variant="h6" color="primary">
+          <Typography
+            variant="h6"
+            color={
+              activeFilters.includes(tipologia.id)
+                ? "primary"
+                : theme.palette.title.main
+            }
+          >
             {tipologia.title}
           </Typography>
         </Box>
-        // </Button>
       ))}
     </Stack>
   );
-  const [openFilterDrawer, setOpenFilterDrawer] = useState(true);
-  const renderFilterDrawer = (
+  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
+
+  const renderClosedFilterDrawer = (
+    <Drawer
+      variant="persistent"
+      anchor="right"
+      open={!openFilterDrawer}
+      onClose={() => setOpenFilterDrawer(!false)}
+      PaperProps={{
+        sx: {
+          height: "360px",
+          // marginTop: "200px",
+          marginTop: `${vh / 2 - 180}px`,
+          backgroundColor: theme.palette.secondary.main,
+          padding: 1,
+          paddingRight: 0,
+          borderRadius: "30px 0 0 30px",
+        },
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          height: "100%",
+          marign: 0,
+        }}
+      >
+        {renderOpenFilterButton}
+      </Box>
+    </Drawer>
+  );
+  const renderOpenedFilterDrawer = (
     <Drawer
       variant="persistent"
       anchor="right"
@@ -320,15 +366,20 @@ const Landing = () => {
       onClose={() => setOpenFilterDrawer(false)}
       PaperProps={{
         sx: {
-          height: "auto",
-          marginTop: "200px",
+          height: "360px",
+          // marginTop: "200px",
+          marginTop: `${vh / 2 - 180}px`,
           backgroundColor: theme.palette.secondary.main,
           padding: 1,
           paddingRight: 0,
+          borderRadius: "30px 0 0 30px",
         },
       }}
     >
-      {renderFilters}
+      <Box sx={{ display: "flex" }}>
+        {renderCloseFilterButton}
+        {renderFilters}
+      </Box>
     </Drawer>
   );
 
@@ -381,22 +432,6 @@ const Landing = () => {
             />
           </Box>
         );
-
-        // return activeFilters.includes(
-        //   Math.floor(Math.abs(cluster.properties.latitud * 100)) % 4
-        // ) ? (
-        //   <Box
-        //     key={`marker-${cluster.properties.id}`}
-        //     onClick={(e) => handleSelectedMarker(e, cluster.properties.id)}
-        //     onMouseOver={(e) => handlePreviewMarker(e, cluster.properties.id)}
-        //     onMouseOut={() => setPreviewMarker(null)}
-        //   >
-        //     <StyledMarker
-        //       marca={cluster.properties}
-        //       zoom={actualViewport.zoom}
-        //     />
-        //   </Box>
-        // ) : null;
       }
     });
 
@@ -467,13 +502,20 @@ const Landing = () => {
       mapRef?.current !== null &&
       supercluster &&
       Object.keys(supercluster).length > 0 &&
-      // supercluster.points?.length > 0 &&
+      // supercluster.points?.length > 0 && // hay que poder quitar esto, para que los filtros filtren todo cuando no se selecciona ninguno
       Object.keys(actualViewport).length > 0
     ) {
       const bounds = mapRef.current.getBounds().toArray().flat();
       const zoom = Math.floor(actualViewport.zoom);
-      const clusters = supercluster.getClusters(bounds, zoom);
-      setClusters(clusters);
+
+      setClusters(
+        supercluster.points?.length > 0
+          ? supercluster.getClusters(bounds, zoom)
+          : []
+      );
+      // const clusters =
+      //   supercluster.getClusters(bounds, zoom);
+      // setClusters(clusters);
     }
   }, [supercluster, actualViewport, actualViewport.zoom, mapRef]);
 
@@ -571,12 +613,12 @@ const Landing = () => {
         </button>
         {
           // actualView === 1 &&
-          <button
-            style={{ marginTop: "200px" }}
-            onClick={() => setOpenFilterDrawer((prev) => !prev)}
-          >
-            open
-          </button>
+          // <button
+          //   style={{ marginTop: "200px" }}
+          //   onClick={() => setOpenFilterDrawer((prev) => !prev)}
+          // >
+          //   open
+          // </button>
         }
       </div>
       <Map
@@ -609,10 +651,8 @@ const Landing = () => {
         <Layer {...skyLayer} />
         {renderMarkers}
         {renderDialogLugar}
-        {
-          // actualView === 1 &&
-          renderFilterDrawer
-        }
+        {actualView === 1 && renderClosedFilterDrawer}
+        {actualView === 1 && renderOpenedFilterDrawer}
       </Map>
     </div>
   );
