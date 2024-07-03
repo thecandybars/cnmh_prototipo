@@ -19,6 +19,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/foto360" element={<Photo360 />} />
+          <Route path="/foto_360" element={<Photo_360 />} />
           <Route path="/galeria" element={<PhotoGallery />} />
           <Route path="/casa" element={<CasaMemoriaTumaco />} />
           <Route path="*" element={<NotFoundPage />} />
@@ -26,6 +27,11 @@ const App = () => {
       </div>
     </Router>
   );
+};
+
+export const Photo_360 = () => {
+  window.location.href = "/html/360/index.htm";
+  return null;
 };
 
 export default App;
