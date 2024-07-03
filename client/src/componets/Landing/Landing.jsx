@@ -9,7 +9,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
 import StyledMarker from "./components/StyledMarker";
 import Supercluster from "supercluster";
-import { Box, Dialog } from "@mui/material";
+import { Box, Button, Dialog, Drawer, Stack, Typography } from "@mui/material";
 import CasaMemoriaTumaco from "../Lugares/CasaMemoriaTumaco";
 // import Photo360 from "../Lugares/Photo360/Photo360";
 import { Photo_360 } from "../../App";
@@ -140,9 +140,11 @@ const Landing = () => {
     [fetchedLugares, actualRegion]
   );
 
-  // CLUSTER
+  // CLUSTER STATE
   const [clusters, setClusters] = useState([]);
+  console.log("🚀 ~ Landing ~ clusters:", clusters);
   const [supercluster, setSupercluster] = useState(null);
+  console.log("🚀 ~ Landing ~ supercluster:", supercluster);
 
   // HANDLE MOVE
   const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
@@ -218,6 +220,118 @@ const Landing = () => {
       );
     });
 
+  // FILTER DRAWER
+  const tipologiasLugares = [
+    {
+      id: 0,
+      image: "markerMuseoMemoria",
+      title: "Museo de Memoria",
+      description:
+        "Gjsgfd sajhfdga jhfg jdhfg sdjhgf jhsgdf jhgs fjgdjfgd sjhfgsjd hgfjsdgf uysdghi fgjfthigb gifiyh giyhbivb fudgjhritug nn.",
+    },
+    {
+      id: 1,
+      image: "markerEspaciosSanar",
+      title: "Espacio para sanar",
+      description:
+        "Gjsgfd sajhfdga jhfg jdhfg sdjhgf jhsgdf jhgs fjgdjfgd sjhfgsjd hgfjsdgf uysdghi fgjfthigb gifiyh giyhbivb fudgjhritug nn.",
+    },
+    {
+      id: 2,
+      image: "markerLugarHorror",
+      title: "Lugar del horror",
+      description:
+        "Gjsgfd sajhfdga jhfg jdhfg sdjhgf jhsgdf jhgs fjgdjfgd sjhfgsjd hgfjsdgf uysdghi fgjfthigb gifiyh giyhbivb fudgjhritug nn.",
+    },
+    {
+      id: 3,
+      image: "markerLugarMemoria",
+      title: "Lugar de Memoria",
+      description:
+        "Gjsgfd sajhfdga jhfg jdhfg sdjhgf jhsgdf jhgs fjgdjfgd sjhfgsjd hgfjsdgf uysdghi fgjfthigb gifiyh giyhbivb fudgjhritug nn.",
+    },
+  ];
+  const [activeFilters, setActiveFilters] = useState(
+    tipologiasLugares.map((tipologia) => tipologia.id)
+  );
+
+  const handleActiveFilters = (id) => {
+    if (activeFilters.includes(id))
+      setActiveFilters((prev) =>
+        prev.filter((activeFilterId) => activeFilterId !== id)
+      );
+    else setActiveFilters((prev) => prev.concat([id]));
+  };
+  const convertToGreen =
+    "brightness(0) saturate(100%) invert(14%) sepia(5%) saturate(4383%) hue-rotate(118deg) brightness(101%) contrast(86%)";
+  const convertToYellow =
+    "brightness(0) saturate(100%) invert(86%) sepia(20%) saturate(6492%) hue-rotate(346deg) brightness(102%) contrast(106%)";
+  const renderFilters = (
+    <Stack
+      spacing={1}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+    >
+      {tipologiasLugares.map((tipologia) => (
+        // <Button
+        //   key={tipologia.id}
+        //   onClick={() => handleActiveFilters(tipologia.id)}
+        //   sx={{ width: "100%" }}
+        // >
+        <Box
+          key={tipologia.id}
+          onClick={() => handleActiveFilters(tipologia.id)}
+          sx={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            backgroundColor: activeFilters.includes(tipologia.id)
+              ? theme.palette.title.main
+              : "transparent",
+            cursor: "pointer",
+            paddingRight: 2,
+          }}
+        >
+          <img
+            alt="filter"
+            src={`/${tipologia.image}.png`}
+            width="80px"
+            style={{
+              filter: activeFilters.includes(tipologia.id)
+                ? convertToYellow
+                : convertToGreen,
+            }}
+          />
+          <Typography variant="h6" color="primary">
+            {tipologia.title}
+          </Typography>
+        </Box>
+        // </Button>
+      ))}
+    </Stack>
+  );
+  const [openFilterDrawer, setOpenFilterDrawer] = useState(true);
+  const renderFilterDrawer = (
+    <Drawer
+      variant="persistent"
+      anchor="right"
+      open={openFilterDrawer}
+      onClose={() => setOpenFilterDrawer(false)}
+      PaperProps={{
+        sx: {
+          height: "auto",
+          marginTop: "200px",
+          backgroundColor: theme.palette.secondary.main,
+          padding: 1,
+          paddingRight: 0,
+        },
+      }}
+    >
+      {renderFilters}
+    </Drawer>
+  );
+
   // MARKERS
   const renderMarkers =
     actualView !== 0 &&
@@ -267,45 +381,24 @@ const Landing = () => {
             />
           </Box>
         );
+
+        // return activeFilters.includes(
+        //   Math.floor(Math.abs(cluster.properties.latitud * 100)) % 4
+        // ) ? (
+        //   <Box
+        //     key={`marker-${cluster.properties.id}`}
+        //     onClick={(e) => handleSelectedMarker(e, cluster.properties.id)}
+        //     onMouseOver={(e) => handlePreviewMarker(e, cluster.properties.id)}
+        //     onMouseOut={() => setPreviewMarker(null)}
+        //   >
+        //     <StyledMarker
+        //       marca={cluster.properties}
+        //       zoom={actualViewport.zoom}
+        //     />
+        //   </Box>
+        // ) : null;
       }
     });
-
-  // CREATE MARKERS SUPERCLUSTER
-
-  useEffect(() => {
-    const index = new Supercluster({
-      radius: 50, //40,
-      maxZoom: 10, //16,
-    });
-    lugares?.length > 0 &&
-      index.load(
-        lugares.map((lugar) => ({
-          type: "Feature",
-          properties: { cluster: false, ...lugar },
-          geometry: {
-            type: "Point",
-            coordinates: [lugar.longitud, lugar.latitud],
-          },
-        }))
-      );
-
-    setSupercluster(index);
-  }, [lugares]);
-
-  useEffect(() => {
-    if (
-      mapRef?.current !== null &&
-      supercluster &&
-      Object.keys(supercluster).length > 0 &&
-      supercluster.points?.length > 0 &&
-      Object.keys(actualViewport).length > 0
-    ) {
-      const bounds = mapRef.current.getBounds().toArray().flat();
-      const zoom = Math.floor(actualViewport.zoom);
-      const clusters = supercluster.getClusters(bounds, zoom);
-      setClusters(clusters);
-    }
-  }, [supercluster, actualViewport, actualViewport.zoom, mapRef]);
 
   // HANDLERS MARKERS
   const [selectedMarker, setSelectedMarker] = useState(null);
@@ -314,6 +407,7 @@ const Landing = () => {
       e.stopPropagation();
       const lugar = lugares.find((lugar) => lugar.id === id);
       setSelectedMarker(lugar);
+      setActualView(2);
       id &&
         lugares &&
         setDestination({
@@ -338,6 +432,50 @@ const Landing = () => {
     },
     [lugares]
   );
+
+  // CREATE MARKERS SUPERCLUSTER
+
+  useEffect(() => {
+    const index = new Supercluster({
+      radius: 50, //40,
+      maxZoom: 10, //16,
+    });
+    lugares?.length > 0 &&
+      index.load(
+        lugares
+          .filter((lugar) =>
+            activeFilters.includes(
+              Math.floor(Math.abs(lugar.latitud * 100)) % 4
+            )
+          )
+          .map((lugar) => ({
+            type: "Feature",
+            properties: { cluster: false, ...lugar },
+            geometry: {
+              type: "Point",
+              coordinates: [lugar.longitud, lugar.latitud],
+            },
+          }))
+      );
+
+    setSupercluster(index);
+  }, [lugares, activeFilters]);
+
+  // CLUSTERS
+  useEffect(() => {
+    if (
+      mapRef?.current !== null &&
+      supercluster &&
+      Object.keys(supercluster).length > 0 &&
+      // supercluster.points?.length > 0 &&
+      Object.keys(actualViewport).length > 0
+    ) {
+      const bounds = mapRef.current.getBounds().toArray().flat();
+      const zoom = Math.floor(actualViewport.zoom);
+      const clusters = supercluster.getClusters(bounds, zoom);
+      setClusters(clusters);
+    }
+  }, [supercluster, actualViewport, actualViewport.zoom, mapRef]);
 
   // FLY TO DESTINATION
   const [destination, setDestination] = useState(null);
@@ -431,6 +569,15 @@ const Landing = () => {
         >
           HOME
         </button>
+        {
+          // actualView === 1 &&
+          <button
+            style={{ marginTop: "200px" }}
+            onClick={() => setOpenFilterDrawer((prev) => !prev)}
+          >
+            open
+          </button>
+        }
       </div>
       <Map
         ref={mapRef}
@@ -462,6 +609,10 @@ const Landing = () => {
         <Layer {...skyLayer} />
         {renderMarkers}
         {renderDialogLugar}
+        {
+          // actualView === 1 &&
+          renderFilterDrawer
+        }
       </Map>
     </div>
   );
