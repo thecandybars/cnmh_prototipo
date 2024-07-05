@@ -12,7 +12,7 @@ ViewsBreadcrumbs.propTypes = {
 export default function ViewsBreadcrumbs(props) {
   return (
     <Breadcrumbs
-      separator={<NavigateNextIcon fontSize="small" />}
+      separator={<NavigateNextIcon fontSize="small" color="primary" />}
       display="flex"
       backgroundColor={theme.palette.title.main}
       sx={{
@@ -20,6 +20,8 @@ export default function ViewsBreadcrumbs(props) {
         top: "100px",
         zIndex: 100,
         right: 0,
+        padding: 1,
+        cursor: "pointer",
       }}
     >
       <Link
