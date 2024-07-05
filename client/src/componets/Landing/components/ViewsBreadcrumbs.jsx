@@ -27,18 +27,30 @@ export default function ViewsBreadcrumbs(props) {
       <Link
         underline={props.actualView === 0 ? "none" : "hover"}
         onClick={() => props.onClick0()}
+        sx={{
+          fontWeight: props.actualView === 0 ? "bolder" : "normal",
+          cursor: props.actualView === 0 ? "default" : "pointer",
+        }}
       >
-        LEVEL 1
+        Pais
       </Link>
       {props.actualView > 0 && (
         <Link
           underline={props.actualView === 1 ? "none" : "hover"}
           onClick={() => props.onClick1()}
+          sx={{
+            fontWeight: props.actualView === 1 ? "bolder" : "normal",
+            cursor: props.actualView === 1 ? "default" : "pointer",
+          }}
         >
-          LEVEL 2
+          Region
         </Link>
       )}
-      {props.actualView > 1 && <Link underline="none">LEVEL 3</Link>}
+      {props.actualView > 1 && (
+        <Link underline="none" sx={{ fontWeight: "bolder", cursor: "default" }}>
+          Lugar
+        </Link>
+      )}
     </Breadcrumbs>
   );
 }
