@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from "react-router-dom";
 import MainNav from "./componets/MainNav";
 import Landing from "./componets/Landing";
 import Photo360 from "./componets/Lugares/Photo360/Photo360";
@@ -30,7 +35,11 @@ const App = () => {
 };
 
 export const Photo_360 = () => {
-  window.location.href = "/html/360/index.htm";
+  // const navigate = useNavigate();
+  // navigate("https://badel.github.io/Tumaco360/");
+  // window.location.href = "/html/360/index.htm";
+  // window.open("https://badel.github.io/Tumaco360/", "_blank");
+  window.location.href = "https://badel.github.io/Tumaco360/";
   return null;
 };
 

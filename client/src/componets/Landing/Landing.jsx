@@ -512,6 +512,7 @@ const Landing = () => {
 
   // DIALOG LUGAR
   const [openDialogLugar, setOpenDialogLugar] = useState(false);
+
   const handleOpenDialogLugar = () => {
     setOpenDialogLugar(true);
   };
