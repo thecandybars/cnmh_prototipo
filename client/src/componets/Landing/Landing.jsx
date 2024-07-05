@@ -15,6 +15,9 @@ import CasaMemoriaTumaco from "../Lugares/CasaMemoriaTumaco";
 import { Photo_360 } from "../../App";
 import { ExpandIcon } from "../common/icons";
 import useViewport from "../common/customHooks/useViewport";
+import "./styles/styles.css";
+import TipologiaTooltip from "./Region/Filter/components/TipologiaTooltip";
+import ViewsBreadcrumbs from "./components/ViewsBreadcrumbs";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -32,21 +35,6 @@ const colombiaBounds = [
   [-47.0, 13.0], // Northeast coordinates
 ];
 
-// const views = [
-//   {
-//     id: 0,
-//     name: "pais",
-//   },
-//   {
-//     id: 1,
-//     name: "region",
-//   },
-//   {
-//     id: 2,
-//     name: "lugar",
-//   },
-// ];
-
 const viewports = [
   // THIS
   {
@@ -58,25 +46,6 @@ const viewports = [
     bearing: 0,
     pitch: 0,
   },
-  // map to the left
-  // {
-  //   id: 0,
-  //   name: "init",
-  //   latitude: 4.2111294898549545,
-  //   longitude: -66.87627193940398,
-  //   zoom: 4.8,
-  //   bearing: 0,
-  //   pitch: 0,
-  // },
-  // {
-  //   id: 0,
-  //   name: "init",
-  //   latitude: 5.432533819636163,
-  //   longitude: -73.64605127345608,
-  //   bearing: 0,
-  //   pitch: 0,
-  //   zoom: 4.74,
-  // },
   {
     id: 1,
     name: "atlantica",
@@ -131,7 +100,6 @@ const Landing = () => {
   const [actualRegion, setActualRegion] = useState(null);
 
   const { vh } = useViewport();
-  // const vh = window.innerHeight;
 
   // FILTER LUGARES
   const lugares = useMemo(
@@ -230,28 +198,28 @@ const Landing = () => {
       image: "markerMuseoMemoria",
       title: "Museo de Memoria",
       description:
-        "Gjsgfd sajhfdga jhfg jdhfg sdjhgf jhsgdf jhgs fjgdjfgd sjhfgsjd hgfjsdgf uysdghi fgjfthigb gifiyh giyhbivb fudgjhritug nn.",
+        "Lorem ipsum dolor sit amet consectetur adipiscing elit eleifend mi, semper ac molestie natoque neque parturient vel vitae.",
     },
     {
       id: 1,
       image: "markerEspaciosSanar",
       title: "Espacio para sanar",
       description:
-        "Gjsgfd sajhfdga jhfg jdhfg sdjhgf jhsgdf jhgs fjgdjfgd sjhfgsjd hgfjsdgf uysdghi fgjfthigb gifiyh giyhbivb fudgjhritug nn.",
+        "Mauris diam molestie cras litora elementum conubia eleifend posuere rhoncus scelerisque etiam blandit montes ultricies semper, turpis aliquet auctor sagittis fringilla magnis nisi vivamus feugiat odio sociis eu class augue.",
     },
     {
       id: 2,
       image: "markerLugarHorror",
       title: "Lugar del horror",
       description:
-        "Gjsgfd sajhfdga jhfg jdhfg sdjhgf jhsgdf jhgs fjgdjfgd sjhfgsjd hgfjsdgf uysdghi fgjfthigb gifiyh giyhbivb fudgjhritug nn.",
+        "Torquent feugiat vitae vehicula penatibus metus vivamus pretium, sollicitudin fermentum bibendum laoreet natoque tincidunt mollis nisi, taciti lacus congue ornare iaculis vulputate.",
     },
     {
       id: 3,
       image: "markerLugarMemoria",
       title: "Lugar de Memoria",
       description:
-        "Gjsgfd sajhfdga jhfg jdhfg sdjhgf jhsgdf jhgs fjgdjfgd sjhfgsjd hgfjsdgf uysdghi fgjfthigb gifiyh giyhbivb fudgjhritug nn.",
+        "Blandit commodo aliquam vulputate fusce duis ultrices, eros feugiat porta arcu luctus interdum, inceptos tempor mi vel neque",
     },
   ];
   const [activeFilters, setActiveFilters] = useState(
@@ -293,6 +261,7 @@ const Landing = () => {
           sx={{
             width: "100%",
             display: "flex",
+            justifyContent: "space-between",
             alignItems: "center",
             backgroundColor: activeFilters.includes(tipologia.id)
               ? theme.palette.title.main
@@ -300,28 +269,34 @@ const Landing = () => {
             cursor: "pointer",
             paddingRight: 2,
             borderRadius: "20px 0 0 20px",
+            gap: 1,
           }}
         >
-          <img
-            alt="filter"
-            src={`/${tipologia.image}.png`}
-            width="80px"
-            style={{
-              filter: activeFilters.includes(tipologia.id)
-                ? "brightness(0) saturate(100%) invert(86%) sepia(20%) saturate(6492%) hue-rotate(346deg) brightness(102%) contrast(106%)" // to yellow
-                : "brightness(0) saturate(100%) invert(14%) sepia(5%) saturate(4383%) hue-rotate(118deg) brightness(101%) contrast(86%)", // to green
-            }}
-          />
-          <Typography
-            variant="h6"
-            color={
-              activeFilters.includes(tipologia.id)
-                ? "primary"
-                : theme.palette.title.main
-            }
-          >
-            {tipologia.title}
-          </Typography>
+          <Box display="flex" alignItems="center">
+            <img
+              alt="filter"
+              src={`/${tipologia.image}.png`}
+              width="80px"
+              style={{
+                filter: activeFilters.includes(tipologia.id)
+                  ? "brightness(0) saturate(100%) invert(86%) sepia(20%) saturate(6492%) hue-rotate(346deg) brightness(102%) contrast(106%)" // to yellow
+                  : "brightness(0) saturate(100%) invert(14%) sepia(5%) saturate(4383%) hue-rotate(118deg) brightness(101%) contrast(86%)", // to green
+              }}
+            />
+            <Typography
+              variant="h6"
+              color={
+                activeFilters.includes(tipologia.id)
+                  ? "primary"
+                  : theme.palette.title.main
+              }
+            >
+              {tipologia.title}
+            </Typography>
+          </Box>
+          {activeFilters.includes(tipologia.id) && (
+            <TipologiaTooltip description={tipologia.description} />
+          )}
         </Box>
       ))}
     </Stack>
@@ -567,13 +542,61 @@ const Landing = () => {
       longitude={selectedMarker.longitud}
       anchor="top"
       onClose={() => handleClosePopup()}
+      maxWidth="350px"
+      closeButton={false}
+      className="custom-popup"
     >
-      <h3 style={{ color: "black" }}>{selectedMarker.nombre}</h3>
-      <p style={{ color: "black" }}>
-        has fjkhads fhhgadsfjh gsd fgasdgfasgfjh asdfgashjfg asjhfgjahsdgfjhasg
-        fjgasdjff jashg fdja
-      </p>
-      <button onClick={handleOpenDialogLugar}>Visitar</button>
+      <Stack
+        spacing={0}
+        sx={{
+          backgroundColor: theme.palette.secondary.main,
+          padding: 2,
+          borderRadius: "30px",
+        }}
+      >
+        <Box display="flex" alignItems="center" gap={1}>
+          <img
+            alt=""
+            src={`${
+              tipologiasLugares[
+                Math.floor(Math.abs(selectedMarker.latitud * 100)) % 4
+              ].image
+            }.png`}
+            width="80px"
+          />
+          <Stack spacing={1}>
+            <Typography
+              variant="h4"
+              color={theme.palette.title.main}
+              align="right"
+              onClick={handleOpenDialogLugar}
+              sx={{
+                cursor: "pointer",
+                textDecoration: "underline",
+              }}
+            >
+              VISITAR &#9656;
+            </Typography>
+
+            <Stack spacing={0}>
+              <Typography variant="captionStrong" color="primary" align="left">
+                {`REGIÓN ${selectedMarker.Municipio.Departamento.Region.fullName.toUpperCase()} - ${
+                  selectedMarker.Municipio.nombre
+                }`}
+              </Typography>
+              <Typography variant="caption" color="primary" align="left">
+                {selectedMarker.nombre.toUpperCase()}
+              </Typography>
+              <Typography variant="caption" color="primary" align="left">
+                {selectedMarker.TipologiasLugare.nombre}
+              </Typography>
+            </Stack>
+          </Stack>
+        </Box>
+        <Typography variant="body" color="primary" align="left">
+          {selectedMarker.descripcion}
+        </Typography>
+      </Stack>
     </Popup>
   );
   const renderShortPopup = previewMarker && (
@@ -582,10 +605,30 @@ const Landing = () => {
       longitude={previewMarker.longitud}
       anchor="top"
       onClose={() => setPreviewMarker(null)}
+      maxWidth="350px"
+      closeButton={false}
+      className="custom-popup"
     >
-      <h3 style={{ color: "black" }}>{previewMarker.nombre}</h3>
-
-      {/* <button onClick={handleOpenDialogLugar}>Visitar</button> */}
+      <Stack
+        sx={{
+          backgroundColor: theme.palette.secondary.main,
+          padding: 2,
+          borderRadius: "30px",
+        }}
+      >
+        <Box display="flex" alignItems="center" gap={1}>
+          <Stack>
+            <Typography variant="captionStrong" color="primary" align="left">
+              {`REGIÓN ${previewMarker.Municipio.Departamento.Region.fullName.toUpperCase()} - ${
+                previewMarker.Municipio.nombre
+              }`}
+            </Typography>
+            <Typography variant="caption" color="primary" align="left">
+              {previewMarker.nombre.toUpperCase()}
+            </Typography>
+          </Stack>
+        </Box>
+      </Stack>
     </Popup>
   );
 
@@ -596,31 +639,29 @@ const Landing = () => {
     );
     setDestination(regionCoordinates);
   };
+  // VIEWS NAVIGATOR
+  const renderViewsBreadcrumbs = (
+    <ViewsBreadcrumbs
+      actualView={actualView}
+      onClick0={() => {
+        setActualView(0);
+        setActualRegion(null);
+        setSelectedMarker(null);
+        setDestination({ ...viewports[0], pitch: 0 });
+      }}
+      onClick1={() => {
+        setActualView(1);
+        setSelectedMarker(null);
+        setDestination(
+          viewports.find((viewport) => viewport.id === actualRegion.id)
+        );
+      }}
+    />
+  );
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
-      <div style={{ position: "absolute", marginTop: "100px", zIndex: 100 }}>
-        <button
-          onClick={() => {
-            setActualView(0);
-            setActualRegion(null);
-            setSelectedMarker(null);
-            setDestination({ ...viewports[0], pitch: 0 });
-          }}
-          style={{ marginTop: "100px" }}
-        >
-          HOME
-        </button>
-        {
-          // actualView === 1 &&
-          // <button
-          //   style={{ marginTop: "200px" }}
-          //   onClick={() => setOpenFilterDrawer((prev) => !prev)}
-          // >
-          //   open
-          // </button>
-        }
-      </div>
+      {renderViewsBreadcrumbs}
       <Map
         ref={mapRef}
         initialViewState={viewports[0]}

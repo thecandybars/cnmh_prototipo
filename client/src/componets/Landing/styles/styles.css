@@ -1,0 +1,8 @@
+/* styles.css */
+.custom-popup .mapboxgl-popup-content {
+  padding: 0;
+  background-color: transparent;
+}
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+  border-bottom-color: transparent;
+}
