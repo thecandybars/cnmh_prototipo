@@ -682,7 +682,7 @@ const Landing = () => {
     </Dialog>
   );
   // POPUPS
-  const renderLongPopup = selectedMarker && (
+  const renderLongPopup = selectedMarker && actualView === 2 && (
     <Popup
       latitude={selectedMarker.latitud}
       longitude={selectedMarker.longitud}
@@ -695,7 +695,7 @@ const Landing = () => {
       <Stack
         spacing={0}
         sx={{
-          backgroundColor: theme.palette.secondary.main,
+          backgroundColor: theme.palette.secondary.transparent.main,
           padding: 2,
           borderRadius: "30px",
         }}
@@ -745,7 +745,7 @@ const Landing = () => {
       </Stack>
     </Popup>
   );
-  const renderShortPopup = previewMarker && (
+  const renderShortPopup = previewMarker && actualView === 1 && (
     <Popup
       latitude={previewMarker.latitud}
       longitude={previewMarker.longitud}
@@ -811,7 +811,7 @@ const Landing = () => {
       <Box
         sx={{
           position: "absolute",
-          top: "140px",
+          top: "145px",
           zIndex: 100,
           right: 0,
           paddingX: 1,
