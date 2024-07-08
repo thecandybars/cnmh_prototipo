@@ -1,6 +1,7 @@
 import Map, { Source, Layer, Popup } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import geojsonData from "./col.json";
+import colombiaRegionsData from "../../geojson/col.json";
+import conflictAreasData from "../../geojson/conflicto.json";
 import getEnv from "../../utils/getEnv";
 import useFetch from "../common/customHooks/useFetch";
 import { getAllDepartamentos } from "../../services/departamentos";
@@ -9,7 +10,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
 import StyledMarker from "./components/StyledMarker";
 import Supercluster from "supercluster";
-import { Box, Button, Dialog, Drawer, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  Drawer,
+  FormControlLabel,
+  Stack,
+  Switch,
+  Typography,
+} from "@mui/material";
 import CasaMemoriaTumaco from "../Lugares/CasaMemoriaTumaco";
 // import Photo360 from "../Lugares/Photo360/Photo360";
 import { Photo_360 } from "../../App";
@@ -18,6 +28,7 @@ import useViewport from "../common/customHooks/useViewport";
 import "./styles/styles.css";
 import TipologiaTooltip from "./Region/Filter/components/TipologiaTooltip";
 import ViewsBreadcrumbs from "./components/ViewsBreadcrumbs";
+import { v4 as uuidv4 } from "uuid";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -152,7 +163,7 @@ const Landing = () => {
   // COLOR REGIONS
   const drawRegions =
     departamentos?.length &&
-    geojsonData.features.map((feature) => {
+    colombiaRegionsData.features.map((feature) => {
       const id = parseInt(feature.properties.dpto);
       const region = departamentos?.find((dpto) => dpto.geoId === id)?.Region;
       const regionColor = {
@@ -190,6 +201,126 @@ const Landing = () => {
         </Source>
       );
     });
+
+  // COLOR CONFLICT AREAS
+  const [drawConflictAreas, setDrawConflictAreas] = useState(false);
+  const renderConflictAreasSwitch = (
+    <FormControlLabel
+      control={
+        <Switch
+          checked={drawConflictAreas}
+          onChange={() => setDrawConflictAreas((prev) => !prev)}
+        />
+      }
+      label="Zonas de conflicto"
+    />
+  );
+  const transformToPoints = (geojson) => {
+    return {
+      type: "FeatureCollection",
+      features: geojson.features.map((feature) => ({
+        type: "Feature",
+        properties: feature.properties,
+        geometry: {
+          type: "Point",
+          coordinates: feature.geometry.coordinates[0][0], // Using the first vertex
+        },
+      })),
+    };
+  };
+  const renderConflictAreas = drawConflictAreas && (
+    <Source
+      id="conflictAreas"
+      type="geojson"
+      data={transformToPoints(conflictAreasData)}
+      cluster={true}
+      clusterMaxZoom={14}
+      clusterRadius={50}
+    >
+      <Layer
+        id="clusters"
+        type="circle"
+        filter={["has", "point_count"]}
+        paint={{
+          "circle-color": [
+            "step",
+            ["get", "point_count"],
+            "#51bbd6",
+            100,
+            "#f1f075",
+            750,
+            "#f28cb1",
+          ],
+          "circle-radius": [
+            "step",
+            ["get", "point_count"],
+            20,
+            100,
+            30,
+            750,
+            40,
+          ],
+        }}
+      />
+
+      <Layer
+        id="cluster-count"
+        type="symbol"
+        filter={["has", "point_count"]}
+        layout={{
+          "text-field": "{point_count_abbreviated}",
+          "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+          "text-size": 12,
+        }}
+      />
+
+      <Layer
+        id="unclustered-point"
+        type="circle"
+        filter={["!", ["has", "point_count"]]}
+        paint={{
+          "circle-color": "pink",
+          // "circle-color": ["case", ["==", ["get", "class"], 1], "pink", "cyan"],
+          "circle-radius": 15,
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#fff",
+        }}
+      />
+    </Source>
+  );
+
+  // const renderConflictAreas = conflictAreasData.features
+  //   .filter(
+  //     (feature, index) => feature.properties.class === 2 && index % 2 === 0
+  //   )
+  //   .map((feature, index) => {
+  //     const areaColor = "pink";
+  //     return (
+  //       <Source
+  //         key={`zone-${index}`}
+  //         id={`zone-${index}`}
+  //         type="geojson"
+  //         data={feature}
+  //       >
+  //         <Layer
+  //           id={`zone-${index}-fill`}
+  //           type="fill"
+  //           paint={{
+  //             "fill-color": areaColor,
+  //             "fill-opacity": 1,
+  //           }}
+  //         />
+  //         {/* <Layer
+  //           id={`zone-${index}-outline`}
+  //           type="line"
+  //           paint={{
+  //             "line-color": areaColor,
+  //             "line-width": 2,
+  //           }}
+  //         /> */}
+  //       </Source>
+  //     );
+  //   });
 
   // FILTER DRAWER
   const tipologiasLugares = [
@@ -663,6 +794,18 @@ const Landing = () => {
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
       {renderViewsBreadcrumbs}
+      <Box
+        sx={{
+          position: "absolute",
+          top: "140px",
+          zIndex: 100,
+          right: 0,
+          paddingX: 1,
+          backgroundColor: theme.palette.secondary.main,
+        }}
+      >
+        {renderConflictAreasSwitch}
+      </Box>
       <Map
         ref={mapRef}
         initialViewState={viewports[0]}
@@ -687,6 +830,7 @@ const Landing = () => {
         /> */}
 
         {drawRegions}
+        {renderConflictAreas}
         {renderLongPopup}
         {renderShortPopup}
         {flyToDestination}

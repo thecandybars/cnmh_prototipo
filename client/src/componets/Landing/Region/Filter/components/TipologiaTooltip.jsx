@@ -17,7 +17,7 @@ const CustomTooltip = styled(({ className, ...props }) => (
 }));
 
 TipologiaTooltip.propTypes = {
-  description: PropTypes.PropTypes,
+  description: PropTypes.string,
 };
 export default function TipologiaTooltip(props) {
   return (
