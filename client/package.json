@@ -18,6 +18,7 @@
     "@photo-sphere-viewer/core": "^5.7.4",
     "@photo-sphere-viewer/markers-plugin": "^5.7.4",
     "@photo-sphere-viewer/plan-plugin": "^5.7.4",
+    "@turf/turf": "^7.0.0",
     "axios": "^1.7.2",
     "form-data": "^4.0.0",
     "leaflet": "^1.9.4",
