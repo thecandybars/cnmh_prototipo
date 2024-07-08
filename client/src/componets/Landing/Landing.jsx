@@ -29,6 +29,7 @@ import "./styles/styles.css";
 import TipologiaTooltip from "./Region/Filter/components/TipologiaTooltip";
 import ViewsBreadcrumbs from "./components/ViewsBreadcrumbs";
 import { v4 as uuidv4 } from "uuid";
+import { centroid, area } from "@turf/turf";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -215,17 +216,22 @@ const Landing = () => {
       label="Zonas de conflicto"
     />
   );
+  // Function to transform polygons to points (centroids)
   const transformToPoints = (geojson) => {
     return {
       type: "FeatureCollection",
-      features: geojson.features.map((feature) => ({
-        type: "Feature",
-        properties: feature.properties,
-        geometry: {
-          type: "Point",
-          coordinates: feature.geometry.coordinates[0][0], // Using the first vertex
-        },
-      })),
+      features: geojson.features.map((feature) => {
+        const center = centroid(feature);
+        const polygonArea = area(feature);
+        return {
+          type: "Feature",
+          properties: { ...feature.properties, area: polygonArea },
+          geometry: {
+            type: "Point",
+            coordinates: center.geometry.coordinates, // Using the centroid
+          },
+        };
+      }),
     };
   };
   const renderConflictAreas = drawConflictAreas && (
@@ -281,7 +287,15 @@ const Landing = () => {
         paint={{
           "circle-color": "pink",
           // "circle-color": ["case", ["==", ["get", "class"], 1], "pink", "cyan"],
-          "circle-radius": 15,
+          "circle-radius": [
+            "interpolate",
+            ["linear"],
+            ["get", "area"],
+            0,
+            5,
+            1000000,
+            20, // Example scale for area to radius
+          ],
           "circle-stroke-width": 1,
           "circle-stroke-color": "#fff",
         }}
