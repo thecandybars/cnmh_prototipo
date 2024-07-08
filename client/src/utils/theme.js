@@ -20,6 +20,9 @@ const theme = {
       main: "#ffb810",
       light: "#e6c87f",
       dark: "#734D1F",
+      transparent: {
+        main: "#ffb810cc",
+      },
     },
     yellowCNMH: "#fdb519",
     atlantica: {
