@@ -1,11 +1,6 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainNav from "./componets/MainNav";
-import Landing from "./componets/Landing";
+import Mapa from "./componets/Mapa";
 import Photo360 from "./componets/Lugares/Photo360/Photo360";
 import PhotoGallery from "./componets/Lugares/PhotoGallery/PhotoGallery";
 import CasaMemoriaTumaco from "./componets/Lugares/CasaMemoriaTumaco";
@@ -22,7 +17,7 @@ const App = () => {
       <div>
         {location.pathname !== "/casa" && <MainNav />}
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<Mapa />} />
           <Route path="/foto360" element={<Photo360 />} />
           <Route path="/foto_360" element={<Photo_360 />} />
           <Route path="/galeria" element={<PhotoGallery />} />
@@ -35,10 +30,6 @@ const App = () => {
 };
 
 export const Photo_360 = () => {
-  // const navigate = useNavigate();
-  // navigate("https://badel.github.io/Tumaco360/");
-  // window.location.href = "/html/360/index.htm";
-  // window.open("https://badel.github.io/Tumaco360/", "_blank");
   window.location.href = "https://badel.github.io/Tumaco360/";
   return null;
 };
