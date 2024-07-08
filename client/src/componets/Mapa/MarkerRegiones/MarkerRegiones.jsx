@@ -2,7 +2,7 @@ import { Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import { Marker } from "react-map-gl";
 
-const StyledMarker = (props) => {
+const MarkerRegiones = (props) => {
   const markerStyle = {
     position: "relative",
     display: "flex",
@@ -18,7 +18,6 @@ const StyledMarker = (props) => {
     backgroundColor: "#ebaa44",
     borderRadius: "50%",
     overflow: "hidden",
-    // border: "1px solid #553500",
     boxShadow: "0 0 5px rgba(127, 125, 0, 0.405)",
     display: "flex",
     justifyContent: "center",
@@ -26,20 +25,12 @@ const StyledMarker = (props) => {
   };
 
   const imgStyle = {
-    // marginY: "15px",
-    // marginX: "15px",
-    // width: props.zoom * 5,
-    // height: props.zoom * 5,
     width: "100%",
     height: "100%",
     objectFit: "contain",
     objectPosition: "center",
-    // filter:
-    //   "invert(100%) sepia(0%) saturate(7490%) hue-rotate(254deg) brightness(105%) contrast(99%)",
-    // filter:
-    //   "invert(91%) sepia(8%) saturate(6446%) hue-rotate(325deg) brightness(97%) contrast(90%)",
   };
-
+  // DOT ARROW
   // const arrowStyle = {
   //   width: "10px",
   //   height: "10px",
@@ -96,11 +87,11 @@ const StyledMarker = (props) => {
   );
 };
 
-StyledMarker.propTypes = {
+MarkerRegiones.propTypes = {
   marca: PropTypes.object,
   zoom: PropTypes.number,
   onClick: PropTypes.func,
   text: PropTypes.any,
 };
 
-export default StyledMarker;
+export default MarkerRegiones;

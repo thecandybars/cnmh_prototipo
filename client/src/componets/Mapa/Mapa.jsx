@@ -1,20 +1,16 @@
-import Map, { Source, Layer, Popup } from "react-map-gl";
+import Map from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import colombiaRegionsData from "../../geojson/col.json";
-import conflictAreasData from "../../geojson/conflicto.json";
 import getEnv from "../../utils/getEnv";
 import useFetch from "../common/customHooks/useFetch";
 import { getAllDepartamentos } from "../../services/departamentos";
 import { theme } from "../../utils/theme";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
-import StyledMarker from "./components/StyledMarker";
+import MarkerRegiones from "./MarkerRegiones/MarkerRegiones";
 import Supercluster from "supercluster";
 import {
   Box,
-  Button,
   Dialog,
-  Drawer,
   FormControlLabel,
   Stack,
   Switch,
@@ -23,32 +19,23 @@ import {
 import CasaMemoriaTumaco from "../Lugares/CasaMemoriaTumaco";
 // import Photo360 from "../Lugares/Photo360/Photo360";
 import { Photo_360 } from "../../App";
-import { ExpandIcon } from "../common/icons";
-import useViewport from "../common/customHooks/useViewport";
 import "./styles/styles.css";
 import TipologiaTooltip from "./Region/Filter/components/TipologiaTooltip";
 import ViewsBreadcrumbs from "./components/ViewsBreadcrumbs";
-import { v4 as uuidv4 } from "uuid";
-import { centroid, area } from "@turf/turf";
+import ZonasDeConflicto from "./MapLayers/ZonasDeConflicto";
+import Macroregiones from "./MapLayers/Macroregiones";
+import PopupMarkerPermanent from "./components/PopupMarkerPermanent";
+import PopupMarkerPreview from "./components/PopupMarkerPreview";
+import MapToolsDrawer from "./components/MapToolsDrawer";
 
 const TOKEN = getEnv("mapboxToken");
 
-const skyLayer = {
-  id: "sky",
-  type: "sky",
-  paint: {
-    "sky-type": "atmosphere",
-    "sky-atmosphere-sun": [10.0, 20.0],
-    "sky-atmosphere-sun-intensity": 8,
-  },
-};
 const colombiaBounds = [
   [-89.0, -10.0], // Southwest coordinates
   [-47.0, 13.0], // Northeast coordinates
 ];
 
 const viewports = [
-  // THIS
   {
     id: 0,
     name: "init",
@@ -105,13 +92,11 @@ const viewports = [
   },
 ];
 
-const Landing = () => {
+export default function Mapa() {
   const mapRef = useRef();
   const [fetchedLugares] = useFetch(() => getAllLugares());
   const [departamentos] = useFetch(() => getAllDepartamentos());
   const [actualRegion, setActualRegion] = useState(null);
-
-  const { vh } = useViewport();
 
   // FILTER LUGARES
   const lugares = useMemo(
@@ -131,12 +116,12 @@ const Landing = () => {
 
   // HANDLE MOVE
   const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
-  const handleViewportChange = (newViewport) => {
-    setActualViewport(newViewport);
-  };
-  // const handleViewportChange = useCallback((newViewport) => {
+  // const handleViewportChange = (newViewport) => {
   //   setActualViewport(newViewport);
-  // }, []);
+  // };
+  const handleViewportChange = useCallback((newViewport) => {
+    setActualViewport(newViewport);
+  }, []);
 
   // VIEWS
   const [actualView, setActualView] = useState(0); //0:pais, 1:region, 2:lugar
@@ -162,46 +147,9 @@ const Landing = () => {
   );
 
   // COLOR REGIONS
-  const drawRegions =
-    departamentos?.length &&
-    colombiaRegionsData.features.map((feature) => {
-      const id = parseInt(feature.properties.dpto);
-      const region = departamentos?.find((dpto) => dpto.geoId === id)?.Region;
-      const regionColor = {
-        color: theme.palette[region.name]?.first || "pink",
-        opacity: 0.5,
-      };
-      if (region) {
-        if (actualView !== 0) {
-          if (region.id === actualRegion.id) regionColor.opacity = 0.2;
-        }
-      }
-      return (
-        <Source
-          key={`zone-${id}`}
-          id={`zone-${id}`}
-          type="geojson"
-          data={feature}
-        >
-          <Layer
-            id={`zone-${id}-fill`}
-            type="fill"
-            paint={{
-              "fill-color": regionColor.color,
-              "fill-opacity": regionColor.opacity,
-            }}
-          />
-          {/* <Layer
-          id={`zone-${id}-line`}
-          type="line"
-          paint={{
-            "line-color": colorRegion,
-            "line-width": 1,
-          }}
-        /> */}
-        </Source>
-      );
-    });
+  const renderMacroregiones = (
+    <Macroregiones actualView={actualView} actualRegion={actualRegion} />
+  );
 
   // COLOR CONFLICT AREAS
   const [drawConflictAreas, setDrawConflictAreas] = useState(false);
@@ -216,127 +164,10 @@ const Landing = () => {
       label="Zonas de conflicto"
     />
   );
-  // Function to transform polygons to points (centroids)
-  const transformToPoints = (geojson) => {
-    return {
-      type: "FeatureCollection",
-      features: geojson.features.map((feature) => {
-        const center = centroid(feature);
-        const polygonArea = area(feature);
-        return {
-          type: "Feature",
-          properties: { ...feature.properties, area: polygonArea },
-          geometry: {
-            type: "Point",
-            coordinates: center.geometry.coordinates, // Using the centroid
-          },
-        };
-      }),
-    };
-  };
-  const renderConflictAreas = drawConflictAreas && (
-    <Source
-      id="conflictAreas"
-      type="geojson"
-      data={transformToPoints(conflictAreasData)}
-      cluster={true}
-      clusterMaxZoom={14}
-      clusterRadius={50}
-    >
-      <Layer
-        id="clusters"
-        type="circle"
-        filter={["has", "point_count"]}
-        paint={{
-          "circle-color": [
-            "step",
-            ["get", "point_count"],
-            "#51bbd6",
-            100,
-            "#f1f075",
-            750,
-            "#f28cb1",
-          ],
-          "circle-radius": [
-            "step",
-            ["get", "point_count"],
-            20,
-            100,
-            30,
-            750,
-            40,
-          ],
-        }}
-      />
-
-      <Layer
-        id="cluster-count"
-        type="symbol"
-        filter={["has", "point_count"]}
-        layout={{
-          "text-field": "{point_count_abbreviated}",
-          "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-          "text-size": 12,
-        }}
-      />
-
-      <Layer
-        id="unclustered-point"
-        type="circle"
-        filter={["!", ["has", "point_count"]]}
-        paint={{
-          "circle-color": "pink",
-          // "circle-color": ["case", ["==", ["get", "class"], 1], "pink", "cyan"],
-          "circle-radius": [
-            "interpolate",
-            ["linear"],
-            ["get", "area"],
-            0,
-            5,
-            1000000,
-            20, // Example scale for area to radius
-          ],
-          "circle-stroke-width": 1,
-          "circle-stroke-color": "#fff",
-        }}
-      />
-    </Source>
-  );
-
-  // const renderConflictAreas = conflictAreasData.features
-  //   .filter(
-  //     (feature, index) => feature.properties.class === 2 && index % 2 === 0
-  //   )
-  //   .map((feature, index) => {
-  //     const areaColor = "pink";
-  //     return (
-  //       <Source
-  //         key={`zone-${index}`}
-  //         id={`zone-${index}`}
-  //         type="geojson"
-  //         data={feature}
-  //       >
-  //         <Layer
-  //           id={`zone-${index}-fill`}
-  //           type="fill"
-  //           paint={{
-  //             "fill-color": areaColor,
-  //             "fill-opacity": 1,
-  //           }}
-  //         />
-  //         {/* <Layer
-  //           id={`zone-${index}-outline`}
-  //           type="line"
-  //           paint={{
-  //             "line-color": areaColor,
-  //             "line-width": 2,
-  //           }}
-  //         /> */}
-  //       </Source>
-  //     );
-  //   });
+  const renderConflictAreas = drawConflictAreas && <ZonasDeConflicto />;
 
   // FILTER DRAWER
+  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const tipologiasLugares = [
     {
       id: 0,
@@ -370,7 +201,6 @@ const Landing = () => {
   const [activeFilters, setActiveFilters] = useState(
     tipologiasLugares.map((tipologia) => tipologia.id)
   );
-
   const handleActiveFilters = (id) => {
     if (activeFilters.includes(id))
       setActiveFilters((prev) =>
@@ -378,20 +208,6 @@ const Landing = () => {
       );
     else setActiveFilters((prev) => prev.concat([id]));
   };
-  const renderCloseFilterButton = (
-    <Button onClick={() => setOpenFilterDrawer(false)}>
-      <ExpandIcon size="large" color="title" />
-    </Button>
-  );
-  const renderOpenFilterButton = (
-    <Button onClick={() => setOpenFilterDrawer(true)} sx={{ height: "100%" }}>
-      <ExpandIcon
-        size="large"
-        color="title"
-        sx={{ transform: "rotate(180deg)" }}
-      />
-    </Button>
-  );
   const renderFilters = (
     <Stack
       spacing={1}
@@ -446,61 +262,13 @@ const Landing = () => {
       ))}
     </Stack>
   );
-  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
-
-  const renderClosedFilterDrawer = (
-    <Drawer
-      variant="persistent"
-      anchor="right"
-      open={!openFilterDrawer}
-      onClose={() => setOpenFilterDrawer(!false)}
-      PaperProps={{
-        sx: {
-          height: "360px",
-          // marginTop: "200px",
-          marginTop: `${vh / 2 - 180}px`,
-          backgroundColor: theme.palette.secondary.main,
-          padding: 1,
-          paddingRight: 0,
-          borderRadius: "30px 0 0 30px",
-        },
-      }}
+  const renderFilterDrawer = (
+    <MapToolsDrawer
+      openDrawer={openFilterDrawer}
+      setOpenDrawer={setOpenFilterDrawer}
     >
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          height: "100%",
-          marign: 0,
-        }}
-      >
-        {renderOpenFilterButton}
-      </Box>
-    </Drawer>
-  );
-  const renderOpenedFilterDrawer = (
-    <Drawer
-      variant="persistent"
-      anchor="right"
-      open={openFilterDrawer}
-      onClose={() => setOpenFilterDrawer(false)}
-      PaperProps={{
-        sx: {
-          height: "360px",
-          // marginTop: "200px",
-          marginTop: `${vh / 2 - 180}px`,
-          backgroundColor: theme.palette.secondary.main,
-          padding: 1,
-          paddingRight: 0,
-          borderRadius: "30px 0 0 30px",
-        },
-      }}
-    >
-      <Box sx={{ display: "flex" }}>
-        {renderCloseFilterButton}
-        {renderFilters}
-      </Box>
-    </Drawer>
+      {renderFilters}
+    </MapToolsDrawer>
   );
 
   // MARKERS
@@ -531,7 +299,7 @@ const Landing = () => {
               });
             }}
           >
-            <StyledMarker
+            <MarkerRegiones
               marca={{ latitud: latitude, longitud: longitude }}
               zoom={actualViewport.zoom}
               text={pointCount}
@@ -546,7 +314,7 @@ const Landing = () => {
             onMouseOver={(e) => handlePreviewMarker(e, cluster.properties.id)}
             onMouseOut={() => setPreviewMarker(null)}
           >
-            <StyledMarker
+            <MarkerRegiones
               marca={cluster.properties}
               zoom={actualViewport.zoom}
             />
@@ -577,7 +345,6 @@ const Landing = () => {
     },
     [lugares]
   );
-  //
   const [previewMarker, setPreviewMarker] = useState(null);
   const handlePreviewMarker = useCallback(
     (e, id) => {
@@ -682,100 +449,18 @@ const Landing = () => {
     </Dialog>
   );
   // POPUPS
-  const renderLongPopup = selectedMarker && actualView === 2 && (
-    <Popup
-      latitude={selectedMarker.latitud}
-      longitude={selectedMarker.longitud}
-      anchor="top"
-      onClose={() => handleClosePopup()}
-      maxWidth="350px"
-      closeButton={false}
-      className="custom-popup"
-    >
-      <Stack
-        spacing={0}
-        sx={{
-          backgroundColor: theme.palette.secondary.transparent.main,
-          padding: 2,
-          borderRadius: "30px",
-        }}
-      >
-        <Box display="flex" alignItems="center" gap={1}>
-          <img
-            alt=""
-            src={`${
-              tipologiasLugares[
-                Math.floor(Math.abs(selectedMarker.latitud * 100)) % 4
-              ].image
-            }.png`}
-            width="80px"
-          />
-          <Stack spacing={1}>
-            <Typography
-              variant="h4"
-              color={theme.palette.title.main}
-              align="right"
-              onClick={handleOpenDialogLugar}
-              sx={{
-                cursor: "pointer",
-                textDecoration: "underline",
-              }}
-            >
-              VISITAR &#9656;
-            </Typography>
-
-            <Stack spacing={0}>
-              <Typography variant="captionStrong" color="primary" align="left">
-                {`REGIÓN ${selectedMarker.Municipio.Departamento.Region.fullName.toUpperCase()} - ${
-                  selectedMarker.Municipio.nombre
-                }`}
-              </Typography>
-              <Typography variant="caption" color="primary" align="left">
-                {selectedMarker.nombre.toUpperCase()}
-              </Typography>
-              <Typography variant="caption" color="primary" align="left">
-                {selectedMarker.TipologiasLugare.nombre}
-              </Typography>
-            </Stack>
-          </Stack>
-        </Box>
-        <Typography variant="body" color="primary" align="left">
-          {selectedMarker.descripcion}
-        </Typography>
-      </Stack>
-    </Popup>
+  const renderPopupMarkerPermanent = selectedMarker && actualView === 2 && (
+    <PopupMarkerPermanent
+      selectedMarker={selectedMarker}
+      handleClosePopup={() => handleClosePopup()}
+      handleOpenDialogLugar={() => handleOpenDialogLugar()}
+    />
   );
-  const renderShortPopup = previewMarker && actualView === 1 && (
-    <Popup
-      latitude={previewMarker.latitud}
-      longitude={previewMarker.longitud}
-      anchor="top"
-      onClose={() => setPreviewMarker(null)}
-      maxWidth="350px"
-      closeButton={false}
-      className="custom-popup"
-    >
-      <Stack
-        sx={{
-          backgroundColor: theme.palette.secondary.main,
-          padding: 2,
-          borderRadius: "30px",
-        }}
-      >
-        <Box display="flex" alignItems="center" gap={1}>
-          <Stack>
-            <Typography variant="captionStrong" color="primary" align="left">
-              {`REGIÓN ${previewMarker.Municipio.Departamento.Region.fullName.toUpperCase()} - ${
-                previewMarker.Municipio.nombre
-              }`}
-            </Typography>
-            <Typography variant="caption" color="primary" align="left">
-              {previewMarker.nombre.toUpperCase()}
-            </Typography>
-          </Stack>
-        </Box>
-      </Stack>
-    </Popup>
+  const renderPopupMarkerPreview = previewMarker && actualView === 1 && (
+    <PopupMarkerPreview
+      previewMarker={previewMarker}
+      setPreviewMarker={setPreviewMarker}
+    />
   );
 
   const handleClosePopup = () => {
@@ -835,27 +520,15 @@ const Landing = () => {
         interactiveLayerIds={interactiveLayerIds}
         terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}
       >
-        {/* <Source
-          id="mapbox-dem"
-          type="raster-dem"
-          url="mapbox://mapbox.mapbox-terrain-dem-v1"
-          tileSize={512}
-          maxzoom={14}
-        /> */}
-
-        {drawRegions}
+        {renderMacroregiones}
         {renderConflictAreas}
-        {renderLongPopup}
-        {renderShortPopup}
+        {renderPopupMarkerPermanent}
+        {renderPopupMarkerPreview}
         {flyToDestination}
-        <Layer {...skyLayer} />
         {renderMarkers}
         {renderDialogLugar}
-        {actualView === 1 && renderClosedFilterDrawer}
-        {actualView === 1 && renderOpenedFilterDrawer}
+        {actualView === 1 && renderFilterDrawer}
       </Map>
     </div>
   );
-};
-
-export default Landing;
+}
