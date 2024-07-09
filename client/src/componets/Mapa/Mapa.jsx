@@ -8,19 +8,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
 import MarkerRegiones from "./MarkerRegiones/MarkerRegiones";
 import Supercluster from "supercluster";
-import {
-  Box,
-  Dialog,
-  FormControlLabel,
-  Stack,
-  Switch,
-  Typography,
-} from "@mui/material";
+import { Box, Dialog, FormControlLabel, Switch } from "@mui/material";
 import CasaMemoriaTumaco from "../Lugares/CasaMemoriaTumaco";
 // import Photo360 from "../Lugares/Photo360/Photo360";
 import { Photo_360 } from "../../App";
 import "./styles/styles.css";
-import TipologiaTooltip from "./Region/Filter/components/TipologiaTooltip";
 import ViewsBreadcrumbs from "./components/ViewsBreadcrumbs";
 import ZonasDeConflicto from "./MapLayers/ZonasDeConflicto";
 import Macroregiones from "./MapLayers/Macroregiones";
@@ -167,7 +159,6 @@ export default function Mapa() {
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
   const [tiposLugares] = useFetch(() => getTiposLugares());
   const [activeFilters, setActiveFilters] = useState([]);
-  console.log("🚀 ~ Mapa ~ activeFilters:", activeFilters);
   useEffect(() => {
     tiposLugares?.length &&
       setActiveFilters(tiposLugares.map((tipo) => tipo.id));
