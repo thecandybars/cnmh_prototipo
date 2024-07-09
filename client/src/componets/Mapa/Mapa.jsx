@@ -27,6 +27,8 @@ import Macroregiones from "./MapLayers/Macroregiones";
 import PopupMarkerPermanent from "./components/PopupMarkerPermanent";
 import PopupMarkerPreview from "./components/PopupMarkerPreview";
 import MapToolsDrawer from "./components/MapToolsDrawer";
+import { getTiposLugares } from "../../services/tiposLugares";
+import FilterLugares from "./Region/Filter/FilterLugares";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -96,6 +98,8 @@ export default function Mapa() {
   const mapRef = useRef();
   const [fetchedLugares] = useFetch(() => getAllLugares());
   const [departamentos] = useFetch(() => getAllDepartamentos());
+
+  const [actualView, setActualView] = useState(0); //0:pais, 1:region, 2:lugar
   const [actualRegion, setActualRegion] = useState(null);
 
   // FILTER LUGARES
@@ -116,20 +120,13 @@ export default function Mapa() {
 
   // HANDLE MOVE
   const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
-  // const handleViewportChange = (newViewport) => {
-  //   setActualViewport(newViewport);
-  // };
   const handleViewportChange = useCallback((newViewport) => {
     setActualViewport(newViewport);
   }, []);
 
-  // VIEWS
-  const [actualView, setActualView] = useState(0); //0:pais, 1:region, 2:lugar
-
-  // HANDLE CLICKS ON MAP
+  // HANDLE CLICKS ON INTERACTIVE REGIONS
   const handleMapClick = (event) => {
     if (event.features.length > 0) {
-      // CLICKED ON INTERACTIVE REGION
       const clickedId = parseInt(event.features[0].properties.dpto);
       const clickedRegion = departamentos.find(
         (dpto) => dpto.geoId === clickedId
@@ -146,11 +143,11 @@ export default function Mapa() {
     (dpto) => `zone-${dpto.geoId}-fill`
   );
 
+  //////////// LAYERS
   // COLOR REGIONS
   const renderMacroregiones = (
     <Macroregiones actualView={actualView} actualRegion={actualRegion} />
   );
-
   // COLOR CONFLICT AREAS
   const [drawConflictAreas, setDrawConflictAreas] = useState(false);
   const renderConflictAreasSwitch = (
@@ -168,39 +165,14 @@ export default function Mapa() {
 
   // FILTER DRAWER
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
-  const tipologiasLugares = [
-    {
-      id: 0,
-      image: "markerMuseoMemoria",
-      title: "Museo de Memoria",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipiscing elit eleifend mi, semper ac molestie natoque neque parturient vel vitae.",
-    },
-    {
-      id: 1,
-      image: "markerEspaciosSanar",
-      title: "Espacio para sanar",
-      description:
-        "Mauris diam molestie cras litora elementum conubia eleifend posuere rhoncus scelerisque etiam blandit montes ultricies semper, turpis aliquet auctor sagittis fringilla magnis nisi vivamus feugiat odio sociis eu class augue.",
-    },
-    {
-      id: 2,
-      image: "markerLugarHorror",
-      title: "Lugar del horror",
-      description:
-        "Torquent feugiat vitae vehicula penatibus metus vivamus pretium, sollicitudin fermentum bibendum laoreet natoque tincidunt mollis nisi, taciti lacus congue ornare iaculis vulputate.",
-    },
-    {
-      id: 3,
-      image: "markerLugarMemoria",
-      title: "Lugar de Memoria",
-      description:
-        "Blandit commodo aliquam vulputate fusce duis ultrices, eros feugiat porta arcu luctus interdum, inceptos tempor mi vel neque",
-    },
-  ];
-  const [activeFilters, setActiveFilters] = useState(
-    tipologiasLugares.map((tipologia) => tipologia.id)
-  );
+  const [tiposLugares] = useFetch(() => getTiposLugares());
+  const [activeFilters, setActiveFilters] = useState([]);
+  console.log("🚀 ~ Mapa ~ activeFilters:", activeFilters);
+  useEffect(() => {
+    tiposLugares?.length &&
+      setActiveFilters(tiposLugares.map((tipo) => tipo.id));
+  }, [tiposLugares]);
+
   const handleActiveFilters = (id) => {
     if (activeFilters.includes(id))
       setActiveFilters((prev) =>
@@ -208,59 +180,12 @@ export default function Mapa() {
       );
     else setActiveFilters((prev) => prev.concat([id]));
   };
-  const renderFilters = (
-    <Stack
-      spacing={1}
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-    >
-      {tipologiasLugares.map((tipologia) => (
-        <Box
-          key={tipologia.id}
-          onClick={() => handleActiveFilters(tipologia.id)}
-          sx={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: activeFilters.includes(tipologia.id)
-              ? theme.palette.title.main
-              : "transparent",
-            cursor: "pointer",
-            paddingRight: 2,
-            borderRadius: "20px 0 0 20px",
-            gap: 1,
-          }}
-        >
-          <Box display="flex" alignItems="center">
-            <img
-              alt="filter"
-              src={`/${tipologia.image}.png`}
-              width="80px"
-              style={{
-                filter: activeFilters.includes(tipologia.id)
-                  ? "brightness(0) saturate(100%) invert(86%) sepia(20%) saturate(6492%) hue-rotate(346deg) brightness(102%) contrast(106%)" // to yellow
-                  : "brightness(0) saturate(100%) invert(14%) sepia(5%) saturate(4383%) hue-rotate(118deg) brightness(101%) contrast(86%)", // to green
-              }}
-            />
-            <Typography
-              variant="h6"
-              color={
-                activeFilters.includes(tipologia.id)
-                  ? "primary"
-                  : theme.palette.title.main
-              }
-            >
-              {tipologia.title}
-            </Typography>
-          </Box>
-          {activeFilters.includes(tipologia.id) && (
-            <TipologiaTooltip description={tipologia.description} />
-          )}
-        </Box>
-      ))}
-    </Stack>
+  const renderFilters = tiposLugares?.length && (
+    <FilterLugares
+      tiposLugares={tiposLugares}
+      handleActiveFilters={handleActiveFilters}
+      activeFilters={activeFilters}
+    />
   );
   const renderFilterDrawer = (
     <MapToolsDrawer
@@ -363,6 +288,7 @@ export default function Mapa() {
       maxZoom: 10, //16,
     });
     lugares?.length > 0 &&
+      activeFilters.length &&
       index.load(
         lugares
           .filter((lugar) =>

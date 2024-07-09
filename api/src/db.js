@@ -35,12 +35,14 @@ const {
   Departamentos,
   Lugares,
   Municipios,
+  TiposLugares,
   TipologiasLugares,
   TipologiasGenerales,
 } = sequelize.models;
 Municipios.belongsTo(Departamentos);
 Departamentos.belongsTo(Regions);
 Lugares.belongsTo(TipologiasLugares);
+Lugares.belongsTo(TiposLugares, { foreignKey: "TipoLugarId" });
 Lugares.belongsTo(Municipios);
 Lugares.belongsTo(TipologiasGenerales);
 TipologiasLugares.hasMany(Lugares);

@@ -35,7 +35,6 @@ export default function MapToolsDrawer(props) {
       PaperProps={{
         sx: {
           height: "360px",
-          // marginTop: "200px",
           marginTop: `${vh / 2 - 180}px`,
           backgroundColor: theme.palette.secondary.main,
           padding: 1,
@@ -65,7 +64,6 @@ export default function MapToolsDrawer(props) {
       PaperProps={{
         sx: {
           height: "360px",
-          // marginTop: "200px",
           marginTop: `${vh / 2 - 180}px`,
           backgroundColor: theme.palette.secondary.main,
           padding: 1,

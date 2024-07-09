@@ -8,6 +8,8 @@ export default function getEnv(val) {
       ? "VITE_PINATA_API_KEY"
       : val === "client"
       ? "VITE_CLIENT"
+      : val === "media"
+      ? "VITE_MEDIA"
       : "";
   const viteEnv = import.meta.env[viteKey];
   return viteEnv;
