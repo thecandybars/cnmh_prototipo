@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Marker } from "react-map-gl";
 
 const MarkerRegiones = (props) => {
+  // console.log("🚀 ~ MarkerRegiones ~ props:", props);
   const markerStyle = {
     position: "relative",
     display: "flex",
@@ -49,28 +50,28 @@ const MarkerRegiones = (props) => {
     marginTop: "-2px",
   };
 
-  // const labelStyle = {
-  //   marginTop: "5px",
-  //   padding: "2px 6px",
-  //   background: "#222",
-  //   color: "white",
-  //   borderRadius: "10px",
-  //   fontSize: "12px",
-  //   textAlign: "center",
-  // };
-
-  const sources = [
-    "markerMuseoMemoria",
-    "markerEspaciosSanar",
-    "markerLugarHorror",
-    "markerLugarMemoria",
-  ];
-  const index = Math.floor(Math.abs(props.marca.latitud * 100)) % 4;
+  // const sources = [
+  //   "museoMemoria",
+  //   "espacioSanar",
+  //   "lugarHorror",
+  //   "lugarMemoria",
+  // ];
+  // const index = Math.floor(Math.abs(props.marca.latitud * 100)) % 4;
+  // const imageName = props.marca.TiposLugare.imagenURL.slice(
+  //   props.marca.TiposLugare.imagenURL.lastIndexOf("/")
+  // );
 
   const renderContent = props.text ? (
     <Typography> {props.text}</Typography>
   ) : (
-    <img src={`${sources[index]}.png`} alt="Marker" style={imgStyle} />
+    <img
+      src={`${props.marca.TiposLugare.imagenURL.slice(
+        props.marca.TiposLugare.imagenURL.lastIndexOf("/")
+      )}`}
+      alt="Marker"
+      style={imgStyle}
+    />
+    // <img src={`${sources[index]}.png`} alt="Marker" style={imgStyle} />
   );
 
   return (

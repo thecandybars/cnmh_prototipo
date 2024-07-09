@@ -192,6 +192,7 @@ export default function Mapa() {
     actualView !== 0 &&
     actualRegion &&
     clusters.map((cluster) => {
+      console.log("🚀 ~ clusters.map ~ cluster:", cluster);
       const [longitude, latitude] = cluster.geometry.coordinates;
       const { cluster: isCluster, point_count: pointCount } =
         cluster.properties;
