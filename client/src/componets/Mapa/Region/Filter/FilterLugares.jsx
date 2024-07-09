@@ -1,6 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
 import { theme } from "../../../../utils/theme";
-import getEnv from "../../../../utils/getEnv";
 import TipologiaTooltip from "./components/TipologiaTooltip";
 import PropTypes from "prop-types";
 
@@ -12,8 +11,9 @@ FilterLugares.propTypes = {
 
 export default function FilterLugares(props) {
   const renderFilters = props.tiposLugares.map((tipo) => {
-    console.log("🚀 ~ renderFilters ~ tipo:", tipo);
-    console.log("🚀 ~ renderFilters ~", getEnv("media") + tipo.imagenURL);
+    // console.log("🚀 ~ renderFilters ~ tipo:", tipo);
+    // console.log("🚀 ~ renderFilters ~", tipo.imagenURL);
+    const imageName = tipo.imagenURL.slice(tipo.imagenURL.lastIndexOf("/"));
     return (
       <Box
         key={tipo.id}
@@ -35,7 +35,8 @@ export default function FilterLugares(props) {
         <Box display="flex" alignItems="center">
           <img
             alt="filter"
-            src={`${getEnv("media")}${tipo.imagenURL}`}
+            // src={`${getEnv("media")}${tipo.imagenURL}`}
+            src={`${imageName}`}
             width="80px"
             style={{
               filter: props.activeFilters.includes(tipo.id)
