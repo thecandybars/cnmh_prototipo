@@ -18,6 +18,7 @@ const CustomTooltip = styled(({ className, ...props }) => (
 
 TipologiaTooltip.propTypes = {
   description: PropTypes.string,
+  hidden: PropTypes.bool,
 };
 export default function TipologiaTooltip(props) {
   return (
@@ -61,7 +62,7 @@ export default function TipologiaTooltip(props) {
     >
       <InfoIcon
         color="secondary"
-        // sx={{ display: "flex", justifySelf: "right", marginLeft: "0px" }}
+        sx={{ visibility: props.hidden ? "hidden" : "visible" }}
       />
     </CustomTooltip>
   );

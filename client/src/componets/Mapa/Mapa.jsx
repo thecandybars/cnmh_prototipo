@@ -192,7 +192,6 @@ export default function Mapa() {
     actualView !== 0 &&
     actualRegion &&
     clusters.map((cluster) => {
-      console.log("🚀 ~ clusters.map ~ cluster:", cluster);
       const [longitude, latitude] = cluster.geometry.coordinates;
       const { cluster: isCluster, point_count: pointCount } =
         cluster.properties;
@@ -283,11 +282,7 @@ export default function Mapa() {
       activeFilters.length &&
       index.load(
         lugares
-          .filter((lugar) =>
-            activeFilters.includes(
-              Math.floor(Math.abs(lugar.latitud * 100)) % 4
-            )
-          )
+          .filter((lugar) => activeFilters.includes(lugar.TiposLugare.id))
           .map((lugar) => ({
             type: "Feature",
             properties: { cluster: false, ...lugar },
