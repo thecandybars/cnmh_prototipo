@@ -11,8 +11,6 @@ FilterLugares.propTypes = {
 
 export default function FilterLugares(props) {
   const renderFilters = props.tiposLugares.map((tipo) => {
-    // console.log("🚀 ~ renderFilters ~ tipo:", tipo);
-    // console.log("🚀 ~ renderFilters ~", tipo.imagenURL);
     const imageName = tipo.imagenURL.slice(tipo.imagenURL.lastIndexOf("/"));
     return (
       <Box
@@ -55,9 +53,12 @@ export default function FilterLugares(props) {
             {tipo.nombre}
           </Typography>
         </Box>
-        {props.activeFilters.includes(tipo.id) && (
-          <TipologiaTooltip description={tipo.descripcion} />
-        )}
+        {/* {props.activeFilters.includes(tipo.id) && ( */}
+        <TipologiaTooltip
+          description={tipo.descripcion}
+          // hidden={!props.activeFilters.includes(tipo.id)}
+        />
+        {/* )} */}
       </Box>
     );
   });
