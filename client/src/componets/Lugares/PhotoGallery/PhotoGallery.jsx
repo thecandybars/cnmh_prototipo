@@ -9,7 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Grid, Stack, Typography } from "@mui/material";
 // CSS
 // import "./PhotoGallery.css";
 
@@ -45,6 +45,61 @@ export default function PhotoGallery(props) {
           controls
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
+      ) : ndx === 1 ? (
+        <audio controls>
+          <source src="/casamemoriatumaco/photos/sonic.mp3" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      ) : ndx === 2 ? (
+        <Grid container>
+          <Grid item xs={4}>
+            <img src="/comuna13.png" />
+          </Grid>
+          <Grid item xs={4}>
+            <img src="/comuna13.png" />
+          </Grid>
+          <Grid item xs={4}>
+            <img src="/comuna13.png" />
+          </Grid>
+          <Grid item xs={4}>
+            <audio controls>
+              <source
+                src="/casamemoriatumaco/photos/sonic.mp3"
+                type="audio/mpeg"
+              />
+              Your browser does not support the audio element.
+            </audio>{" "}
+          </Grid>
+          <Grid item xs={4}>
+            <audio controls>
+              <source
+                src="/casamemoriatumaco/photos/sonic.mp3"
+                type="audio/mpeg"
+              />
+              Your browser does not support the audio element.
+            </audio>{" "}
+          </Grid>
+          <Grid item xs={4}>
+            <audio controls>
+              <source
+                src="/casamemoriatumaco/photos/sonic.mp3"
+                type="audio/mpeg"
+              />
+              Your browser does not support the audio element.
+            </audio>{" "}
+          </Grid>
+        </Grid>
+      ) : ndx === 3 ? (
+        <Swiper>
+          {props.images.map((image) => (
+            <SwiperSlide key={uuidv4()}>
+              <img
+                src={image}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       ) : (
         <img
           src={image}
@@ -58,6 +113,7 @@ export default function PhotoGallery(props) {
       <div>
         <Swiper
           style={{ margin: "0 auto", width: "1000px", height: "100vh" }}
+          direction="vertical"
           // install Swiper modules
           modules={[Navigation, Pagination, Scrollbar, A11y]}
           spaceBetween={50}

@@ -84,7 +84,7 @@ const muiTheme = createTheme({
     h1: {
       fontFamily: "Monday Vacation",
       fontWeight: 500,
-      fontSize: "3rem",
+      fontSize: "7rem",
     },
     h2: {
       fontFamily: "Monday Vacation",

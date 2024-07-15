@@ -2,8 +2,8 @@ import { Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import { Marker } from "react-map-gl";
 
-const MarkerRegiones = (props) => {
-  // console.log("🚀 ~ MarkerRegiones ~ props:", props);
+const StyledMarker = (props) => {
+  // console.log("🚀 ~ StyledMarker ~ props:", props);
   const markerStyle = {
     position: "relative",
     display: "flex",
@@ -88,11 +88,11 @@ const MarkerRegiones = (props) => {
   );
 };
 
-MarkerRegiones.propTypes = {
+StyledMarker.propTypes = {
   marca: PropTypes.object,
   zoom: PropTypes.number,
   onClick: PropTypes.func,
   text: PropTypes.any,
 };
 
-export default MarkerRegiones;
+export default StyledMarker;
