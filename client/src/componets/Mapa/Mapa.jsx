@@ -6,9 +6,9 @@ import { getAllDepartamentos } from "../../services/departamentos";
 import { theme } from "../../utils/theme";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
-import MarkerRegiones from "./MarkerRegiones/MarkerRegiones";
+import StyledMarker from "./MarkerRegiones/StyledMarker";
 import Supercluster from "supercluster";
-import { Box, Dialog, FormControlLabel, Switch } from "@mui/material";
+import { Box, Dialog, FormControlLabel, Stack, Switch } from "@mui/material";
 import CasaMemoriaTumaco from "../Lugares/CasaMemoriaTumaco";
 // import Photo360 from "../Lugares/Photo360/Photo360";
 import { Photo_360 } from "../../App";
@@ -21,6 +21,8 @@ import PopupMarkerPreview from "./components/PopupMarkerPreview";
 import MapToolsDrawer from "./components/MapToolsDrawer";
 import { getTiposLugares } from "../../services/tiposLugares";
 import FilterLugares from "./Region/Filter/FilterLugares";
+import MarkersLugares from "./MarkerRegiones/MarkersLugares";
+import TituloMacroregion from "./components/TituloMacroregion";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -93,6 +95,7 @@ export default function Mapa() {
 
   const [actualView, setActualView] = useState(0); //0:pais, 1:region, 2:lugar
   const [actualRegion, setActualRegion] = useState(null);
+  console.log("🚀 ~ Mapa ~ actualRegion:", actualRegion);
 
   // FILTER LUGARES
   const lugares = useMemo(
@@ -143,15 +146,17 @@ export default function Mapa() {
   // COLOR CONFLICT AREAS
   const [drawConflictAreas, setDrawConflictAreas] = useState(false);
   const renderConflictAreasSwitch = (
-    <FormControlLabel
-      control={
-        <Switch
-          checked={drawConflictAreas}
-          onChange={() => setDrawConflictAreas((prev) => !prev)}
-        />
-      }
-      label="Zonas de conflicto"
-    />
+    <Box sx={{ bgcolor: "secondary.main" }}>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={drawConflictAreas}
+            onChange={() => setDrawConflictAreas((prev) => !prev)}
+          />
+        }
+        label="Zonas de conflicto"
+      />
+    </Box>
   );
   const renderConflictAreas = drawConflictAreas && <ZonasDeConflicto />;
 
@@ -187,58 +192,6 @@ export default function Mapa() {
     </MapToolsDrawer>
   );
 
-  // MARKERS
-  const renderMarkers =
-    actualView !== 0 &&
-    actualRegion &&
-    clusters.map((cluster) => {
-      const [longitude, latitude] = cluster.geometry.coordinates;
-      const { cluster: isCluster, point_count: pointCount } =
-        cluster.properties;
-
-      if (isCluster) {
-        return (
-          <Box
-            key={`cluster-${cluster.id}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              const expansionZoom = Math.min(
-                supercluster.getClusterExpansionZoom(cluster.id),
-                20
-              );
-              setDestination({
-                ...actualViewport,
-                latitude,
-                longitude,
-                zoom: expansionZoom,
-                transitionDuration: 500,
-              });
-            }}
-          >
-            <MarkerRegiones
-              marca={{ latitud: latitude, longitud: longitude }}
-              zoom={actualViewport.zoom}
-              text={pointCount}
-            />
-          </Box>
-        );
-      } else {
-        return (
-          <Box
-            key={`marker-${cluster.properties.id}`}
-            onClick={(e) => handleSelectedMarker(e, cluster.properties.id)}
-            onMouseOver={(e) => handlePreviewMarker(e, cluster.properties.id)}
-            onMouseOut={() => setPreviewMarker(null)}
-          >
-            <MarkerRegiones
-              marca={cluster.properties}
-              zoom={actualViewport.zoom}
-            />
-          </Box>
-        );
-      }
-    });
-
   // HANDLERS MARKERS
   const [selectedMarker, setSelectedMarker] = useState(null);
   const handleSelectedMarker = useCallback(
@@ -261,12 +214,31 @@ export default function Mapa() {
     },
     [lugares]
   );
+  const handleSelectedCluster = (e, cluster) => {
+    const [longitude, latitude] = cluster.geometry.coordinates;
+    // const { cluster: isCluster, point_count: pointCount } =
+    //   cluster.properties;
+    e.stopPropagation();
+    const expansionZoom = Math.min(
+      supercluster.getClusterExpansionZoom(cluster.id),
+      20
+    );
+    setDestination({
+      ...actualViewport,
+      latitude,
+      longitude,
+      zoom: expansionZoom,
+      transitionDuration: 500,
+    });
+  };
   const [previewMarker, setPreviewMarker] = useState(null);
   const handlePreviewMarker = useCallback(
-    (e, id) => {
-      e.stopPropagation();
-      const lugar = lugares.find((lugar) => lugar.id === id);
-      setPreviewMarker(lugar);
+    ({ action, data }) => {
+      if (action === "over") {
+        data.e.stopPropagation();
+        const lugar = lugares.find((lugar) => lugar.id === data.clusterId);
+        setPreviewMarker(lugar);
+      } else setPreviewMarker(null);
     },
     [lugares]
   );
@@ -387,6 +359,7 @@ export default function Mapa() {
   const renderViewsBreadcrumbs = (
     <ViewsBreadcrumbs
       actualView={actualView}
+      actualRegion={actualRegion}
       onClick0={() => {
         setActualView(0);
         setActualRegion(null);
@@ -404,20 +377,20 @@ export default function Mapa() {
   );
 
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
-      {renderViewsBreadcrumbs}
-      <Box
+    <Box sx={{ width: "100vw", height: "100vh" }}>
+      <Stack
+        spacing={1}
         sx={{
           position: "absolute",
-          top: "145px",
+          top: "100px",
           zIndex: 100,
           right: 0,
-          paddingX: 1,
-          backgroundColor: theme.palette.secondary.main,
+          padding: 0,
         }}
       >
+        {renderViewsBreadcrumbs}
         {renderConflictAreasSwitch}
-      </Box>
+      </Stack>
       <Map
         ref={mapRef}
         initialViewState={viewports[0]}
@@ -438,10 +411,23 @@ export default function Mapa() {
         {renderPopupMarkerPermanent}
         {renderPopupMarkerPreview}
         {flyToDestination}
-        {renderMarkers}
+        {/* {renderMarkers} */}
+        {lugares?.length && (
+          <MarkersLugares
+            handleSelectedCluster={handleSelectedCluster}
+            handleSelectedMarker={handleSelectedMarker}
+            handlePreviewMarker={handlePreviewMarker}
+            actualViewport={actualViewport}
+            actualView={actualView}
+            lugares={lugares}
+            activeFilters={activeFilters}
+            mapRef={mapRef}
+          />
+        )}
         {renderDialogLugar}
         {actualView === 1 && renderFilterDrawer}
+        {actualRegion && <TituloMacroregion title={actualRegion.fullName} />}
       </Map>
-    </div>
+    </Box>
   );
 }

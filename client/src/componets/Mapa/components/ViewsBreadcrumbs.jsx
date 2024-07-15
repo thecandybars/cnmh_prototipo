@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 
 ViewsBreadcrumbs.propTypes = {
   actualView: PropTypes.number,
+  actualRegion: PropTypes.number,
   onClick0: PropTypes.func,
   onClick1: PropTypes.func,
 };
