@@ -8,7 +8,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
 import StyledMarker from "./MarkerRegiones/StyledMarker";
 import Supercluster from "supercluster";
-import { Box, Dialog, FormControlLabel, Stack, Switch } from "@mui/material";
+import {
+  Box,
+  Dialog,
+  FormControlLabel,
+  Stack,
+  SvgIcon,
+  Switch,
+} from "@mui/material";
 import CasaMemoriaTumaco from "../Lugares/CasaMemoriaTumaco";
 // import Photo360 from "../Lugares/Photo360/Photo360";
 import { Photo_360 } from "../../App";
@@ -23,6 +30,8 @@ import { getTiposLugares } from "../../services/tiposLugares";
 import FilterLugares from "./Region/Filter/FilterLugares";
 import MarkersLugares from "./MarkerRegiones/MarkersLugares";
 import TituloMacroregion from "./components/TituloMacroregion";
+import cacca from "./cacca.svg";
+import FooterLogoCNMH from "./components/FooterLogoCNMH";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -95,7 +104,6 @@ export default function Mapa() {
 
   const [actualView, setActualView] = useState(0); //0:pais, 1:region, 2:lugar
   const [actualRegion, setActualRegion] = useState(null);
-  console.log("🚀 ~ Mapa ~ actualRegion:", actualRegion);
 
   // FILTER LUGARES
   const lugares = useMemo(
@@ -427,6 +435,10 @@ export default function Mapa() {
         {renderDialogLugar}
         {actualView === 1 && renderFilterDrawer}
         {actualRegion && <TituloMacroregion title={actualRegion.fullName} />}
+        {!actualRegion && (
+          <TituloMacroregion title={"Macroregiones"} label="COLOMBIA" />
+        )}
+        <FooterLogoCNMH />
       </Map>
     </Box>
   );
