@@ -4,6 +4,7 @@ import Mapa from "./componets/Mapa";
 import Photo360 from "./componets/Lugares/Photo360/Photo360";
 import PhotoGallery from "./componets/Lugares/PhotoGallery/PhotoGallery";
 import CasaMemoriaTumaco from "./componets/Lugares/CasaMemoriaTumaco";
+import Test from "./componets/Test/Test";
 
 const NotFoundPage = () => (
   <div>
@@ -22,6 +23,7 @@ const App = () => {
           <Route path="/foto_360" element={<Photo_360 />} />
           <Route path="/galeria" element={<PhotoGallery />} />
           <Route path="/casa" element={<CasaMemoriaTumaco />} />
+          <Route path="/test" element={<Test />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
