@@ -7,10 +7,6 @@ TituloMacroregion.propTypes = {
   title: PropTypes.string,
   display: PropTypes.bool,
 };
-TituloMacroregion.defaultProps = {
-  label: "REGIÓN",
-  title: "",
-};
 
 export default function TituloMacroregion(props) {
   const yellowLinesStyle = `3px solid ${theme.palette.secondary.main}`;
@@ -31,7 +27,7 @@ export default function TituloMacroregion(props) {
         <Grid item xs={2} sx={{ borderRight: yellowLinesStyle }}></Grid>
         <Grid item xs={10}>
           <Typography variant="h5" pt={4} pl={1}>
-            {props.label}
+            {props.label || "REGIÓN"}
           </Typography>
         </Grid>
         <Grid
