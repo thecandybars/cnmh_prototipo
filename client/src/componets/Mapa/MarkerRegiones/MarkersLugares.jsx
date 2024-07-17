@@ -28,7 +28,7 @@ export default function MarkersLugares(props) {
         <Box
           key={`cluster-${cluster.id}`}
           onClick={(e) => {
-            props.handleSelectedCluster(e, cluster);
+            props.handleSelectedCluster(e, cluster, supercluster);
           }}
         >
           <StyledMarker

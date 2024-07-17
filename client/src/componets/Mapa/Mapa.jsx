@@ -3,21 +3,10 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import getEnv from "../../utils/getEnv";
 import useFetch from "../common/customHooks/useFetch";
 import { getAllDepartamentos } from "../../services/departamentos";
-import { theme } from "../../utils/theme";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
-import StyledMarker from "./MarkerRegiones/StyledMarker";
-import Supercluster from "supercluster";
-import {
-  Box,
-  Dialog,
-  FormControlLabel,
-  Stack,
-  SvgIcon,
-  Switch,
-} from "@mui/material";
+import { Box, Dialog, FormControlLabel, Stack, Switch } from "@mui/material";
 import CasaMemoriaTumaco from "../Lugares/CasaMemoriaTumaco";
-// import Photo360 from "../Lugares/Photo360/Photo360";
 import { Photo_360 } from "../../App";
 import "./styles/styles.css";
 import ViewsBreadcrumbs from "./components/ViewsBreadcrumbs";
@@ -30,7 +19,6 @@ import { getTiposLugares } from "../../services/tiposLugares";
 import FilterLugares from "./Region/Filter/FilterLugares";
 import MarkersLugares from "./MarkerRegiones/MarkersLugares";
 import TituloMacroregion from "./components/TituloMacroregion";
-import cacca from "./cacca.svg";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
 
 const TOKEN = getEnv("mapboxToken");
@@ -116,10 +104,6 @@ export default function Mapa() {
         : fetchedLugares,
     [fetchedLugares, actualRegion]
   );
-
-  // CLUSTER STATE
-  const [clusters, setClusters] = useState([]);
-  const [supercluster, setSupercluster] = useState(null);
 
   // HANDLE MOVE
   const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
@@ -222,7 +206,7 @@ export default function Mapa() {
     },
     [lugares]
   );
-  const handleSelectedCluster = (e, cluster) => {
+  const handleSelectedCluster = (e, cluster, supercluster) => {
     const [longitude, latitude] = cluster.geometry.coordinates;
     // const { cluster: isCluster, point_count: pointCount } =
     //   cluster.properties;
@@ -250,54 +234,6 @@ export default function Mapa() {
     },
     [lugares]
   );
-
-  // CREATE MARKERS SUPERCLUSTER
-
-  useEffect(() => {
-    const index = new Supercluster({
-      radius: 50, //40,
-      maxZoom: 10, //16,
-    });
-    lugares?.length > 0 &&
-      activeFilters.length &&
-      index.load(
-        lugares
-          .filter((lugar) => activeFilters.includes(lugar.TiposLugare.id))
-          .map((lugar) => ({
-            type: "Feature",
-            properties: { cluster: false, ...lugar },
-            geometry: {
-              type: "Point",
-              coordinates: [lugar.longitud, lugar.latitud],
-            },
-          }))
-      );
-
-    setSupercluster(index);
-  }, [lugares, activeFilters]);
-
-  // CLUSTERS
-  useEffect(() => {
-    if (
-      mapRef?.current !== null &&
-      supercluster &&
-      Object.keys(supercluster).length > 0 &&
-      // supercluster.points?.length > 0 && // hay que poder quitar esto, para que los filtros filtren todo cuando no se selecciona ninguno
-      Object.keys(actualViewport).length > 0
-    ) {
-      const bounds = mapRef.current.getBounds().toArray().flat();
-      const zoom = Math.floor(actualViewport.zoom);
-
-      setClusters(
-        supercluster.points?.length > 0
-          ? supercluster.getClusters(bounds, zoom)
-          : []
-      );
-      // const clusters =
-      //   supercluster.getClusters(bounds, zoom);
-      // setClusters(clusters);
-    }
-  }, [supercluster, actualViewport, actualViewport.zoom, mapRef]);
 
   // FLY TO DESTINATION
   const [destination, setDestination] = useState(null);
