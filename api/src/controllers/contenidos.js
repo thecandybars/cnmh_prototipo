@@ -71,27 +71,28 @@ async function createContenido(req) {
 async function getContenidos(req) {
   try {
     let where = {};
-    if (req.query.exhibicionId != null) where.id = req.query.exhibicionId;
+    if (req.query.exhibicionId != null)
+      where.exhibicionId = req.query.exhibicionId;
 
     let order = [];
     order.push(["order", "asc"]);
 
-    let exhibiciones = await Contenidoes.findAll({
+    let contenidos = await Contenidos.findAll({
       where,
       // order,
       include: [{ model: ListaTipos, required: false }],
     });
 
-    const data = where.id ? exhibiciones[0] : exhibiciones;
+    const data = where.id ? contenidos[0] : contenidos;
 
     return response(
       req.params,
       {
-        title: "Contenidoes",
+        title: "Contenidos",
         data,
         status: 200,
       },
-      "getContenidoes"
+      "getContenidos"
     );
   } catch (err) {
     return response(
