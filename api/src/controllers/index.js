@@ -3,6 +3,9 @@ const departamentos = require("./departamentos");
 const municipios = require("./municipios");
 const lugares = require("./lugares");
 const tiposLugares = require("./tiposLugares");
+const exhibiciones = require("./exhibiciones");
+const contenidos = require("./contenidos");
+const sliders = require("./sliders");
 
 module.exports = {
   ...regions,
@@ -10,4 +13,7 @@ module.exports = {
   ...municipios,
   ...lugares,
   ...tiposLugares,
+  ...exhibiciones,
+  ...contenidos,
+  ...sliders,
 };
