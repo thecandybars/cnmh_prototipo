@@ -38,6 +38,11 @@ const {
   TiposLugares,
   TipologiasLugares,
   TipologiasGenerales,
+  Exhibiciones,
+  Sliders,
+  Slides, // INTERMEDIATE TABLE Sliders-Media
+  Contenidos,
+  ListaTipos,
 } = sequelize.models;
 Municipios.belongsTo(Departamentos);
 Departamentos.belongsTo(Regions);
@@ -48,6 +53,22 @@ Lugares.belongsTo(TipologiasGenerales);
 TipologiasLugares.hasMany(Lugares);
 Municipios.hasMany(Lugares);
 TipologiasGenerales.hasMany(Lugares);
+// Lugares.hasOne(Exhibiciones);
+Exhibiciones.belongsTo(Lugares, { foreignKey: "lugarId" });
+Exhibiciones.belongsTo(ListaTipos, { foreignKey: "tipoExhibicionId" });
+Exhibiciones.hasMany(Contenidos, { foreignKey: "exhibicionId" });
+Sliders.belongsTo(Exhibiciones, { foreignKey: "exhibicionId" });
+Contenidos.belongsTo(Exhibiciones, { foreignKey: "exhibicionId" });
+Contenidos.belongsTo(ListaTipos, { foreignKey: "tipoContenidoId" });
+//
+Sliders.belongsToMany(Contenidos, {
+  through: Slides,
+  foreignKey: "sliderId",
+});
+Contenidos.belongsToMany(Sliders, {
+  through: Slides,
+  foreignKey: "contenidoId",
+});
 
 module.exports = {
   ...sequelize.models,
