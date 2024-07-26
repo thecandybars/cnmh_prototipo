@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 //contenidos
 module.exports = (sequelize) => {
   sequelize.define(
-    "Contenidos",
+    "Medios",
     {
       cid: {
         type: DataTypes.STRING(50),
@@ -14,10 +14,6 @@ module.exports = (sequelize) => {
       },
       descripcion: {
         type: DataTypes.STRING(30),
-        allowNull: true,
-      },
-      index: {
-        type: DataTypes.INTEGER,
         allowNull: true,
       },
     },
