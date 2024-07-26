@@ -1,12 +1,18 @@
 //Custom code
-const { Sliders, Exhibiciones, Slides } = require("../db.js");
+const {
+  Sliders,
+  Exhibiciones,
+  Slides,
+  Medios,
+  MediosSlides,
+} = require("../db.js");
 const response = require("../common/response");
 const { conn } = require("../db.js");
 const checkCommonErrors = require("../common/checkCommonErrors.js");
 
 ////////////////////////////////// SLIDERS //////////////////////////////////
 
-//----------------------------- Create a new exhibicion -----------------------------//
+//----------------------------- Create a slider -----------------------------//
 async function createSlider(req) {
   const t = await conn.transaction();
   try {
@@ -106,14 +112,14 @@ async function getSliders(req) {
 async function createSlide(req) {
   const t = await conn.transaction();
   try {
-    // // VALIDATE  SLIDER
-    // if (!(await Exhibiciones.findByPk(req.body.exhibicionId)))
-    //   throw {
-    //     error: `Exhibicion ${req.body.exhibicionId} doesnt exists`,
-    //     status: 404,
-    //   };
+    // VALIDATE SLIDER
+    if (!(await Sliders.findByPk(req.body.sliderId)))
+      throw {
+        error: `Slider ${req.body.exhibicionId} doesnt exists`,
+        status: 404,
+      };
 
-    //Create row in database
+    //Create slide
     const newSlide = await Slides.create({
       titulo: req.body.titulo,
       descripcion: req.body.descripcion,
@@ -123,6 +129,19 @@ async function createSlide(req) {
     });
 
     if (newSlide === null) throw { error: "Error creating Slide", status: 400 };
+
+    const newContents = await Promise.all(
+      req.body.contents.map(async (content) => {
+        await MediosSlides.create({
+          SlideId: newSlide.id,
+          MedioId: content.medioId,
+          index: content.index,
+        });
+      })
+    );
+
+    if (newContents === null)
+      throw { error: "Error creating contents for Slide", status: 400 };
 
     await t.commit();
     return response(

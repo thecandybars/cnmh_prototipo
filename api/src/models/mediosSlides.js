@@ -1,18 +1,10 @@
 const { DataTypes } = require("sequelize");
-//Exhibiciones
+//contenidos
 module.exports = (sequelize) => {
   sequelize.define(
-    "Exhibiciones",
+    "MediosSlides",
     {
-      titulo: {
-        type: DataTypes.STRING(30),
-        allowNull: true,
-      },
-      descripcion: {
-        type: DataTypes.STRING(100),
-        allowNull: true,
-      },
-      portadaMedioId: {
+      index: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },

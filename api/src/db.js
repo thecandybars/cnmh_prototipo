@@ -31,6 +31,7 @@ let capsEntries = entries.map((entry) => [
 sequelize.models = Object.fromEntries(capsEntries);
 
 const {
+  ListaTipos,
   Regions,
   Departamentos,
   Lugares,
@@ -39,10 +40,11 @@ const {
   TipologiasLugares,
   TipologiasGenerales,
   Exhibiciones,
+  ExhibicionesMultimediaContents,
+  Medios,
   Sliders,
   Slides, // INTERMEDIATE TABLE Sliders-Media
-  Contenidos,
-  ListaTipos,
+  MediosSlides,
 } = sequelize.models;
 Municipios.belongsTo(Departamentos);
 Departamentos.belongsTo(Regions);
@@ -53,22 +55,22 @@ Lugares.belongsTo(TipologiasGenerales);
 TipologiasLugares.hasMany(Lugares);
 Municipios.hasMany(Lugares);
 TipologiasGenerales.hasMany(Lugares);
-// Lugares.hasOne(Exhibiciones);
+//
 Exhibiciones.belongsTo(Lugares, { foreignKey: "lugarId" });
 Exhibiciones.belongsTo(ListaTipos, { foreignKey: "tipoExhibicionId" });
-Exhibiciones.hasMany(Contenidos, { foreignKey: "exhibicionId" });
-Sliders.belongsTo(Exhibiciones, { foreignKey: "exhibicionId" });
-Contenidos.belongsTo(Exhibiciones, { foreignKey: "exhibicionId" });
-Contenidos.belongsTo(ListaTipos, { foreignKey: "tipoContenidoId" });
-//
-Sliders.belongsToMany(Contenidos, {
-  through: Slides,
-  foreignKey: "sliderId",
-});
-Contenidos.belongsToMany(Sliders, {
-  through: Slides,
-  foreignKey: "contenidoId",
-});
+
+Exhibiciones.belongsTo(Medios, { foreignKey: "portadaMedioId" });
+
+Exhibiciones.hasMany(Sliders, { foreignKey: "exhibicionId" });
+
+Medios.belongsTo(ListaTipos, { foreignKey: "tipoMedioId" });
+
+// SLIDES
+Slides.belongsTo(Sliders, { foreignKey: "sliderId" });
+
+// MEDIOS-SLIDES
+Slides.belongsToMany(Medios, { through: MediosSlides });
+Medios.belongsToMany(Slides, { through: MediosSlides });
 
 module.exports = {
   ...sequelize.models,

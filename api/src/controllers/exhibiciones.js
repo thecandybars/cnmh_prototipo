@@ -1,9 +1,16 @@
 //Custom code
-const { Exhibiciones, ListaTipos, Lugares, Contenidos } = require("../db.js");
+const {
+  Exhibiciones,
+  ListaTipos,
+  Lugares,
+  Sliders,
+  Medios,
+  ExhibicionesMultimediaContents,
+} = require("../db.js");
 const response = require("../common/response");
 const { conn } = require("../db.js");
 
-////////////////////////////////// DEPARTAMENTOS //////////////////////////////////
+////////////////////////////////// EXHIBICIONES //////////////////////////////////
 
 //----------------------------- Create a new exhibicion -----------------------------//
 async function createExhibicion(req) {
@@ -30,6 +37,7 @@ async function createExhibicion(req) {
       descripcion: req.body.descripcion,
       lugarId: req.body.lugarId,
       tipoExhibicionId: req.body.tipoExhibicionId,
+      portadaMedioId: req.body.portadaMedioId,
     });
 
     if (newExhibicion === null)
@@ -77,14 +85,7 @@ async function getExhibiciones(req) {
     let exhibiciones = await Exhibiciones.findAll({
       where,
       // order,
-      include: [
-        { model: ListaTipos, required: false },
-        {
-          model: Contenidos,
-          required: false,
-          include: [{ model: ListaTipos, attributes: ["first"] }],
-        },
-      ],
+      include: [{ model: ListaTipos, required: false }],
     });
 
     const data = where.id ? exhibiciones[0] : exhibiciones;
