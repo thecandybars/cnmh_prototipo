@@ -4,8 +4,8 @@ const {
   ListaTipos,
   Lugares,
   Sliders,
+  Slides,
   Medios,
-  ExhibicionesMultimediaContents,
 } = require("../db.js");
 const response = require("../common/response");
 const { conn } = require("../db.js");
@@ -85,9 +85,84 @@ async function getExhibiciones(req) {
     let exhibiciones = await Exhibiciones.findAll({
       where,
       // order,
-      include: [{ model: ListaTipos, required: false }],
+      include: [
+        { model: ListaTipos, required: false },
+        { model: Medios, required: false, include: ListaTipos },
+        {
+          model: Sliders,
+          required: false,
+          include: [
+            { model: ListaTipos, required: false },
+            {
+              model: Slides,
+              required: false,
+              include: [
+                {
+                  model: Medios,
+                  include: ListaTipos,
+                  attributes: [
+                    "id",
+                    "cid",
+                    "titulo",
+                    "descripcion",
+                    "tipoMedioId",
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
 
+    const formattedExhibiciones = exhibiciones.map((exhibicion) => {
+      const rootData = {
+        id: exhibicion.id,
+        titulo: exhibicion.titulo,
+        descripcion: exhibicion.descripcion,
+        lugarId: exhibicion.lugarId,
+        tipoExhibicion: exhibicion.ListaTipo.first,
+      };
+      const Portada = {
+        id: exhibicion.Medio.id,
+        cid: exhibicion.Medio.cid,
+        titulo: exhibicion.Medio.titulo,
+        descripcion: exhibicion.Medio.descripcion,
+        tipoMedio: exhibicion.Medio.ListaTipo.first,
+      };
+      const Sliders = exhibicion.Sliders?.map((slider) => {
+        const basicSliderData = {
+          id: slider.id,
+          titulo: slider.titulo,
+          descripcion: slider.descripcion,
+          index: slider.index,
+          tipoSlider: slider.ListaTipo.first,
+        };
+        const Slides = slider.Slides?.map((slide) => {
+          const basicSlideData = {
+            id: slide.id,
+            titulo: slide.titulo,
+            descripcion: slide.descripcion,
+            index: slide.index,
+          };
+          const Medios = slide.Medios.map((medio) => ({
+            id: medio.id,
+            cid: medio.cid,
+            titulo: medio.cid,
+            descripcion: medio.descripcion,
+            tipoMedio: medio.ListaTipo.first,
+          }));
+          return { ...basicSlideData, Medios };
+        });
+        return {
+          ...basicSliderData,
+          Slides,
+        };
+      });
+      return { ...rootData, Portada, Sliders };
+    });
+
+    // const data = where.id ? formattedExhibiciones[0] : formattedExhibiciones;
     const data = where.id ? exhibiciones[0] : exhibiciones;
 
     return response(
