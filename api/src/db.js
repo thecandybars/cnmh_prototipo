@@ -65,8 +65,9 @@ Exhibiciones.hasMany(Sliders, { foreignKey: "exhibicionId" });
 
 Medios.belongsTo(ListaTipos, { foreignKey: "tipoMedioId" });
 
+Sliders.belongsTo(ListaTipos, { foreignKey: "tipoSliderId" });
 // SLIDES
-Slides.belongsTo(Sliders, { foreignKey: "sliderId" });
+Sliders.hasMany(Slides, { foreignKey: "sliderId" });
 
 // MEDIOS-SLIDES
 Slides.belongsToMany(Medios, { through: MediosSlides });
