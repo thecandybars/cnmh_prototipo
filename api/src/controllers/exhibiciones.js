@@ -162,8 +162,8 @@ async function getExhibiciones(req) {
       return { ...rootData, Portada, Sliders };
     });
 
-    // const data = where.id ? formattedExhibiciones[0] : formattedExhibiciones;
-    const data = where.id ? exhibiciones[0] : exhibiciones;
+    const data = where.id ? formattedExhibiciones[0] : formattedExhibiciones;
+    // const data = where.id ? exhibiciones[0] : exhibiciones;
 
     return response(
       req.params,
