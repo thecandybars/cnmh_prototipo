@@ -86,6 +86,7 @@ async function getExhibiciones(req) {
       where,
       // order,
       include: [
+        { model: Lugares },
         { model: ListaTipos, required: false },
         { model: Medios, required: false, include: ListaTipos },
         {
@@ -120,9 +121,9 @@ async function getExhibiciones(req) {
         id: exhibicion.id,
         titulo: exhibicion.titulo,
         descripcion: exhibicion.descripcion,
-        lugarId: exhibicion.lugarId,
         tipoExhibicion: exhibicion.ListaTipo.first,
       };
+      const Lugar = exhibicion.Lugare;
       const Portada = {
         id: exhibicion.Medio.id,
         cid: exhibicion.Medio.cid,
@@ -159,7 +160,7 @@ async function getExhibiciones(req) {
           Slides,
         };
       });
-      return { ...rootData, Portada, Sliders };
+      return { ...rootData, Lugar, Portada, Sliders };
     });
 
     const data = where.id ? formattedExhibiciones[0] : formattedExhibiciones;
