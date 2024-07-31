@@ -68,6 +68,7 @@ Medios.belongsTo(ListaTipos, { foreignKey: "tipoMedioId" });
 Sliders.belongsTo(ListaTipos, { foreignKey: "tipoSliderId" });
 // SLIDES
 Sliders.hasMany(Slides, { foreignKey: "sliderId" });
+Sliders.belongsTo(Medios, { foreignKey: "portadaMedioId" });
 
 // MEDIOS-SLIDES
 Slides.belongsToMany(Medios, { through: MediosSlides });

@@ -5,11 +5,11 @@ module.exports = (sequelize) => {
     "Sliders",
     {
       titulo: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.STRING(100),
         allowNull: true,
       },
       descripcion: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.STRING(300),
         allowNull: true,
       },
       index: {

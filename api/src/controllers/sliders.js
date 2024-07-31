@@ -29,6 +29,7 @@ async function createSlider(req) {
       descripcion: req.body.descripcion,
       index: req.body.index,
       exhibicionId: req.body.exhibicionId,
+      tipoSliderId: req.body.tipoSliderId,
     });
 
     if (newSlider === null)
