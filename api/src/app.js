@@ -28,8 +28,9 @@ server.use((req, res, next) => {
   next();
 });
 
-// Static media route
+// Static media routes
 server.use("/api/media", express.static("media"));
+server.use("/api/ipfs", express.static("ipfs"));
 
 //Final requests route
 server.use("/api", routes);

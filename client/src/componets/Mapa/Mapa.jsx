@@ -20,6 +20,7 @@ import FilterLugares from "./Region/Filter/FilterLugares";
 import MarkersLugares from "./MarkerRegiones/MarkersLugares";
 import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
+import Multimedia from "../Exhibiciones/Multimedia";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -266,7 +267,8 @@ export default function Mapa() {
     index === 0 ? (
       <Photo_360 onClose={() => handleCloseDialogLugar()} />
     ) : (
-      <CasaMemoriaTumaco onClose={() => handleCloseDialogLugar()} />
+      // <CasaMemoriaTumaco onClose={() => handleCloseDialogLugar()} />
+      <Multimedia exhibicionId={14} />
     );
   const renderDialogLugar = (
     <Dialog

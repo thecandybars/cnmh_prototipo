@@ -10,6 +10,8 @@ export default function getEnv(val) {
       ? "VITE_CLIENT"
       : val === "media"
       ? "VITE_MEDIA"
+      : val === "ipfs"
+      ? "VITE_IPFS"
       : "";
   const viteEnv = import.meta.env[viteKey];
   return viteEnv;
