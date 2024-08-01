@@ -6,7 +6,7 @@ import { getAllDepartamentos } from "../../services/departamentos";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
 import { Box, Dialog, FormControlLabel, Stack, Switch } from "@mui/material";
-import CasaMemoriaTumaco from "../Lugares/CasaMemoriaTumaco";
+// import CasaMemoriaTumaco from "../Lugares/CasaMemoriaTumaco";
 import { Photo_360 } from "../../App";
 import "./styles/styles.css";
 import ViewsBreadcrumbs from "./components/ViewsBreadcrumbs";
@@ -268,7 +268,7 @@ export default function Mapa() {
       <Photo_360 onClose={() => handleCloseDialogLugar()} />
     ) : (
       // <CasaMemoriaTumaco onClose={() => handleCloseDialogLugar()} />
-      <Multimedia exhibicionId={14} />
+      <Multimedia exhibicionId={14} onClose={() => handleCloseDialogLugar()} />
     );
   const renderDialogLugar = (
     <Dialog

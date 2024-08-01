@@ -49,12 +49,17 @@ export default function ButtonSlider(props) {
         >
           <StyledButtonImage
             imageURL={
-              props.slider.Slides[0]?.Medios[0]
-                ? `url('${getEnv("ipfs")}/${
-                    props.slider.Slides[0].Medios[0].cid
-                  }')`
+              props.slider.portadaCID
+                ? `url('${getEnv("ipfs")}/${props.slider.portadaCID}')`
                 : null
             }
+            // imageURL={
+            //   props.slider.Slides[0]?.Medios[0]
+            //     ? `url('${getEnv("ipfs")}/${
+            //         props.slider.Slides[0].Medios[0].cid
+            //       }')`
+            //     : null
+            // }
           >
             <Icon color="secondary" sx={{ fontSize: "7rem", m: 1 }} />
           </StyledButtonImage>
