@@ -84,7 +84,6 @@ async function getExhibiciones(req) {
 
     let exhibiciones = await Exhibiciones.findAll({
       where,
-      // order,
       include: [
         { model: Lugares },
         { model: ListaTipos, required: false },
@@ -93,10 +92,13 @@ async function getExhibiciones(req) {
           model: Sliders,
           required: false,
           include: [
+            { model: Medios, required: false },
             { model: ListaTipos, required: false },
             {
               model: Slides,
               required: false,
+              separate: true, // Force separate query. The issue with the order attribute within the nested include is likely due to Sequelize's complexity in handling deep nested orders. To solve this, you can try using a separate option in the include to force Sequelize to make a separate query for the nested Slides association.
+              order: [["index", "ASC"]],
               include: [
                 {
                   model: Medios,
@@ -138,6 +140,7 @@ async function getExhibiciones(req) {
           descripcion: slider.descripcion,
           index: slider.index,
           tipoSlider: slider.ListaTipo.first,
+          portadaCID: slider.Medio.cid,
         };
         const Slides = slider.Slides?.map((slide) => {
           const basicSlideData = {

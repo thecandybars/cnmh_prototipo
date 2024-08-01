@@ -14,6 +14,7 @@ MultimediaExhibicion.propTypes = {
 const StyledRightCol = styled(Stack)(() => ({
   display: "flex",
   flex: 1,
+  paddingTop: "8px",
   backgroundImage: "url('/fondo_plantas.png')",
   backgroundSize: "fill",
   justifyContent: "space-between",
@@ -34,7 +35,8 @@ export default function MultimediaExhibicion(props) {
       alt="Logo lugar"
       src={`${getEnv("ipfs")}/${props.data.Portada.cid}`}
       style={{
-        objectFit: "cover   ",
+        width: "100%",
+        objectFit: "cover",
         objectPosition: "center",
       }}
     />
@@ -44,6 +46,7 @@ export default function MultimediaExhibicion(props) {
       <img
         alt="Logo lugar"
         src={`${getEnv("media")}${props.data.Lugar.logoURL}`}
+        style={{ height: "200px" }}
       />
     </Box>
   );
@@ -88,14 +91,14 @@ export default function MultimediaExhibicion(props) {
       onClose={() => setActiveSlider(null)}
       sx={{ width: "100vw", height: "100vh" }}
     >
-      <Slider data={activeSlider} />
+      <Slider data={activeSlider} onClose={() => setActiveSlider(null)} />
     </Dialog>
   );
 
   return (
     <Box width="100vw" height="100vh" sx={{ display: "flex" }}>
       {renderSliderDialog}
-      <Box display="flex" flex={2}>
+      <Box display="flex" flex={3}>
         {renderPortada}
       </Box>
       {renderCloseButton}

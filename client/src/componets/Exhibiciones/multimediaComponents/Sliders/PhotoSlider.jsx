@@ -1,14 +1,4 @@
-import {
-  A11y,
-  Navigation,
-  Pagination,
-  Scrollbar,
-  Thumbs,
-} from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
 import PropTypes from "prop-types";
-import getEnv from "../../../../utils/getEnv";
-import PhotoSlideData from "./PhotoSliderComponents/PhotoSlideData";
 import { Box, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 // Import Swiper styles
@@ -16,158 +6,96 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
+import CloseCancelButton from "../../../common/buttons/CloseCancelButton";
+import MainSlider from "./PhotoSliderComponents/MainSlider";
+import ThumbSlider from "./PhotoSliderComponents/ThumbSlider";
 
 PhotoSlider.propTypes = {
   data: PropTypes.object,
+  onClose: PropTypes.func,
 };
 export default function PhotoSlider(props) {
-  console.log("🚀 ~ PhotoSlider ~ props:", props);
-
-  const renderSlides = props.data.Slides.map((slide) => (
-    <SwiperSlide
-      key={slide.id}
-      style={{
-        width: "100%",
-        height: "100%",
-      }}
-    >
-      <PhotoSlideData data={slide} />
-      <img
-        src={`${getEnv("ipfs")}/${slide.Medios[0].cid}`}
-        style={{
-          width: "100%",
-          height: "600px",
-          objectFit: "cover",
-          objectPosition: "center",
-        }}
-      />
-    </SwiperSlide>
-  ));
-
-  const renderThumbs = props.data.Slides.map((slide) => (
-    <SwiperSlide
-      key={slide.id}
-      style={{
-        width: "100%",
-        height: "fit-content",
-        // border: "1px solid red",
-      }}
-    >
-      <img
-        src={`${getEnv("ipfs")}/${slide.Medios[0].cid}`}
-        style={{
-          // margin: "30px",
-          display: "block",
-          width: "250px",
-          height: "200px",
-          objectFit: "cover",
-          objectPosition: "center",
-          // marginBottom: "300px",
-          // border: "1px solid yellow",
-        }}
-      />
-    </SwiperSlide>
-  ));
-
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        backgroundColor: "#3e831b",
-        backgroundImage: "url('/sliderFondo.jpg')",
-        backgroundSize: "cover",
-        backgroundBlendMode: "multiply",
-        width: "100%",
-        height: "100%",
-        padding: "100px",
-      }}
+
+  const renderCloseButton = (
+    <CloseCancelButton
+      onClick={props.onClose}
+      sx={{ position: "absolute", right: 0 }}
+    />
+  );
+
+  // MAIN SLIDER
+  const renderTitle = (
+    <Typography variant="h3" color="secondary" sx={{ alignSelf: "start" }}>
+      {props.data.titulo}
+    </Typography>
+  );
+  const renderMainSlider = (
+    <MainSlider slides={props.data.Slides} thumbsSwiper={thumbsSwiper} />
+  );
+
+  const renderDescription = (
+    <Typography
+      variant="body"
+      color="primary"
+      sx={{ alignSelf: "start", width: "60%" }}
     >
+      {props.data.descripcion}
+    </Typography>
+  );
+
+  // THUMBNAILS SLIDER
+  const renderThumbSlider = (
+    <ThumbSlider slides={props.data.Slides} setThumbsSwiper={setThumbsSwiper} />
+  );
+  return (
+    <>
+      {renderCloseButton}
       <Box
         sx={{
-          // border: "1px solid yellow",
-          width: "100%",
+          display: "flex",
+          backgroundColor: "#3e831b",
+          backgroundImage: "url('/sliderFondo.png')",
+          backgroundSize: "cover",
+          backgroundBlendMode: "multiply",
+          width: 1,
+          height: 1,
+          padding: 12,
         }}
       >
-        <Stack
-          flex={3}
-          gap={1}
+        <Box
+          sx={{
+            width: 1,
+          }}
+        >
+          <Stack
+            flex={3}
+            gap={1}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              width: "min-content",
+              margin: "0 auto",
+            }}
+          >
+            {renderTitle}
+            {renderMainSlider}
+            {renderDescription}
+          </Stack>
+        </Box>
+        <Box
           sx={{
             display: "flex",
             justifyContent: "center",
-            // alignItems: "center",
-            width: "min-content",
-            margin: "0 auto",
-            // border: "1px solid red",
+            alignItems: "center",
+            p: 4,
+            backgroundColor: "#ffffff55",
+            borderRadius: "40px",
           }}
         >
-          <Typography
-            variant="h3"
-            color="secondary"
-            sx={{ alignSelf: "start" }}
-          >
-            {props.data.titulo}
-          </Typography>
-          <Swiper
-            //  warning!!! 1200px is a fixed value!!!
-            style={{ width: "1200px", height: "600px", margin: 0 }}
-            direction="horizontal"
-            modules={[Navigation, Pagination, Scrollbar, A11y, Thumbs]}
-            thumbs={{
-              swiper:
-                thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
-            }}
-            spaceBetween={50}
-            slidesPerView={1}
-            navigation
-            pagination={{ clickable: true }}
-            //   scrollbar={{ draggable: true }}
-            //   onSwiper={(swiper) => console.log(swiper)}
-            //   onSlideChange={() => console.log("slide change")}
-            loop={true}
-          >
-            {renderSlides}
-          </Swiper>
-          <Typography
-            variant="body"
-            color="primary"
-            sx={{ alignSelf: "start", width: "60%" }}
-          >
-            {props.data.descripcion}
-          </Typography>
-        </Stack>
+          {renderThumbSlider}
+        </Box>
       </Box>
-      <Box
-        // flex={1}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          p: 4,
-          backgroundColor: "#ffffff55",
-          borderRadius: "40px",
-        }}
-      >
-        <Swiper
-          direction="vertical"
-          loop={true}
-          style={{
-            width: "fit-content",
-            height: "100%",
-            // border: "1px solid blue",
-          }}
-          onSwiper={setThumbsSwiper}
-          // spaceBetween={200}
-          slidesPerView={5}
-          // freeMode={true}
-          navigation
-          watchSlidesProgress={true}
-          modules={[Thumbs, Navigation]}
-          // className="mySwiper"
-        >
-          {renderThumbs}
-        </Swiper>
-      </Box>
-    </Box>
+    </>
   );
 }
