@@ -93,7 +93,6 @@ async function getExhibiciones(req) {
           required: false,
           include: [
             { model: Medios, required: false },
-            { model: ListaTipos, required: false },
             {
               model: Slides,
               required: false,
@@ -111,6 +110,7 @@ async function getExhibiciones(req) {
                     "tipoMedioId",
                   ],
                 },
+                { model: ListaTipos, required: false },
               ],
             },
           ],
@@ -139,12 +139,12 @@ async function getExhibiciones(req) {
           titulo: slider.titulo,
           descripcion: slider.descripcion,
           index: slider.index,
-          tipoSlider: slider.ListaTipo.first,
           portadaCID: slider.Medio.cid,
         };
         const Slides = slider.Slides?.map((slide) => {
           const basicSlideData = {
             id: slide.id,
+            tipoSlide: slide.ListaTipo.first,
             titulo: slide.titulo,
             descripcion: slide.descripcion,
             index: slide.index,

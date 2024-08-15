@@ -1,10 +1,6 @@
 import { Box, Button, Stack, styled, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import getEnv from "../../../../utils/getEnv";
-import { PhotoIconOutlined } from "../../../common/icons";
-import { VideoIconOutlined } from "../../../common/icons";
-import { AudioIconOutlined } from "../../../common/icons";
-import { DocumentIconOutlined } from "../../../common/icons";
 
 ButtonSlider.propTypes = {
   slider: PropTypes.object,
@@ -20,20 +16,9 @@ const StyledButtonImage = styled(Box)(({ imageURL }) => ({
   backgroundPosition: "center",
   backgroundImage: imageURL,
   width: "220px",
-  height: "auto",
+  height: "130px",
 }));
 export default function ButtonSlider(props) {
-  console.log("🚀 ~ ButtonSlider ~ props:", props);
-  const Icon =
-    props.slider.tipoSlider === "Foto"
-      ? PhotoIconOutlined
-      : props.slider.tipoSlider === "Video"
-      ? VideoIconOutlined
-      : props.slider.tipoSlider === "Audio"
-      ? AudioIconOutlined
-      : props.slider.tipoSlider === "Documento"
-      ? DocumentIconOutlined
-      : null;
   return (
     <Button onClick={props.onClick}>
       <Stack p={2} alignItems="center">
@@ -53,16 +38,7 @@ export default function ButtonSlider(props) {
                 ? `url('${getEnv("ipfs")}/${props.slider.portadaCID}')`
                 : null
             }
-            // imageURL={
-            //   props.slider.Slides[0]?.Medios[0]
-            //     ? `url('${getEnv("ipfs")}/${
-            //         props.slider.Slides[0].Medios[0].cid
-            //       }')`
-            //     : null
-            // }
-          >
-            <Icon color="secondary" sx={{ fontSize: "7rem", m: 1 }} />
-          </StyledButtonImage>
+          ></StyledButtonImage>
         </Box>
       </Stack>
     </Button>

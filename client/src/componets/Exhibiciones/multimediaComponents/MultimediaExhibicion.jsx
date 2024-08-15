@@ -21,6 +21,13 @@ const StyledRightCol = styled(Stack)(() => ({
 }));
 const MainContent = styled(Stack)(() => ({
   height: "100%",
+  overflowY: "scroll",
+}));
+const StyledFullScreenContainer = styled(Box)(() => ({
+  display: "flex",
+  width: "100vw",
+  height: "100vh",
+  overflowY: "clip",
 }));
 export default function MultimediaExhibicion(props) {
   //   console.log("🚀 ~ MultimediaExhibicion ~ props:", props);
@@ -72,8 +79,7 @@ export default function MultimediaExhibicion(props) {
 
   // SLIDERS
   const [activeSlider, setActiveSlider] = useState(null);
-  console.log("🚀 ~ MultimediaExhibicion ~ activeSlider:", activeSlider);
-  const renderSliders = props.data.Sliders.map((slider) => (
+  const renderButtonSliders = props.data.Sliders.map((slider) => (
     <ButtonSlider
       slider={slider}
       key={slider.id}
@@ -83,7 +89,6 @@ export default function MultimediaExhibicion(props) {
   ));
 
   // SLIDER DIALOG
-  const Slider = activeSlider?.tipoSlider === "Foto" ? PhotoSlider : null;
   const renderSliderDialog = activeSlider && (
     <Dialog
       fullScreen
@@ -91,12 +96,12 @@ export default function MultimediaExhibicion(props) {
       onClose={() => setActiveSlider(null)}
       sx={{ width: "100vw", height: "100vh" }}
     >
-      <Slider data={activeSlider} onClose={() => setActiveSlider(null)} />
+      <PhotoSlider data={activeSlider} onClose={() => setActiveSlider(null)} />
     </Dialog>
   );
 
   return (
-    <Box width="100vw" height="100vh" sx={{ display: "flex" }}>
+    <StyledFullScreenContainer>
       {renderSliderDialog}
       <Box display="flex" flex={3}>
         {renderPortada}
@@ -107,11 +112,11 @@ export default function MultimediaExhibicion(props) {
 
         <MainContent>
           {renderRightData}
-          {renderSliders}
+          {renderButtonSliders}
         </MainContent>
 
         {renderFooter}
       </StyledRightCol>
-    </Box>
+    </StyledFullScreenContainer>
   );
 }

@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import useFetch from "../common/customHooks/useFetch";
 import { getExhibicion } from "../../services/exhibiciones";
-import MultimediaExhibicion from "./multimediaComponents/MultimediaExhibicion";
+import MultimediaExhibicion from "./MultimediaComponents/MultimediaExhibicion";
 
 Multimedia.propTypes = {
   exhibicionId: PropTypes.number,
