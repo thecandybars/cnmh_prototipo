@@ -5,32 +5,36 @@ import getEnv from "../../../../../utils/getEnv";
 import { Stack } from "@mui/material";
 
 function ThumbSlider(props) {
-  const renderThumbs = props.slides.map((slide) => (
-    <SwiperSlide
-      key={slide.id}
-      style={{
-        width: "100%",
-        height: "fit-content",
-      }}
-    >
-      <Stack>
-        <img
-          src={`${getEnv("ipfs")}/${slide.Medios[0].cid}`}
-          style={{
-            display: "block",
-            width: "250px",
-            height: "120px",
-            borderRadius: "16px",
-            objectFit: "cover",
-            objectPosition: "center",
-          }}
-        />
-        {/* <Typography variant="body" color="secondary">
+  const renderThumbs = props.slides.map((slide) => {
+    const source =
+      slide.tipoSlide === "Foto" ? slide.Medios[0].cid : slide.Medios[1].cid;
+    return (
+      <SwiperSlide
+        key={slide.id}
+        style={{
+          width: "100%",
+          height: "fit-content",
+        }}
+      >
+        <Stack>
+          <img
+            src={`${getEnv("ipfs")}/${source}`}
+            style={{
+              display: "block",
+              width: "250px",
+              height: "120px",
+              borderRadius: "16px",
+              objectFit: "cover",
+              objectPosition: "center",
+            }}
+          />
+          {/* <Typography variant="body" color="secondary">
           Hooa
         </Typography> */}
-      </Stack>
-    </SwiperSlide>
-  ));
+        </Stack>
+      </SwiperSlide>
+    );
+  });
   return (
     <Swiper
       direction="vertical"
