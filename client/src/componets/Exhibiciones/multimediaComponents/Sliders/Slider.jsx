@@ -15,7 +15,6 @@ Slider.propTypes = {
   onClose: PropTypes.func,
 };
 export default function Slider(props) {
-  console.log("🚀 ~ Slider ~ props:", props);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   const renderCloseButton = (

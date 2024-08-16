@@ -139,7 +139,9 @@ export default function Mapa() {
   // COLOR CONFLICT AREAS
   const [drawConflictAreas, setDrawConflictAreas] = useState(false);
   const renderConflictAreasSwitch = (
-    <Box sx={{ bgcolor: "secondary.main" }}>
+    <Box
+      sx={{ bgcolor: "secondary.main", px: 4, borderRadius: "30px 0 0 30px" }}
+    >
       <FormControlLabel
         control={
           <Switch
@@ -201,7 +203,6 @@ export default function Mapa() {
           speed: 0.4,
           curve: 1.42,
           zoom: 15,
-          bearing: 0,
           pitch: 70,
         });
     },
@@ -216,13 +217,15 @@ export default function Mapa() {
       supercluster.getClusterExpansionZoom(cluster.id),
       20
     );
-    setDestination({
+    const destination = {
       ...actualViewport,
       latitude,
       longitude,
       zoom: expansionZoom,
       transitionDuration: 500,
-    });
+    };
+    delete destination.bearing;
+    setDestination(destination);
   };
   const [previewMarker, setPreviewMarker] = useState(null);
   const handlePreviewMarker = useCallback(
@@ -246,11 +249,14 @@ export default function Mapa() {
         speed: destination.speed || 0.4,
         curve: destination.curve || 1.42,
         zoom: destination.zoom || 15,
-        bearing: destination.bearing || 0,
+        bearing:
+          typeof destination.bearing === "number"
+            ? destination.bearing
+            : actualViewport.bearing + Math.random() * 50 - 25,
         pitch: destination.pitch,
         essential: true,
       });
-  }, [destination]);
+  }, [destination, actualViewport]);
 
   // DIALOG LUGAR
   const [openDialogLugar, setOpenDialogLugar] = useState(false);
@@ -306,6 +312,7 @@ export default function Mapa() {
     <ViewsBreadcrumbs
       actualView={actualView}
       actualRegion={actualRegion}
+      actualLugar={selectedMarker}
       onClick0={() => {
         setActualView(0);
         setActualRegion(null);
@@ -324,6 +331,17 @@ export default function Mapa() {
 
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
+      <Box
+        spacing={1}
+        sx={{
+          position: "absolute",
+          top: "47px",
+          zIndex: 100,
+          left: 0,
+        }}
+      >
+        {renderViewsBreadcrumbs}
+      </Box>
       <Stack
         spacing={1}
         sx={{
@@ -334,7 +352,6 @@ export default function Mapa() {
           padding: 0,
         }}
       >
-        {renderViewsBreadcrumbs}
         {renderConflictAreasSwitch}
       </Stack>
       <Map
@@ -351,6 +368,7 @@ export default function Mapa() {
         // onViewportChange={(nextViewport) => handleViewportChange(nextViewport)}
         interactiveLayerIds={interactiveLayerIds}
         terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}
+        on
       >
         {renderMacroregiones}
         {renderConflictAreas}

@@ -1,13 +1,9 @@
 /* Nav.module.css */
 .navContainer {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
+  top: 40px;
+  right: 0;
   z-index: 1000;
-  /* background-color: #000000ee; */
-  /* padding: 10px; */
-  padding-top: 40px;
 }
 
 .menu {

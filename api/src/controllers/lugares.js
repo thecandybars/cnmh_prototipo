@@ -120,7 +120,14 @@ async function getLugares(req) {
     let lugares = await Lugares.findAll({
       where,
       // order,
-      attributes: ["id", "nombre", "latitud", "longitud", "descripcion"],
+      attributes: [
+        "id",
+        "nombre",
+        "nombreCorto",
+        "latitud",
+        "longitud",
+        "descripcion",
+      ],
       include: [
         {
           model: Municipios,
