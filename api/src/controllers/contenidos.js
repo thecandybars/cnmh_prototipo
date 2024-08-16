@@ -7,7 +7,6 @@ const { conn } = require("../db.js");
 
 //----------------------------- Create a new exhibicion -----------------------------//
 async function createContenido(req) {
-  console.log("🚀 ~ req:", req.body.exhibicionId);
   const t = await conn.transaction();
   try {
     // VALIDATE TIPO CONTENIDO
