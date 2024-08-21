@@ -6,6 +6,7 @@ const tiposLugares = require("./tiposLugares");
 const exhibiciones = require("./exhibiciones");
 const contenidos = require("./contenidos");
 const sliders = require("./sliders");
+const medios = require("./medios");
 
 module.exports = {
   ...regions,
@@ -16,4 +17,5 @@ module.exports = {
   ...exhibiciones,
   ...contenidos,
   ...sliders,
+  ...medios,
 };

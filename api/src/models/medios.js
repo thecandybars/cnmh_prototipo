@@ -16,6 +16,10 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(30),
         allowNull: true,
       },
+      url: {
+        type: DataTypes.STRING(60),
+        allowNull: true,
+      },
     },
     {
       timestamps: false, // Deshabilitar los campos de fecha
