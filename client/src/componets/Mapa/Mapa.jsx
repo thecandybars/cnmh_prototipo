@@ -94,6 +94,10 @@ export default function Mapa() {
   const [actualView, setActualView] = useState(0); //0:pais, 1:region, 2:lugar
   const [actualRegion, setActualRegion] = useState(null);
 
+  useEffect(() => {
+    setDestination({ zoom: 4 });
+  }, []);
+
   // FILTER LUGARES
   const lugares = useMemo(
     () =>
@@ -108,9 +112,9 @@ export default function Mapa() {
 
   // HANDLE MOVE
   const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
-  const handleViewportChange = useCallback((newViewport) => {
-    setActualViewport(newViewport);
-  }, []);
+  // const handleViewportChange = useCallback((newViewport) => {
+  //   setActualViewport(newViewport);
+  // }, []);
 
   // HANDLE CLICKS ON INTERACTIVE REGIONS
   const handleMapClick = (event) => {
@@ -256,7 +260,7 @@ export default function Mapa() {
         pitch: destination.pitch,
         essential: true,
       });
-  }, [destination, actualViewport]);
+  }, [destination]);
 
   // DIALOG LUGAR
   const [openDialogLugar, setOpenDialogLugar] = useState(false);
@@ -364,7 +368,7 @@ export default function Mapa() {
         // mapStyle="mapbox://styles/mapbox/light-v10"
         mapboxAccessToken={TOKEN}
         onClick={handleMapClick}
-        onMove={(evt) => handleViewportChange(evt.viewState)}
+        onMove={(evt) => setActualViewport(evt.viewState)}
         // onViewportChange={(nextViewport) => handleViewportChange(nextViewport)}
         interactiveLayerIds={interactiveLayerIds}
         terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}
