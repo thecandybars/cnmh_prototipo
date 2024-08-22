@@ -1,13 +1,13 @@
 //Custom code
-const { Medios } = require("../db.js");
+const { Medios, ListaTipos } = require("../db.js");
 const response = require("../common/response");
 const { conn } = require("../db.js");
+const pinFileToIPFS = require("../common/pinFileToIPFS.js");
 
 ////////////////////////////////// MEDIOS //////////////////////////////////
 
 //----------------------------- Create a new medio -----------------------------//
 async function createMedio(req) {
-  console.log("🚀 ~ createMedio ~ req:", req.file);
   const t = await conn.transaction();
   try {
     // //Validate if medio name exists
@@ -36,6 +36,11 @@ async function createMedio(req) {
 
     if (newMedio === null) throw { error: "Error creating Medio", status: 400 };
 
+    let ipfs;
+    if (req.body.pinToIPFS && req.file.path)
+      ipfs = await pinFileToIPFS(req.file.path, req.file.originalname);
+    console.log("🚀 ~ createMedio ~ ipfs:", ipfs);
+
     await t.commit();
     return response(
       req.body,
@@ -44,7 +49,7 @@ async function createMedio(req) {
         data: newMedio,
         status: 200,
       },
-      "createExhibicion"
+      "createMedio"
     );
   } catch (err) {
     console.log("🚀 ~ createMedio ~ err:", err);
@@ -78,9 +83,18 @@ async function getMedios(req) {
 
     let medios = await Medios.findAll({
       where,
+      include: [{ model: ListaTipos }],
     });
-
-    const data = where.id ? medios[0] : medios;
+    const formattedMedios = medios.map((medio) => ({
+      id: medio.id,
+      cid: medio.cid,
+      titulo: medio.titulo,
+      descripcion: medio.descripcion,
+      url: medio.url,
+      tipoMedio: { id: medio.tipoMedioId, tipo: medio.ListaTipo?.first },
+    }));
+    const data = where.id ? formattedMedios[0] : formattedMedios;
+    // const data = where.id ? medios[0] : medios;
 
     return response(
       req.params,

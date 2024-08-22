@@ -29,7 +29,7 @@ async function createSlider(req) {
       descripcion: req.body.descripcion,
       index: req.body.index,
       exhibicionId: req.body.exhibicionId,
-      tipoSliderId: req.body.tipoSliderId,
+      portadaMedioId: req.body.portadaMedioId,
     });
 
     if (newSlider === null)
@@ -63,9 +63,9 @@ async function createSlider(req) {
     );
   }
 }
-//----------------------------- End create a new exhibicion -----------------------------//
+//----------------------------- End create a new Slider -----------------------------//
 
-//----------------------------- Get all or a single exhibicion -----------------------------//
+//----------------------------- Get all or a single Slider -----------------------------//
 async function getSliders(req) {
   try {
     let where = {};
@@ -127,6 +127,7 @@ async function createSlide(req) {
       index: req.body.index,
       contenidoId: req.body.contenidoId,
       sliderId: req.body.sliderId,
+      tipoSlideId: req.body.tipoSlideId,
     });
 
     if (newSlide === null) throw { error: "Error creating Slide", status: 400 };

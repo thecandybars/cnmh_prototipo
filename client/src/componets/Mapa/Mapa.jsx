@@ -333,6 +333,34 @@ export default function Mapa() {
     />
   );
 
+  // Function to smoothly rotate the map when idle
+  const [isIdle, setIsIdle] = useState(true);
+  useEffect(() => {
+    if (isIdle && mapRef.current && actualView !== 0) {
+      const rotateMap = () => {
+        const currentBearing = mapRef.current.getBearing();
+        mapRef.current.rotateTo(currentBearing + 180, {
+          duration: 30000, // 30 seconds for a half rotation
+          easing: (t) => 0.5 * Math.pow(t, 2),
+        });
+      };
+      rotateMap();
+      const rotateInterval = setInterval(rotateMap, 30000); // Rotate every 30 seconds
+
+      return () => clearInterval(rotateInterval); // Clear interval on component unmount
+    }
+  }, [isIdle]);
+
+  // Handle map interaction (stop rotation on interaction)
+  const handleMapInteraction = () => {
+    setIsIdle(false);
+  };
+
+  // Handle map idle (restart rotation after interaction ends)
+  const handleMapIdle = () => {
+    setIsIdle(true);
+  };
+
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
       <Box
@@ -368,11 +396,14 @@ export default function Mapa() {
         // mapStyle="mapbox://styles/mapbox/light-v10"
         mapboxAccessToken={TOKEN}
         onClick={handleMapClick}
-        onMove={(evt) => setActualViewport(evt.viewState)}
+        onMove={(evt) => {
+          handleMapInteraction();
+          setActualViewport(evt.viewState);
+        }}
         // onViewportChange={(nextViewport) => handleViewportChange(nextViewport)}
         interactiveLayerIds={interactiveLayerIds}
         terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}
-        on
+        onIdle={handleMapIdle} // Restart rotation when idle
       >
         {renderMacroregiones}
         {renderConflictAreas}
