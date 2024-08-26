@@ -10,24 +10,17 @@ const pinFileToIPFS = require("../common/pinFileToIPFS.js");
 async function createMedio(req) {
   const t = await conn.transaction();
   try {
-    // //Validate if medio name exists
+    // Validate
 
-    // // VALIDATE LUGAR
-    // if (!(await Lugares.findByPk(req.body.lugarId)))
-    //   throw {
-    //     error: `Lugar de Memoria ${req.body.lugarId} doesnt exists`,
-    //     status: 404,
-    //   };
-    // // VALIDATE TIPO EXHIBICION
-    // if (!(await ListaTipos.findByPk(req.body.tipoExhibicionId)))
-    //   throw {
-    //     error: `Tipo Exhibicion ${req.body.tipoExhibicionId} doesnt exists`,
-    //     status: 404,
-    //   };
+    // PIN TO IPFS
+    const ipfs =
+      req.body.pinToIPFS && req.file.path
+        ? await pinFileToIPFS(req.file.path, req.file.originalname)
+        : null;
 
-    //Create row in database
+    //Create Medio in database, even if pinToIPFS fails
     const newMedio = await Medios.create({
-      cid: null,
+      cid: ipfs.data?.IpfsHash,
       titulo: req.body.titulo,
       descripcion: req.body.descripcion,
       tipoMedioId: req.body.tipoMedioId,
@@ -35,11 +28,6 @@ async function createMedio(req) {
     });
 
     if (newMedio === null) throw { error: "Error creating Medio", status: 400 };
-
-    let ipfs;
-    if (req.body.pinToIPFS && req.file.path)
-      ipfs = await pinFileToIPFS(req.file.path, req.file.originalname);
-    console.log("🚀 ~ createMedio ~ ipfs:", ipfs);
 
     await t.commit();
     return response(
@@ -52,7 +40,6 @@ async function createMedio(req) {
       "createMedio"
     );
   } catch (err) {
-    console.log("🚀 ~ createMedio ~ err:", err);
     //Rollback transactions
     await t.rollback();
 
@@ -66,7 +53,7 @@ async function createMedio(req) {
         status: status,
         success: false,
       },
-      "createExhibicion"
+      "createMedio"
     );
   }
 }
