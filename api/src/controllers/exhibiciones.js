@@ -129,6 +129,7 @@ async function getExhibiciones(req) {
       const Portada = {
         id: exhibicion.Medio.id,
         cid: exhibicion.Medio.cid,
+        url: exhibicion.Medio.url,
         titulo: exhibicion.Medio.titulo,
         descripcion: exhibicion.Medio.descripcion,
         tipoMedio: exhibicion.Medio.ListaTipo.first,

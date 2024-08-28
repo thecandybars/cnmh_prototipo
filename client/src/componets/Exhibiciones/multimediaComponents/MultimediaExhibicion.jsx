@@ -3,8 +3,9 @@ import PropTypes from "prop-types";
 import CloseCancelButton from "../../common/buttons/CloseCancelButton";
 import getEnv from "../../../utils/getEnv";
 import ButtonSlider from "./Sliders/ButtonSlider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PhotoSlider from "./Sliders/PhotoSlider";
+import isMediaAvailable from "../../../utils/isMediaAvailable";
 
 MultimediaExhibicion.propTypes = {
   data: PropTypes.object,
@@ -30,17 +31,30 @@ const StyledFullScreenContainer = styled(Box)(() => ({
   overflowY: "clip",
 }));
 export default function MultimediaExhibicion(props) {
-  //   console.log("🚀 ~ MultimediaExhibicion ~ props:", props);
+  // Check if media exists
+  const [src, setSrc] = useState("");
+  useEffect(() => {
+    const check = async () => {
+      const isMedia = await isMediaAvailable(props.data.Portada.url);
+      if (isMedia) {
+        setSrc(`${getEnv("media")}/${props.data.Portada.url}`);
+      } else {
+        setSrc(`${getEnv("pinataGateway")}/${props.data.Portada.cid}`);
+      }
+    };
+    props.data?.Portada?.url && check();
+  }, [props.data?.Portada]);
+
   const renderCloseButton = (
     <CloseCancelButton
       onClick={props.onClose}
       sx={{ position: "absolute", right: 0 }}
     />
   );
-  const renderPortada = (
+  const renderPortada = src && (
     <img
       alt="Logo lugar"
-      src={`${getEnv("ipfs")}/${props.data.Portada.cid}`}
+      src={src}
       style={{
         width: "100%",
         objectFit: "cover",
@@ -109,12 +123,10 @@ export default function MultimediaExhibicion(props) {
       {renderCloseButton}
       <StyledRightCol>
         {renderLogo}
-
         <MainContent>
           {renderRightData}
           {renderButtonSliders}
         </MainContent>
-
         {renderFooter}
       </StyledRightCol>
     </StyledFullScreenContainer>

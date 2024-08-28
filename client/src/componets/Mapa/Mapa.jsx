@@ -278,7 +278,7 @@ export default function Mapa() {
       <Photo_360 onClose={() => handleCloseDialogLugar()} />
     ) : (
       // <CasaMemoriaTumaco onClose={() => handleCloseDialogLugar()} />
-      <Multimedia exhibicionId={14} onClose={() => handleCloseDialogLugar()} />
+      <Multimedia exhibicionId={17} onClose={() => handleCloseDialogLugar()} />
     );
   const renderDialogLugar = (
     <Dialog
@@ -403,7 +403,7 @@ export default function Mapa() {
         // onViewportChange={(nextViewport) => handleViewportChange(nextViewport)}
         interactiveLayerIds={interactiveLayerIds}
         terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}
-        onIdle={handleMapIdle} // Restart rotation when idle
+        // onIdle={handleMapIdle} // Restart rotation when idle
       >
         {renderMacroregiones}
         {renderConflictAreas}
