@@ -52,14 +52,17 @@ Lugares.belongsTo(TipologiasLugares);
 Lugares.belongsTo(TiposLugares, { foreignKey: "TipoLugarId" });
 Lugares.belongsTo(Municipios);
 Lugares.belongsTo(TipologiasGenerales);
+//LUGARES
 TipologiasLugares.hasMany(Lugares);
 Municipios.hasMany(Lugares);
 TipologiasGenerales.hasMany(Lugares);
+Lugares.belongsTo(Medios, { foreignKey: "imagenMedioId", as: "Imagen" });
 //
 Exhibiciones.belongsTo(Lugares, { foreignKey: "lugarId" });
 Exhibiciones.belongsTo(ListaTipos, { foreignKey: "tipoExhibicionId" });
 
-Exhibiciones.belongsTo(Medios, { foreignKey: "portadaMedioId" });
+Exhibiciones.belongsTo(Medios, { foreignKey: "portadaMedioId", as: "Portada" });
+Exhibiciones.belongsTo(Medios, { foreignKey: "logoMedioId", as: "Logo" });
 
 Exhibiciones.hasMany(Sliders, { foreignKey: "exhibicionId" });
 
