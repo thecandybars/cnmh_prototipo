@@ -85,9 +85,10 @@ async function getExhibiciones(req) {
     let exhibiciones = await Exhibiciones.findAll({
       where,
       include: [
-        { model: Lugares },
+        { model: Lugares, include: { model: Medios, as: "Imagen" } },
         { model: ListaTipos, required: false },
-        { model: Medios, required: false, include: ListaTipos },
+        { model: Medios, required: false, include: ListaTipos, as: "Portada" },
+        { model: Medios, required: false, include: ListaTipos, as: "Logo" },
         {
           model: Sliders,
           required: false,
@@ -118,54 +119,64 @@ async function getExhibiciones(req) {
       ],
     });
 
-    const formattedExhibiciones = exhibiciones.map((exhibicion) => {
-      const rootData = {
-        id: exhibicion.id,
-        titulo: exhibicion.titulo,
-        descripcion: exhibicion.descripcion,
-        tipoExhibicion: exhibicion.ListaTipo.first,
-      };
-      const Lugar = exhibicion.Lugare;
-      const Portada = {
-        id: exhibicion.Medio.id,
-        cid: exhibicion.Medio.cid,
-        url: exhibicion.Medio.url,
-        titulo: exhibicion.Medio.titulo,
-        descripcion: exhibicion.Medio.descripcion,
-        tipoMedio: exhibicion.Medio.ListaTipo.first,
-      };
-      const Sliders = exhibicion.Sliders?.map((slider) => {
-        const basicSliderData = {
-          id: slider.id,
-          titulo: slider.titulo,
-          descripcion: slider.descripcion,
-          index: slider.index,
-          portadaCID: slider.Medio.cid,
+    const formattedExhibiciones =
+      true &&
+      exhibiciones.map((exhibicion) => {
+        const rootData = {
+          id: exhibicion.id,
+          titulo: exhibicion.titulo,
+          descripcion: exhibicion.descripcion,
+          tipoExhibicion: exhibicion.ListaTipo.first,
         };
-        const Slides = slider.Slides?.map((slide) => {
-          const basicSlideData = {
-            id: slide.id,
-            tipoSlide: slide.ListaTipo.first,
-            titulo: slide.titulo,
-            descripcion: slide.descripcion,
-            index: slide.index,
+        const Lugar = exhibicion.Lugare;
+        const Portada = {
+          id: exhibicion.Portada.id,
+          cid: exhibicion.Portada.cid,
+          url: exhibicion.Portada.url,
+          titulo: exhibicion.Portada.titulo,
+          descripcion: exhibicion.Portada.descripcion,
+          tipoMedio: exhibicion.Portada.ListaTipo.first,
+        };
+        const Logo = {
+          id: exhibicion.Logo.id,
+          cid: exhibicion.Logo.cid,
+          url: exhibicion.Logo.url,
+          titulo: exhibicion.Logo.titulo,
+          descripcion: exhibicion.Logo.descripcion,
+          tipoMedio: exhibicion.Logo.ListaTipo.first,
+        };
+        const Sliders = exhibicion.Sliders?.map((slider) => {
+          const basicSliderData = {
+            id: slider.id,
+            titulo: slider.titulo,
+            descripcion: slider.descripcion,
+            index: slider.index,
+            portadaCID: slider.Medio.cid,
           };
-          const Medios = slide.Medios.map((medio) => ({
-            id: medio.id,
-            cid: medio.cid,
-            titulo: medio.cid,
-            descripcion: medio.descripcion,
-            tipoMedio: medio.ListaTipo.first,
-          }));
-          return { ...basicSlideData, Medios };
+          const Slides = slider.Slides?.map((slide) => {
+            const basicSlideData = {
+              id: slide.id,
+              tipoSlide: slide.ListaTipo.first,
+              titulo: slide.titulo,
+              descripcion: slide.descripcion,
+              index: slide.index,
+            };
+            const Medios = slide.Medios.map((medio) => ({
+              id: medio.id,
+              cid: medio.cid,
+              titulo: medio.cid,
+              descripcion: medio.descripcion,
+              tipoMedio: medio.ListaTipo.first,
+            }));
+            return { ...basicSlideData, Medios };
+          });
+          return {
+            ...basicSliderData,
+            Slides,
+          };
         });
-        return {
-          ...basicSliderData,
-          Slides,
-        };
+        return { ...rootData, Lugar, Portada, Logo, Sliders };
       });
-      return { ...rootData, Lugar, Portada, Sliders };
-    });
 
     const data = where.id ? formattedExhibiciones[0] : formattedExhibiciones;
     // const data = where.id ? exhibiciones[0] : exhibiciones;

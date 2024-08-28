@@ -7,6 +7,7 @@ const {
   TipologiasLugares,
   TipologiasGenerales,
   TiposLugares,
+  Medios,
 } = require("../db.js");
 const response = require("../common/response");
 const { conn } = require("../db.js");
@@ -151,6 +152,7 @@ async function getLugares(req) {
         { model: TipologiasGenerales },
         { model: TipologiasLugares },
         { model: TiposLugares },
+        { model: Medios, as: "Imagen" },
       ],
     });
     checkCommonErrors(lugares);

@@ -12,10 +12,10 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(100),
         allowNull: true,
       },
-      portadaMedioId: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-      },
+      // portadaMedioId: {
+      //   type: DataTypes.INTEGER,
+      //   allowNull: true,
+      // },
     },
     {
       timestamps: false, // Deshabilitar los campos de fecha
