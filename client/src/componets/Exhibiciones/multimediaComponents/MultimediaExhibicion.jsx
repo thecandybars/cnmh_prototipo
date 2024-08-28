@@ -1,11 +1,10 @@
 import { Box, Dialog, Stack, styled, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import CloseCancelButton from "../../common/buttons/CloseCancelButton";
-import getEnv from "../../../utils/getEnv";
 import ButtonSlider from "./Sliders/ButtonSlider";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PhotoSlider from "./Sliders/PhotoSlider";
-import isMediaAvailable from "../../../utils/isMediaAvailable";
+import useSelectMediaSource from "../../common/customHooks/useSelectMediaSource";
 
 MultimediaExhibicion.propTypes = {
   data: PropTypes.object,
@@ -31,19 +30,15 @@ const StyledFullScreenContainer = styled(Box)(() => ({
   overflowY: "clip",
 }));
 export default function MultimediaExhibicion(props) {
-  // Check if media exists
-  const [src, setSrc] = useState("");
-  useEffect(() => {
-    const check = async () => {
-      const isMedia = await isMediaAvailable(props.data.Portada.url);
-      if (isMedia) {
-        setSrc(`${getEnv("media")}/${props.data.Portada.url}`);
-      } else {
-        setSrc(`${getEnv("pinataGateway")}/${props.data.Portada.cid}`);
-      }
-    };
-    props.data?.Portada?.url && check();
-  }, [props.data?.Portada]);
+  // Get media sources
+  const logoSource = useSelectMediaSource({
+    primary: props.data.Logo.url,
+    secondary: props.data.Logo.cid,
+  });
+  const portadaSource = useSelectMediaSource({
+    primary: props.data.Portada.url,
+    secondary: props.data.Portada.cid,
+  });
 
   const renderCloseButton = (
     <CloseCancelButton
@@ -51,10 +46,10 @@ export default function MultimediaExhibicion(props) {
       sx={{ position: "absolute", right: 0 }}
     />
   );
-  const renderPortada = src && (
+  const renderPortada = portadaSource && (
     <img
       alt="Logo lugar"
-      src={src}
+      src={portadaSource}
       style={{
         width: "100%",
         objectFit: "cover",
@@ -62,13 +57,9 @@ export default function MultimediaExhibicion(props) {
       }}
     />
   );
-  const renderLogo = (
+  const renderLogo = logoSource && (
     <Box margin="0 auto">
-      <img
-        alt="Logo lugar"
-        src={`${getEnv("media")}${props.data.Lugar.logoURL}`}
-        style={{ height: "200px" }}
-      />
+      <img alt="Logo lugar" src={logoSource} style={{ height: "200px" }} />
     </Box>
   );
   const renderRightData = (
