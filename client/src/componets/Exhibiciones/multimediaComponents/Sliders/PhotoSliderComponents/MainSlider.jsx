@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { A11y, Navigation, Scrollbar, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import getEnv from "../../../../../utils/getEnv";
+import checkMedia from "../../../../../utils/isMediaAvailable";
 import SlideCaption from "./SlideCaption";
 import { Box, Stack, Typography } from "@mui/material";
 
@@ -24,7 +25,11 @@ function MainSlider(props) {
         >
           <SlideCaption data={slide} />
           <img
-            src={`${getEnv("ipfs")}/${slide.Medios[0].cid}`}
+            src={
+              checkMedia(slide.Medios[0].url)
+                ? `${getEnv("media")}/${slide.Medios[0].url}`
+                : `${getEnv("pinataGateway")}/${slide.Medios[0].cid}`
+            }
             style={{
               width: "100%",
               height: "600px",
