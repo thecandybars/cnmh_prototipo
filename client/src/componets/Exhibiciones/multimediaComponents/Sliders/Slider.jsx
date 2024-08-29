@@ -45,7 +45,7 @@ export default function Slider(props) {
   );
 
   // THUMBNAILS SLIDER
-  const renderThumbSlider = (
+  const renderThumbSlider = true && (
     <ThumbSlider slides={props.data.Slides} setThumbsSwiper={setThumbsSwiper} />
   );
   return (
@@ -63,22 +63,26 @@ export default function Slider(props) {
           padding: 12,
         }}
       >
-        {/* <Box width={1}> */}
-        <Stack
-          flex={3}
-          gap={1}
+        <Box
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            width: "min-content",
-            margin: "0 auto",
+            width: 1,
           }}
         >
-          {renderTitle}
-          {renderMainSlider}
-          {renderDescription}
-        </Stack>
-        {/* </Box> */}
+          <Stack
+            flex={3}
+            gap={1}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              width: "min-content",
+              margin: "0 auto",
+            }}
+          >
+            {renderTitle}
+            {renderMainSlider}
+            {renderDescription}
+          </Stack>
+        </Box>
         <Box
           sx={{
             display: "flex",

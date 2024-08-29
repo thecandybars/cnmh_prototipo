@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import CloseCancelButton from "../../common/buttons/CloseCancelButton";
 import ButtonSlider from "./Sliders/ButtonSlider";
 import { useState } from "react";
-import PhotoSlider from "./Sliders/PhotoSlider";
+import Slider from "./Sliders/Slider";
 import useSelectMediaSource from "../../common/customHooks/useSelectMediaSource";
 
 MultimediaExhibicion.propTypes = {
@@ -101,7 +101,7 @@ export default function MultimediaExhibicion(props) {
       onClose={() => setActiveSlider(null)}
       sx={{ width: "100vw", height: "100vh" }}
     >
-      <PhotoSlider data={activeSlider} onClose={() => setActiveSlider(null)} />
+      <Slider data={activeSlider} onClose={() => setActiveSlider(null)} />
     </Dialog>
   );
 
