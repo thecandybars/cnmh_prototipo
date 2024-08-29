@@ -1,37 +1,13 @@
 import PropTypes from "prop-types";
 import { Navigation, Thumbs, Mousewheel } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import getEnv from "../../../../../utils/getEnv";
-import { Stack } from "@mui/material";
+import Thumb from "./Thumb";
 
 function ThumbSlider(props) {
   const renderThumbs = props.slides.map((slide) => {
-    const source =
-      slide.tipoSlide === "Foto" ? slide.Medios[0].cid : slide.Medios[1].cid;
     return (
-      <SwiperSlide
-        key={slide.id}
-        style={{
-          width: "100%",
-          height: "fit-content",
-        }}
-      >
-        <Stack>
-          <img
-            src={`${getEnv("ipfs")}/${source}`}
-            style={{
-              display: "block",
-              width: "250px",
-              height: "120px",
-              borderRadius: "16px",
-              objectFit: "cover",
-              objectPosition: "center",
-            }}
-          />
-          {/* <Typography variant="body" color="secondary">
-          Hooa
-        </Typography> */}
-        </Stack>
+      <SwiperSlide key={slide.id}>
+        <Thumb slide={slide} />
       </SwiperSlide>
     );
   });
