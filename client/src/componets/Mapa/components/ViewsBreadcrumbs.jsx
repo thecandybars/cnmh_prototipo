@@ -7,8 +7,8 @@ ViewsBreadcrumbs.propTypes = {
   actualView: PropTypes.number,
   actualRegion: PropTypes.number,
   actualLugar: PropTypes.obj,
-  onClick0: PropTypes.func,
-  onClick1: PropTypes.func,
+  onClickView0: PropTypes.func,
+  onClickView1: PropTypes.func,
 };
 
 export default function ViewsBreadcrumbs(props) {
@@ -24,13 +24,11 @@ export default function ViewsBreadcrumbs(props) {
     >
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" color="primary" />}
-        // display="flex"
       >
         <Link
           underline={props.actualView === 0 ? "none" : "always"}
-          onClick={() => props.onClick0()}
+          onClick={() => props.onClickView0()}
           sx={{
-            // fontWeight: props.actualView === 0 ? "bolder" : "normal",
             cursor: props.actualView === 0 ? "default" : "pointer",
           }}
         >
@@ -39,9 +37,8 @@ export default function ViewsBreadcrumbs(props) {
         {props.actualView > 0 && (
           <Link
             underline={props.actualView === 1 ? "none" : "always"}
-            onClick={() => props.onClick1()}
+            onClick={() => props.onClickView1()}
             sx={{
-              // fontWeight: props.actualView === 1 ? "bolder" : "normal",
               cursor: props.actualView === 1 ? "default" : "pointer",
             }}
           >
@@ -52,7 +49,6 @@ export default function ViewsBreadcrumbs(props) {
           <Link
             underline="none"
             sx={{
-              // fontWeight: "bolder",
               cursor: "default",
             }}
           >
