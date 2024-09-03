@@ -30,6 +30,18 @@ export default function MarkersLugares(props) {
           onClick={(e) => {
             props.handleSelectedCluster(e, cluster, supercluster);
           }}
+          onMouseOver={(e) =>
+            props.handlePreviewCluster({
+              action: "over",
+              data: { e, cluster, supercluster },
+            })
+          }
+          onMouseOut={() =>
+            props.handlePreviewCluster({
+              action: "out",
+              data: null,
+            })
+          }
         >
           <StyledMarker
             marca={{ latitud: latitude, longitud: longitude }}
@@ -86,6 +98,7 @@ export default function MarkersLugares(props) {
               type: "Point",
               coordinates: [lugar.longitud, lugar.latitud],
             },
+            lugar,
           }))
       );
 
@@ -103,6 +116,8 @@ export default function MarkersLugares(props) {
     ) {
       const bounds = props.mapRef.current.getBounds().toArray().flat();
       const zoom = Math.floor(props.actualViewport.zoom);
+
+      // console.log(supercluster.getLeaves(14));
 
       setClusters(
         supercluster.points?.length > 0

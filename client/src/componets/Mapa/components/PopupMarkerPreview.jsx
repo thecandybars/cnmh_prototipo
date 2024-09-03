@@ -5,7 +5,7 @@ import { theme } from "../../../utils/theme";
 
 PopupMarkerPreview.propTypes = {
   previewMarker: PropTypes.object,
-  setPreviewMarker: PropTypes.func,
+  onClose: PropTypes.func,
 };
 
 export default function PopupMarkerPreview(props) {
@@ -14,7 +14,7 @@ export default function PopupMarkerPreview(props) {
       latitude={props.previewMarker.latitud}
       longitude={props.previewMarker.longitud}
       anchor="top"
-      onClose={() => props.setPreviewMarker(null)}
+      onClose={props.onClose}
       maxWidth="350px"
       closeButton={false}
       className="custom-popup"
