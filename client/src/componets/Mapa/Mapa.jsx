@@ -11,16 +11,11 @@ import "./styles/styles.css";
 import ViewsBreadcrumbs from "./components/ViewsBreadcrumbs";
 import ZonasDeConflicto from "./MapLayers/ZonasDeConflicto";
 import Macroregiones from "./MapLayers/Macroregiones";
-import InfoLugar from "./components/InfoLugar";
-import PopupMarkerPreview from "./components/PopupMarkerPreview";
 import MapToolsDrawer from "./components/MapToolsDrawer";
-import { getTiposLugares } from "../../services/tiposLugares";
-import FilterLugares from "./Region/Filter/FilterLugares";
-import MarkersLugares from "./MarkerRegiones/MarkersLugares";
 import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
 import Multimedia from "../Exhibiciones/Multimedia";
-import PopupClusterPreview from "./components/PopupClusterPreview";
+import MarkersAndClusters from "./MarkerRegiones/MarkersAndClusters";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -106,11 +101,15 @@ const views = [
 
 export default function Mapa() {
   const mapRef = useRef();
+
   const [fetchedLugares] = useFetch(() => getAllLugares());
   const [departamentos] = useFetch(() => getAllDepartamentos());
 
-  const [actualView, setActualView] = useState(0); //0:pais, 1:region, 2:lugar
+  const [actualView, setActualView] = useState(0); // 0:pais, 1:region, 2:lugar
   const [actualRegion, setActualRegion] = useState(null);
+  console.log("🚀 ~ Mapa ~ actualRegion:", actualRegion);
+
+  const [activeFilters, setActiveFilters] = useState([]);
 
   // FILTER LUGARES
   const lugares = useMemo(
@@ -154,8 +153,17 @@ export default function Mapa() {
   // COLOR CONFLICT AREAS
   const [drawConflictAreas, setDrawConflictAreas] = useState(false);
   const renderConflictAreasSwitch = (
-    <Box
-      sx={{ bgcolor: "secondary.main", px: 4, borderRadius: "30px 0 0 30px" }}
+    <Stack
+      spacing={1}
+      sx={{
+        position: "absolute",
+        top: "100px",
+        zIndex: 100,
+        right: 0,
+        bgcolor: "secondary.main",
+        px: 4,
+        borderRadius: "30px 0 0 30px",
+      }}
     >
       <FormControlLabel
         control={
@@ -166,43 +174,20 @@ export default function Mapa() {
         }
         label="Zonas de conflicto"
       />
-    </Box>
+    </Stack>
   );
   const renderConflictAreas = drawConflictAreas && <ZonasDeConflicto />;
 
-  // FILTERS
-  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
-  const [tiposLugares] = useFetch(() => getTiposLugares());
-  const [activeFilters, setActiveFilters] = useState([]);
-  useEffect(() => {
-    tiposLugares?.length &&
-      setActiveFilters(tiposLugares.map((tipo) => tipo.id));
-  }, [tiposLugares]);
-  const handleActiveFilters = (id) => {
-    if (activeFilters.includes(id))
-      setActiveFilters((prev) =>
-        prev.filter((activeFilterId) => activeFilterId !== id)
-      );
-    else setActiveFilters((prev) => prev.concat([id]));
-  };
-  const renderFilters = tiposLugares?.length && (
-    <FilterLugares
-      tiposLugares={tiposLugares}
-      handleActiveFilters={handleActiveFilters}
-      activeFilters={activeFilters}
-    />
-  );
-
   // HANDLERS MARKERS
   const [selectedMarker, setSelectedMarker] = useState(null);
+  console.log("🚀 ~ Mapa ~ selectedMarker:", selectedMarker);
   const handleSelectedMarker = useCallback(
     (e, id) => {
       e.stopPropagation();
       const lugar = lugares.find((lugar) => lugar.id === id);
       setSelectedMarker(lugar);
       setActualView(2);
-      id &&
-        lugares &&
+      lugar &&
         setDestination({
           longitude: lugar.longitud,
           latitude: lugar.latitud,
@@ -216,53 +201,25 @@ export default function Mapa() {
   );
   const handleSelectedCluster = (e, cluster, supercluster) => {
     const [longitude, latitude] = cluster.geometry.coordinates;
-    // const { cluster: isCluster, point_count: pointCount } =
-    //   cluster.properties;
     e.stopPropagation();
     const expansionZoom = Math.min(
       supercluster.getClusterExpansionZoom(cluster.id),
       20
     );
     const destination = {
-      ...actualViewport,
       latitude,
       longitude,
       zoom: expansionZoom,
       transitionDuration: 500,
+      pitch: actualViewport.pitch,
     };
-    delete destination.bearing;
     setDestination(destination);
   };
-  const [previewMarker, setPreviewMarker] = useState(null);
-  const handlePreviewMarker = useCallback(
-    ({ action, data }) => {
-      if (action === "over") {
-        data.e.stopPropagation();
-        const lugar = lugares.find((lugar) => lugar.id === data.clusterId);
-        setPreviewMarker(lugar);
-      }
-      if (action === "out") setPreviewMarker(null);
-    },
-    [lugares]
-  );
-  const [previewCluster, setPreviewCluster] = useState(null);
-  const handlePreviewCluster = useCallback(({ action, data }) => {
-    if (action === "over") {
-      const lugaresCluster = data.supercluster.getLeaves(data.cluster.id);
-      setPreviewCluster({
-        lugares: lugaresCluster,
-        latitud: data.cluster.geometry.coordinates[1],
-        longitud: data.cluster.geometry.coordinates[0],
-      });
-    }
-    if (action === "out") setPreviewCluster(null);
-  }, []);
+
   const renderMarkersAndClusters = lugares?.length && (
-    <MarkersLugares
+    <MarkersAndClusters
       handleSelectedCluster={handleSelectedCluster}
-      handlePreviewCluster={handlePreviewCluster}
       handleSelectedMarker={handleSelectedMarker}
-      handlePreviewMarker={handlePreviewMarker}
       actualViewport={actualViewport}
       actualView={actualView}
       lugares={lugares}
@@ -270,30 +227,27 @@ export default function Mapa() {
       mapRef={mapRef}
     />
   );
+  // DRAWER
+  const [openDrawer, setOpenDrawer] = useState(false);
 
-  // DEFAULT OPEN DRAWER
   useEffect(() => {
+    // DEFAULT OPEN DRAWER
     const open = views.find(
       (view) => view.id === actualView
     )?.defaultOpenDrawer;
-    setOpenFilterDrawer(open);
+    setOpenDrawer(open);
   }, [actualView]);
 
-  const renderLugarDeMemoria = (
-    <InfoLugar
-      selectedMarker={selectedMarker}
-      handleClosePopup={() => handleClosePopup()}
-      handleOpenDialogLugar={() => handleOpenDialogLugar()}
-    />
-  );
   const renderDrawer = actualView !== 0 && (
     <MapToolsDrawer
-      openDrawer={openFilterDrawer}
-      setOpenDrawer={setOpenFilterDrawer}
-    >
-      {actualView === 1 && renderFilters}
-      {actualView === 2 && renderLugarDeMemoria}
-    </MapToolsDrawer>
+      openDrawer={openDrawer}
+      setOpenDrawer={setOpenDrawer}
+      actualView={actualView}
+      selectedMarker={selectedMarker}
+      handleOpenDialogLugar={() => handleOpenDialogLugar()}
+      activeFilters={activeFilters}
+      setActiveFilters={setActiveFilters}
+    />
   );
 
   // FLY TO DESTINATION
@@ -341,74 +295,42 @@ export default function Mapa() {
     </Dialog>
   );
 
-  // POPUPS
-  const renderPopupMarkerPreview = previewMarker && actualView === 1 && (
-    <PopupMarkerPreview
-      previewMarker={previewMarker}
-      onClose={() => setPreviewMarker(null)}
-    />
-  );
-  const renderPopupClusterPreview = previewCluster && actualView === 1 && (
-    <PopupClusterPreview
-      previewCluster={previewCluster}
-      onClose={() => setPreviewCluster(null)}
-    />
-  );
-  const handleClosePopup = () => {
-    setSelectedMarker(null);
-    const regionCoordinates = viewports.find(
-      (region) => region.id === actualRegion.id
-    );
-    setDestination(regionCoordinates);
-  };
-
   // BREADCUMBS
   const renderBreadcrumbs = (
-    <ViewsBreadcrumbs
-      actualView={actualView}
-      actualRegion={actualRegion}
-      actualLugar={selectedMarker}
-      onClickView0={() => {
-        setActualView(0);
-        setActualRegion(null);
-        setSelectedMarker(null);
-        setDestination({ ...viewports[0], pitch: 0 });
+    <Box
+      spacing={1}
+      sx={{
+        position: "absolute",
+        top: "47px",
+        zIndex: 100,
+        left: 0,
       }}
-      onClickView1={() => {
-        setActualView(1);
-        setSelectedMarker(null);
-        setDestination(
-          viewports.find((viewport) => viewport.id === actualRegion.id)
-        );
-      }}
-    />
+    >
+      <ViewsBreadcrumbs
+        actualView={actualView}
+        actualRegion={actualRegion}
+        actualLugar={selectedMarker}
+        onClickView0={() => {
+          setActualView(0);
+          setActualRegion(null);
+          setSelectedMarker(null);
+          setDestination({ ...viewports[0], pitch: 0 });
+        }}
+        onClickView1={() => {
+          setActualView(1);
+          setSelectedMarker(null);
+          setDestination(
+            viewports.find((viewport) => viewport.id === actualRegion.id)
+          );
+        }}
+      />
+    </Box>
   );
 
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
-      <Box
-        spacing={1}
-        sx={{
-          position: "absolute",
-          top: "47px",
-          zIndex: 100,
-          left: 0,
-        }}
-      >
-        {renderBreadcrumbs}
-      </Box>
-      <Stack
-        spacing={1}
-        sx={{
-          position: "absolute",
-          top: "100px",
-          zIndex: 100,
-          right: 0,
-          padding: 0,
-        }}
-      >
-        {renderConflictAreasSwitch}
-      </Stack>
+      {renderBreadcrumbs}
+      {renderConflictAreasSwitch}
       <Map
         ref={mapRef}
         initialViewState={viewports[0]}
@@ -425,13 +347,10 @@ export default function Mapa() {
       >
         {renderMacroregiones}
         {renderConflictAreas}
-        {renderPopupMarkerPreview}
-        {renderPopupClusterPreview}
         {flyToDestination}
         {renderMarkersAndClusters}
         {renderDialogLugar}
         {renderDrawer}
-        {/* {actualView !== 0 && renderFilterDrawer} */}
         {actualRegion && <TituloMacroregion title={actualRegion.fullName} />}
         {!actualRegion && (
           <TituloMacroregion title={"Macroregiones"} label="COLOMBIA" />

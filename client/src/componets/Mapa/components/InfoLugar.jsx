@@ -4,7 +4,6 @@ import { theme } from "../../../utils/theme";
 
 InfoLugar.propTypes = {
   selectedMarker: PropTypes.object,
-  handleClosePopup: PropTypes.func,
   handleOpenDialogLugar: PropTypes.func,
 };
 
