@@ -1,6 +1,6 @@
-import PropTypes from "prop-types";
 import { Box, Stack, Typography } from "@mui/material";
 import { theme } from "../../../utils/theme";
+import PropTypes from "prop-types";
 
 InfoLugar.propTypes = {
   selectedMarker: PropTypes.object,

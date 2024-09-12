@@ -10,7 +10,6 @@ import { getTiposLugares } from "../../../services/tiposLugares";
 import { useEffect } from "react";
 
 MapToolsDrawer.propTypes = {
-  children: PropTypes.element,
   openDrawer: PropTypes.bool,
   setOpenDrawer: PropTypes.func,
   actualView: PropTypes.number,
@@ -27,7 +26,7 @@ export default function MapToolsDrawer(props) {
   useEffect(() => {
     tiposLugares?.length &&
       props.setActiveFilters(tiposLugares.map((tipo) => tipo.id));
-  }, [tiposLugares, props]);
+  }, [tiposLugares]);
   const handleActiveFilters = (id) => {
     if (props.activeFilters.includes(id))
       props.setActiveFilters((prev) =>
