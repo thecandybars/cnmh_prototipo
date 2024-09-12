@@ -7,6 +7,7 @@ Multimedia.propTypes = {
   exhibicionId: PropTypes.number,
   onClose: PropTypes.func,
 };
+//
 export default function Multimedia(props) {
   const [exhibicion] = useFetch(() => getExhibicion(props.exhibicionId));
   return (
