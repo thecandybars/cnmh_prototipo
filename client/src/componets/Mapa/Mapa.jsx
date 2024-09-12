@@ -16,7 +16,7 @@ import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
 import Multimedia from "../Exhibiciones/Multimedia";
 import MarkersAndClusters from "./MarkerRegiones/MarkersAndClusters";
-import Model3D from "../ThreeD/Model3D";
+// import Model3D from "../ThreeD/Model3D";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -357,7 +357,7 @@ export default function Mapa() {
         {renderMarkersAndClusters}
         {renderDialogLugar}
         {renderDrawer}
-        <div
+        {/* <div
           style={{
             position: "absolute",
             top: 0,
@@ -366,7 +366,7 @@ export default function Mapa() {
           }}
         >
           {<Model3D mapRef={mapRef} />}
-        </div>
+        </div> */}
         <FooterLogoCNMH />
       </Map>
     </Box>
