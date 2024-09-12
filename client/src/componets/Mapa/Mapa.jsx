@@ -16,6 +16,7 @@ import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
 import Multimedia from "../Exhibiciones/Multimedia";
 import MarkersAndClusters from "./MarkerRegiones/MarkersAndClusters";
+import Model3D from "../ThreeD/Model3D";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -103,11 +104,11 @@ export default function Mapa() {
   const mapRef = useRef();
 
   const [fetchedLugares] = useFetch(() => getAllLugares());
+  console.log("🚀 ~ Mapa ~ fetchedLugares:", fetchedLugares);
   const [departamentos] = useFetch(() => getAllDepartamentos());
 
   const [actualView, setActualView] = useState(0); // 0:pais, 1:region, 2:lugar
   const [actualRegion, setActualRegion] = useState(null);
-  console.log("🚀 ~ Mapa ~ actualRegion:", actualRegion);
 
   const [activeFilters, setActiveFilters] = useState([]);
 
@@ -180,7 +181,6 @@ export default function Mapa() {
 
   // HANDLERS MARKERS
   const [selectedMarker, setSelectedMarker] = useState(null);
-  console.log("🚀 ~ Mapa ~ selectedMarker:", selectedMarker);
   const handleSelectedMarker = useCallback(
     (e, id) => {
       e.stopPropagation();
@@ -326,6 +326,12 @@ export default function Mapa() {
       />
     </Box>
   );
+  // TITULO MACROREGIONES
+  const renderTituloMacroregion = actualRegion ? (
+    <TituloMacroregion title={actualRegion.fullName} />
+  ) : (
+    <TituloMacroregion title={"Macroregiones"} label="COLOMBIA" />
+  );
 
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
@@ -333,8 +339,7 @@ export default function Mapa() {
       {renderConflictAreasSwitch}
       <Map
         ref={mapRef}
-        initialViewState={viewports[0]}
-        {...actualViewport}
+        initialViewState={actualViewport}
         maxBounds={colombiaBounds}
         mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
         mapboxAccessToken={TOKEN}
@@ -345,16 +350,23 @@ export default function Mapa() {
         interactiveLayerIds={interactiveLayerIds}
         terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}
       >
+        {renderTituloMacroregion}
         {renderMacroregiones}
         {renderConflictAreas}
         {flyToDestination}
         {renderMarkersAndClusters}
         {renderDialogLugar}
         {renderDrawer}
-        {actualRegion && <TituloMacroregion title={actualRegion.fullName} />}
-        {!actualRegion && (
-          <TituloMacroregion title={"Macroregiones"} label="COLOMBIA" />
-        )}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            pointerEvents: "none",
+          }}
+        >
+          {<Model3D mapRef={mapRef} />}
+        </div>
         <FooterLogoCNMH />
       </Map>
     </Box>
