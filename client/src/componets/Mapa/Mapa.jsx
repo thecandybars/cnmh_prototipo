@@ -11,6 +11,7 @@ import "./styles/styles.css";
 import ViewsBreadcrumbs from "./components/ViewsBreadcrumbs";
 import ZonasDeConflicto from "./MapLayers/ZonasDeConflicto";
 import Macroregiones from "./MapLayers/Macroregiones";
+// import Macroregiones_in_progress from "./MapLayers/Macroregiones_in_progress";
 import MapToolsDrawer from "./components/MapToolsDrawer";
 import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
@@ -64,7 +65,7 @@ const viewports = [
   },
   {
     id: 4,
-    name: "pacifica",
+    name: "pacifico",
     latitude: 4.558676216895876,
     longitude: -77.6577498889891,
     bearing: -90.4,
@@ -104,7 +105,6 @@ export default function Mapa() {
   const mapRef = useRef();
 
   const [fetchedLugares] = useFetch(() => getAllLugares());
-  console.log("🚀 ~ Mapa ~ fetchedLugares:", fetchedLugares);
   const [departamentos] = useFetch(() => getAllDepartamentos());
 
   const [actualView, setActualView] = useState(0); // 0:pais, 1:region, 2:lugar
@@ -344,6 +344,7 @@ export default function Mapa() {
         mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
         mapboxAccessToken={TOKEN}
         onClick={handleMapClick}
+        // onMouseMove={(e) => console.log(e.features)}
         onMove={(evt) => {
           setActualViewport(evt.viewState);
         }}

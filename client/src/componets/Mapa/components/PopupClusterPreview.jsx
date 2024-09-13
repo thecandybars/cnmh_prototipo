@@ -9,7 +9,6 @@ PopupClusterPreview.propTypes = {
 };
 
 export default function PopupClusterPreview(props) {
-  console.log("🚀 ~ PopupClusterPreview ~ props:", props);
   return (
     <Popup
       latitude={props.previewCluster.latitud}

@@ -26,6 +26,7 @@ export default function Macroregiones(props) {
           data={feature}
         >
           <Layer
+            onMouseEnter={() => console.log(id)}
             id={`zone-${id}-fill`}
             type="fill"
             paint={{
