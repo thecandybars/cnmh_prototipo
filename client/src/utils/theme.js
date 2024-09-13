@@ -25,12 +25,12 @@ const theme = {
       },
     },
     yellowCNMH: "#fdb519",
-    atlantica: {
+    caribe: {
       first: "rgb(0, 147, 212)",
       second: "rgb(73,61,134)",
       third: "rgb(108,228,229)",
     },
-    pacifica: {
+    pacifico: {
       second: "rgb(59,128,77)",
       first: "#39b14a",
       third: "rgb(255,194,66)",
