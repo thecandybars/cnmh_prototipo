@@ -15,7 +15,7 @@ import Macroregiones from "./MapLayers/Macroregiones";
 import MapToolsDrawer from "./components/MapToolsDrawer";
 import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
-import Multimedia2 from "../Exhibiciones/Multimedia2";
+import MultimediaSliders from "../Exhibiciones/MultimediaSliders";
 import MarkersAndClusters from "./MarkerRegiones/MarkersAndClusters";
 // import Model3D from "../ThreeD/Model3D";
 
@@ -283,7 +283,10 @@ export default function Mapa() {
     index === 0 ? (
       <Photo_360 onClose={() => handleCloseDialogLugar()} />
     ) : (
-      <Multimedia2 exhibicionId={17} onClose={() => handleCloseDialogLugar()} />
+      <MultimediaSliders
+        exhibicionId={17}
+        onClose={() => handleCloseDialogLugar()}
+      />
     );
   const renderDialogLugar = (
     <Dialog
