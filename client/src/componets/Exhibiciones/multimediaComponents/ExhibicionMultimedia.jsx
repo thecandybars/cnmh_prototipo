@@ -6,7 +6,7 @@ import { useState } from "react";
 import Slider from "./Sliders/Slider";
 import useSelectMediaSource from "../../common/customHooks/useSelectMediaSource";
 
-MultimediaExhibicion.propTypes = {
+ExhibicionMultimedia.propTypes = {
   data: PropTypes.object,
   onClose: PropTypes.func,
 };
@@ -29,7 +29,7 @@ const StyledFullScreenContainer = styled(Box)(() => ({
   height: "100vh",
   overflowY: "clip",
 }));
-export default function MultimediaExhibicion(props) {
+export default function ExhibicionMultimedia(props) {
   // Get media sources
   const logoSource = useSelectMediaSource({
     primary: props.data.Logo.url,
