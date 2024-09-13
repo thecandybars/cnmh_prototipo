@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import useFetch from "../common/customHooks/useFetch";
 import { getExhibicion } from "../../services/exhibiciones";
-import MultimediaExhibicion from "./MultimediaComponents/MultimediaExhibicion";
+import ExhibicionMultimedia from "./MultimediaComponents/ExhibicionMultimedia";
 
 MultimediaSliders.propTypes = {
   exhibicionId: PropTypes.number,
@@ -13,7 +13,7 @@ export default function MultimediaSliders(props) {
   return (
     exhibicion &&
     Object.keys(exhibicion).length > 0 && (
-      <MultimediaExhibicion data={exhibicion} onClose={props.onClose} />
+      <ExhibicionMultimedia data={exhibicion} onClose={props.onClose} />
     )
   );
 }
