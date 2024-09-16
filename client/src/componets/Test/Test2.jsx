@@ -2,6 +2,7 @@ import Map from "react-map-gl";
 import getEnv from "../../utils/getEnv";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+// import modelURL from "../../assets/BarramundiFish.glb";
 import modelURL from "../../assets/pajarosAnimados.glb";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import PropTypes from "prop-types";
@@ -22,9 +23,10 @@ function Test2() {
     latitude: 3.9982242677229607,
     longitude: -74.24507905637381,
     zoom: 15.44,
-    bearing: -102.8,
     pitch: 79,
+    bearing: -102.8,
   });
+  console.log("🚀 ~ Test2 ~ actualViewport:", actualViewport);
   return (
     <Map
       ref={mapRef}
@@ -51,9 +53,10 @@ Test2.propTypes = {};
 export default Test2;
 
 function Model3D_cam({ mapRef }) {
-  console.log("🚀 ~ Model3D_cam ~ mapRef:", mapRef);
   const mountRef = useRef(null);
   const modelRef = useRef(null);
+  const mixerRef = useRef(null); // Ref for the animation mixer
+  let clock = new THREE.Clock(); // Used for updating animation timing
 
   useEffect(() => {
     mapRef.current.on("load", () => {
@@ -74,65 +77,43 @@ function Model3D_cam({ mapRef }) {
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setClearColor(0x000000, 0);
       mountRef.current.appendChild(renderer.domElement);
+
       // LOAD MODEL
       const loader = new GLTFLoader();
       loader.load(
         modelURL,
         (gltf) => {
           const model = gltf.scene;
-          model.scale.set(12, 12, 12);
+          model.scale.set(5, 5, 5);
           model.position.set(0, 0, 0);
-          model.rotation.x = 10;
-          model.rotation.y = 0.1;
+          model.rotation.x = 90;
+          // model.rotation.y = 0.1;
           modelRef.current = model;
           scene.add(model);
-          // ANIMATE
-          const animate = () => {
-            requestAnimationFrame(animate);
-            // model.rotation.x += 0.01;
-            // model.rotation.y += 0.01;
-            renderer.render(scene, camera);
-          };
-          animate();
+
+          // SETUP ANIMATION
+          if (gltf.animations && gltf.animations.length > 0) {
+            const mixer = new THREE.AnimationMixer(model); // Create AnimationMixer
+            mixerRef.current = mixer;
+
+            // Play the first animation
+            const action = mixer.clipAction(gltf.animations[0]);
+            action.play();
+          }
         },
         undefined,
         (error) => {
           console.error("Error loading GLB model:", error);
+          // Optionally show fallback content or alert user
         }
       );
+
       // LIGHTS
-      const ambientLight = new THREE.AmbientLight(0x404040, 1);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 1);
       const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
       directionalLight.position.set(5, 5, 5);
-      scene.add(ambientLight, directionalLight);
+      scene.add(ambientLight);
 
-      //   const handleMapRenderProjected = () => {
-      //     const mapCenter = mapRef.current.getCenter();
-      //     const zoom = mapRef.current.getZoom();
-      //     const pitch = mapRef.current.getPitch();
-      //     const bearing = mapRef.current.getBearing();
-
-      //     const projectedCenter = mapRef.current.project(mapCenter);
-      //     const altitude = Math.pow(2, 20 - zoom);
-
-      //     // camera.position.set(projectedCenter.x, projectedCenter.y, altitude);
-      //     // camera.rotation.set(
-      //     //   THREE.MathUtils.degToRad(pitch),
-      //     //   THREE.MathUtils.degToRad(bearing),
-      //     //   0
-      //     // );
-
-      //     if (modelRef.current) {
-      //       modelRef.current.position.set(
-      //         projectedCenter.x,
-      //         projectedCenter.y,
-      //         altitude - 100
-      //       );
-      //     }
-
-      //     renderer.render(scene, camera);
-      //   };
-      ////
       const handleMapRender = () => {
         const map = mapRef.current.getMap();
         const zoom = map.getZoom();
@@ -145,14 +126,20 @@ function Model3D_cam({ mapRef }) {
           center.lng,
           center.lat,
         ]);
-        // const altitude = worldCenter.toAltitude();
+
         const altitude = Math.pow(2, 20 - zoom);
-        // Set the camera position using the converted world coordinates
         camera.position.set(worldCenter.x, worldCenter.y, altitude);
-        // Adjust the camera's rotation to match Mapbox's pitch and bearing
+
         camera.rotation.x = THREE.MathUtils.degToRad(pitch);
         camera.rotation.z = THREE.MathUtils.degToRad(-bearing);
-        // RENDERER
+
+        // Update animation mixer if present
+        if (mixerRef.current) {
+          const delta = clock.getDelta(); // Get time delta
+          mixerRef.current.update(delta); // Update the mixer with the time delta
+        }
+
+        // Render the scene
         renderer.render(scene, camera);
       };
 
