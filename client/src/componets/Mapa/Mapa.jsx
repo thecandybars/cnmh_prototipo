@@ -17,7 +17,10 @@ import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
 import MultimediaSliders from "../Exhibiciones/MultimediaSliders";
 import MarkersAndClusters from "./MarkerRegiones/MarkersAndClusters";
-// import Model3D from "../ThreeD/Model3D";
+import macroregionesData from "../../geojson/macroregiones.json";
+import Model3D from "../ThreeD/Model3D";
+import modelURL2 from "../../assets/BarramundiFish.glb";
+import modelURL from "../../assets/pajarosAnimados.glb";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -30,11 +33,11 @@ const viewports = [
   {
     id: 0,
     name: "init",
-    latitude: 4.074207351982309,
-    longitude: -74.4694048844076,
-    zoom: 6,
-    bearing: 0,
-    pitch: 0,
+    latitude: 1.362425462023893,
+    longitude: -72.75696872711507,
+    zoom: 15.344,
+    bearing: -75,
+    pitch: 79.33,
   },
   {
     id: 1,
@@ -112,6 +115,20 @@ export default function Mapa() {
 
   const [activeFilters, setActiveFilters] = useState([]);
 
+  useEffect(() => {
+    mapRef?.current?.on("load", () => {
+      setDestination({
+        latitude: 3.040459790793207,
+        longitude: -72.36877483252725,
+        zoom: 5,
+        bearing: -8.12,
+        pitch: 30.477,
+        curve: 1.2,
+        speed: 0.4,
+      });
+    });
+  }, [mapRef.current]);
+
   // FILTER LUGARES
   const lugares = useMemo(
     () =>
@@ -126,6 +143,7 @@ export default function Mapa() {
 
   // HANDLE MOVE
   const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
+  // console.log("🚀 ~ Mapa ~ actualViewport:", actualViewport);
 
   // HANDLE CLICKS ON INTERACTIVE REGIONS
   const handleMapClick = (event) => {
@@ -142,14 +160,30 @@ export default function Mapa() {
     }
   };
   // INTERACTIVE DEPARTAMENTOS
-  const interactiveLayerIds = departamentos?.map(
-    (dpto) => `zone-${dpto.geoId}-fill`
-  );
+  const interactiveLayerIds = departamentos
+    ?.map((dpto) => `zone-${dpto.geoId}-fill`)
+    .concat(
+      macroregionesData?.features.map(
+        (macroregion) => `macroregion-${macroregion.properties.id}`
+      )
+    );
+  // HANDLE MAP INTERACTIONS
+  const [mapHover, setMapHover] = useState(2);
+  const handleMouseMove = (e) => {
+    if (e.features.length > 0) {
+      setMapHover(e.features[0].source || "");
+    }
+  };
 
   //////////// LAYERS
   // COLOR REGIONS
   const renderMacroregiones = (
-    <Macroregiones actualView={actualView} actualRegion={actualRegion} />
+    <Macroregiones
+      // <Macroregiones_in_progress
+      actualView={actualView}
+      actualRegion={actualRegion}
+      mapHover={mapHover}
+    />
   );
   // COLOR CONFLICT AREAS
   const [drawConflictAreas, setDrawConflictAreas] = useState(false);
@@ -252,21 +286,35 @@ export default function Mapa() {
 
   // FLY TO DESTINATION
   const [destination, setDestination] = useState(null);
+  const [isFlying, setIsFlying] = useState(false);
+  console.log("🚀 ~ Mapa ~ isFlying:", isFlying);
   const flyToDestination = useMemo(() => {
-    destination &&
-      mapRef.current?.flyTo({
-        ...actualViewport,
-        center: [destination.longitude, destination.latitude],
-        speed: destination.speed || 0.4,
-        curve: destination.curve || 1.42,
-        zoom: destination.zoom || 15,
-        bearing:
-          typeof destination.bearing === "number"
-            ? destination.bearing
-            : actualViewport.bearing + Math.random() * 50 - 25,
-        pitch: destination.pitch,
-        essential: true,
-      });
+    {
+      if (destination) {
+        setIsFlying(true);
+        mapRef.current?.flyTo({
+          ...actualViewport,
+          center: [destination.longitude, destination.latitude],
+          speed: destination.speed || 0.4,
+          curve: destination.curve || 1.42,
+          zoom: destination.zoom || 15,
+          bearing:
+            typeof destination.bearing === "number"
+              ? destination.bearing
+              : actualViewport.bearing + Math.random() * 50 - 25,
+          pitch: destination.pitch,
+          essential: true,
+        });
+        // mapRef.current.once("moveend", () => {
+        //   // End of flyTo animation
+        //   setIsFlying(false);
+        //   console.log("FlyTo animation complete");
+        // });
+      } else {
+        // setIsFlying(false);
+        // setDestination(null);
+      }
+    }
   }, [destination]);
 
   // DIALOG LUGAR
@@ -347,9 +395,19 @@ export default function Mapa() {
         mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
         mapboxAccessToken={TOKEN}
         onClick={handleMapClick}
-        // onMouseMove={(e) => console.log(e.features)}
-        onMove={(evt) => {
-          setActualViewport(evt.viewState);
+        // onMouseMove={(e) => handleMouseMove(e)}
+        // onMove={(evt) => {
+        //   // setIsFlying(false);
+        //   setActualViewport(evt.viewState);
+        // }}
+        onMoveStart={() => {
+          if (isFlying) {
+            setIsFlying(false);
+            // setDestination(null);
+          }
+        }}
+        onDragStart={() => {
+          // setIsFlying(false);
         }}
         interactiveLayerIds={interactiveLayerIds}
         terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}
@@ -361,17 +419,15 @@ export default function Mapa() {
         {renderMarkersAndClusters}
         {renderDialogLugar}
         {renderDrawer}
-        {/* <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            pointerEvents: "none",
-          }}
-        >
-          {<Model3D mapRef={mapRef} />}
-        </div> */}
+
         <FooterLogoCNMH />
+
+        <Model3D
+          mapRef={mapRef}
+          origin={[actualViewport.longitude, actualViewport.latitude]}
+          modelURL={modelURL}
+          scale={5000}
+        />
       </Map>
     </Box>
   );

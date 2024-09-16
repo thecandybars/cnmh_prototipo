@@ -50,6 +50,7 @@ import { theme } from "../../../utils/theme";
 export default function Macroregiones(props) {
   const DrawRegions = colombiaRegionsData.features.map((feature) => {
     const id = parseInt(feature.properties.id);
+    const isHover = id === props.mapHover;
 
     const regionColor = {
       color: theme.palette[feature.properties.name]?.first || "#ff9999",
@@ -64,27 +65,26 @@ export default function Macroregiones(props) {
       regionColor.opacity = 0.7;
     }
 
+    // console.log("🚀 ~ DrawRegions ~ isHover:", `macroregion-${id}`, isHover);
     return (
       <Source
-        key={`zone-${id}`}
-        id={`zone-${id}`}
+        key={`macroregion-${id}`}
+        id={`macroregion-${id}`}
         type="geojson"
         data={feature}
       >
         {/* 3D Extruded Layer */}
         <Layer
-          id={`zone-${id}-extrusion`}
-          onMouseEnter={() => console.log("handleMouseEnter")} // Attach mouse enter event
-          onMouseLeave={() => console.log("handleMouseLeave")} // Attach mouse leave event
-          type={id === 2 ? "fill-extrusion" : "fill"}
+          id={`macroregion-${id}`}
+          type={isHover ? "fill-extrusion" : "fill"}
           paint={
-            id === 2
+            isHover
               ? {
                   "fill-extrusion-color": "#fdb519",
-                  "fill-extrusion-opacity": 0.5,
-                  "fill-extrusion-height": 30000, // The height of the extrusion
-                  "fill-extrusion-base": 0, // Set base of extrusion at ground level
-                  "fill-extrusion-vertical-gradient": true, // Apply gradient to enhance the 3D effect
+                  "fill-extrusion-opacity": 0.7,
+                  "fill-extrusion-height": 20000,
+                  "fill-extrusion-base": 0,
+                  "fill-extrusion-vertical-gradient": true,
                 }
               : {
                   "fill-color": "#cacaca",
@@ -94,7 +94,7 @@ export default function Macroregiones(props) {
         />
         {/* Line Layer */}
         <Layer
-          id={`zone-${id}-line`}
+          id={`macroregion-${id}-line`}
           type="line"
           paint={{
             "line-color": "#cacaca",
