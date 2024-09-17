@@ -10,20 +10,31 @@ Model3D.propTypes = {
   origin: PropTypes.array,
   modelURL: PropTypes.string,
   scale: PropTypes.number,
+  altitude: PropTypes.number,
+  display: PropTypes.bool,
 };
 
-export default function Model3D({ mapRef, origin, modelURL, scale }) {
-  console.log("🚀 ~ Model3D ~ mapRef:", mapRef);
+export default function Model3D({
+  mapRef,
+  origin,
+  modelURL,
+  scale,
+  altitude,
+  display,
+}) {
   useEffect(() => {
     const map = mapRef.current.getMap();
+    console.log("🚀 ~ useEffect ~ map:", map);
     const modelOrigin = origin;
     // const modelOrigin = [-73.7028614, 10.8263749];
     // const modelOrigin = [148.9819, -35.39847];
     // const altitude = Math.pow(2, 20 - zoom)
-    const modelAltitude = 3300; //100
-    const modelRotate = [Math.PI / 2, 0, 0];
-    const clock = new THREE.Clock(); // Clock to track time for animations
-    let mixer; // AnimationMixer to control the animations
+
+    // Query the terrain elevation at the model's origin
+    // const elevation = map.queryTerrainElevation(origin) || 0; // Fallback to 0 if terrain elevation is unavailable
+    const elevation = mapRef.current.queryTerrainElevation(origin); // Fallback to 0 if terrain elevation is unavailable
+    const modelAltitude = Math.ceil(elevation) + altitude; // Add desired altitude above terrain
+    // const modelAltitude = altitude; // 3300; //100
 
     const modelAsMercatorCoordinate = mapboxgl.MercatorCoordinate.fromLngLat(
       modelOrigin,
@@ -31,8 +42,13 @@ export default function Model3D({ mapRef, origin, modelURL, scale }) {
     );
     console.log(
       "🚀 ~ useEffect ~ modelAsMercatorCoordinate:",
-      modelAsMercatorCoordinate.meterInMercatorCoordinateUnits()
+      modelAsMercatorCoordinate
     );
+    const modelRotate = [Math.PI / 2, 0, 0];
+    const clock = new THREE.Clock(); // Clock to track time for animations
+    let mixer; // AnimationMixer to control the animations
+
+    // console.log(modelAsMercatorCoordinate.meterInMercatorCoordinateUnits());
 
     const modelTransform = {
       translateX: modelAsMercatorCoordinate.x,
@@ -80,11 +96,13 @@ export default function Model3D({ mapRef, origin, modelURL, scale }) {
 
         this.map = map;
 
+        // Set up renderer
         this.renderer = new THREE.WebGLRenderer({
           canvas: map.getCanvas(),
-          context: gl,
+          context: gl, // Reuse Mapbox's WebGL context
           antialias: true,
         });
+
         this.renderer.autoClear = false;
       },
       render: function (gl, matrix) {
@@ -133,10 +151,19 @@ export default function Model3D({ mapRef, origin, modelURL, scale }) {
       },
     };
 
-    map.on("style.load", () => {
-      map.addLayer(customLayer), `${uuidv4()}`;
-    });
-  }, [mapRef]);
+    // map.on("style.load", () => {
+    map.addLayer(customLayer), `${uuidv4()}`;
+    // map.addLayer(customLayer, `${uuidv4()}`);
+
+    // });
+
+    // Cleanup function, wrong: resets animation on every mouse movement
+    return () => {
+      if (map.getLayer(customLayer.id) && display === false) {
+        map.removeLayer(customLayer.id);
+      }
+    };
+  }, [altitude, mapRef, modelURL, origin, scale]);
 
   return null; // No UI for this component, it's purely for adding the custom layer
 }

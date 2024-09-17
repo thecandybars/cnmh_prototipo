@@ -19,8 +19,8 @@ import MultimediaSliders from "../Exhibiciones/MultimediaSliders";
 import MarkersAndClusters from "./MarkerRegiones/MarkersAndClusters";
 import macroregionesData from "../../geojson/macroregiones.json";
 import Model3D from "../ThreeD/Model3D";
+import modelURL1 from "../../assets/pajarosAnimados.glb";
 import modelURL2 from "../../assets/BarramundiFish.glb";
-import modelURL from "../../assets/pajarosAnimados.glb";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -33,11 +33,19 @@ const viewports = [
   {
     id: 0,
     name: "init",
-    latitude: 1.362425462023893,
-    longitude: -72.75696872711507,
-    zoom: 15.344,
-    bearing: -75,
-    pitch: 79.33,
+    latitude: 3.040459790793207,
+    longitude: -72.36877483252725,
+    zoom: 5,
+    bearing: -8.12,
+    pitch: 30.477,
+    curve: 1.2,
+    speed: 0.4,
+
+    // latitude: 1.362425462023893,
+    // longitude: -72.75696872711507,
+    // zoom: 15.344,
+    // bearing: -75,
+    // pitch: 79.33,
   },
   {
     id: 1,
@@ -111,23 +119,24 @@ export default function Mapa() {
   const [departamentos] = useFetch(() => getAllDepartamentos());
 
   const [actualView, setActualView] = useState(0); // 0:pais, 1:region, 2:lugar
+  console.log("🚀 ~ Mapa ~ actualView:", actualView);
   const [actualRegion, setActualRegion] = useState(null);
 
   const [activeFilters, setActiveFilters] = useState([]);
 
-  useEffect(() => {
-    mapRef?.current?.on("load", () => {
-      setDestination({
-        latitude: 3.040459790793207,
-        longitude: -72.36877483252725,
-        zoom: 5,
-        bearing: -8.12,
-        pitch: 30.477,
-        curve: 1.2,
-        speed: 0.4,
-      });
-    });
-  }, [mapRef.current]);
+  // useEffect(() => {
+  //   mapRef?.current?.on("load", () => {
+  //     setDestination({
+  //       latitude: 3.040459790793207,
+  //       longitude: -72.36877483252725,
+  //       zoom: 5,
+  //       bearing: -8.12,
+  //       pitch: 30.477,
+  //       curve: 1.2,
+  //       speed: 0.4,
+  //     });
+  //   });
+  // }, [mapRef.current]);
 
   // FILTER LUGARES
   const lugares = useMemo(
@@ -143,7 +152,6 @@ export default function Mapa() {
 
   // HANDLE MOVE
   const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
-  // console.log("🚀 ~ Mapa ~ actualViewport:", actualViewport);
 
   // HANDLE CLICKS ON INTERACTIVE REGIONS
   const handleMapClick = (event) => {
@@ -227,7 +235,7 @@ export default function Mapa() {
           latitude: lugar.latitud,
           speed: 0.4,
           curve: 1.42,
-          zoom: 15,
+          zoom: 16.5, //15
           pitch: 70,
         });
     },
@@ -286,8 +294,8 @@ export default function Mapa() {
 
   // FLY TO DESTINATION
   const [destination, setDestination] = useState(null);
+  console.log("🚀 ~ Mapa ~ destination:", destination);
   const [isFlying, setIsFlying] = useState(false);
-  console.log("🚀 ~ Mapa ~ isFlying:", isFlying);
   const flyToDestination = useMemo(() => {
     {
       if (destination) {
@@ -384,6 +392,20 @@ export default function Mapa() {
     <TituloMacroregion title={"Macroregiones"} label="COLOMBIA" />
   );
 
+  // MODEL3D
+  const renderModel3D = actualView > 0 && (
+    <Model3D
+      mapRef={mapRef}
+      // origin={[-73.67469375, 2.97575038]}
+      // origin={[2.97575038, -73.67469375]}
+      origin={[destination.longitude, destination.latitude]}
+      modelURL={modelURL2}
+      scale={1} //10
+      altitude={20} //500
+      display={actualView === 2}
+    />
+  );
+
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
       {renderBreadcrumbs}
@@ -392,14 +414,15 @@ export default function Mapa() {
         ref={mapRef}
         initialViewState={actualViewport}
         maxBounds={colombiaBounds}
-        mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
+        // mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
+        mapStyle="mapbox://styles/juancortes79/cm15gwoxb000i01qkdie1g1og"
         mapboxAccessToken={TOKEN}
         onClick={handleMapClick}
         // onMouseMove={(e) => handleMouseMove(e)}
-        // onMove={(evt) => {
-        //   // setIsFlying(false);
-        //   setActualViewport(evt.viewState);
-        // }}
+        onMove={(evt) => {
+          // setIsFlying(false);
+          setActualViewport(evt.viewState);
+        }}
         onMoveStart={() => {
           if (isFlying) {
             setIsFlying(false);
@@ -422,12 +445,7 @@ export default function Mapa() {
 
         <FooterLogoCNMH />
 
-        <Model3D
-          mapRef={mapRef}
-          origin={[actualViewport.longitude, actualViewport.latitude]}
-          modelURL={modelURL}
-          scale={5000}
-        />
+        {renderModel3D}
       </Map>
     </Box>
   );

@@ -17,7 +17,7 @@ export default function Macroregiones(props) {
         opacity: 0.5,
       };
       if (props.actualView !== 0 && region?.id === props.actualRegion.id)
-        regionColor.opacity = 0.2;
+        regionColor.opacity = 0;
       return (
         <Source
           key={`zone-${id}`}
