@@ -222,76 +222,6 @@ export default function Mapa() {
   );
   const renderConflictAreas = drawConflictAreas && <ZonasDeConflicto />;
 
-  // HANDLERS MARKERS
-  const [selectedMarker, setSelectedMarker] = useState(null);
-  const handleSelectedMarker = useCallback(
-    (e, id) => {
-      e.stopPropagation();
-      const lugar = lugares.find((lugar) => lugar.id === id);
-      setSelectedMarker(lugar);
-      setActualView(2);
-      lugar &&
-        setDestination({
-          longitude: lugar.longitud,
-          latitude: lugar.latitud,
-          speed: 0.4,
-          curve: 1.42,
-          zoom: 16.5, //15
-          pitch: 70,
-        });
-    },
-    [lugares]
-  );
-  const handleSelectedCluster = (e, cluster, supercluster) => {
-    const [longitude, latitude] = cluster.geometry.coordinates;
-    e.stopPropagation();
-    const expansionZoom = Math.min(
-      supercluster.getClusterExpansionZoom(cluster.id),
-      20
-    );
-    const destination = {
-      latitude,
-      longitude,
-      zoom: expansionZoom,
-      transitionDuration: 500,
-      pitch: actualViewport.pitch,
-    };
-    setDestination(destination);
-  };
-
-  const renderMarkersAndClusters = lugares?.length && (
-    <MarkersAndClusters
-      handleSelectedCluster={handleSelectedCluster}
-      handleSelectedMarker={handleSelectedMarker}
-      actualViewport={actualViewport}
-      actualView={actualView}
-      lugares={lugares}
-      activeFilters={activeFilters}
-      mapRef={mapRef}
-    />
-  );
-  // DRAWER
-  const [openDrawer, setOpenDrawer] = useState(false);
-  // useEffect(() => {
-  //   // DEFAULT OPEN DRAWER
-  //   const open = views.find(
-  //     (view) => view.id === actualView
-  //   )?.defaultOpenDrawer;
-  //   setOpenDrawer(open);
-  // }, [actualView]);
-  const renderDrawer = (
-    <MapToolsDrawer
-      openDrawer={openDrawer}
-      setOpenDrawer={setOpenDrawer}
-      actualView={actualView}
-      selectedMarker={selectedMarker}
-      handleOpenDialogLugar={() => setOpenDialogLugar(true)}
-      activeFilters={activeFilters}
-      setActiveFilters={setActiveFilters}
-      views={views}
-    />
-  );
-
   // FLY TO DESTINATION ??
   const [destination, setDestination] = useState(null);
   const [isFlying, setIsFlying] = useState(false);
@@ -323,6 +253,35 @@ export default function Mapa() {
       }
     }
   }, [destination]);
+
+  // MARKERS AND CLUSTERS !
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const renderMarkersAndClusters = (
+    <MarkersAndClusters
+      actualViewport={actualViewport}
+      actualView={actualView}
+      lugares={lugares}
+      activeFilters={activeFilters}
+      mapRef={mapRef}
+      setDestination={setDestination}
+      setSelectedMarker={setSelectedMarker}
+      setActualView={setActualView}
+    />
+  );
+  // DRAWER !
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const renderDrawer = (
+    <MapToolsDrawer
+      openDrawer={openDrawer}
+      setOpenDrawer={setOpenDrawer}
+      actualView={actualView}
+      selectedMarker={selectedMarker}
+      handleOpenDialogLugar={() => setOpenDialogLugar(true)}
+      activeFilters={activeFilters}
+      setActiveFilters={setActiveFilters}
+      views={views}
+    />
+  );
 
   // DIALOG LUGAR !
   const [openDialogLugar, setOpenDialogLugar] = useState(false);
