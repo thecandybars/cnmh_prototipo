@@ -11,7 +11,7 @@ import "./styles/styles.css";
 import ViewsBreadcrumbs from "./components/ViewsBreadcrumbs";
 import ZonasDeConflicto from "./MapLayers/ZonasDeConflicto";
 import Macroregiones from "./MapLayers/Macroregiones";
-// import Macroregiones_in_progress from "./MapLayers/Macroregiones_in_progress";
+// import Macroregiones from "./MapLayers/Macroregiones_in_progress";
 import MapToolsDrawer from "./components/MapToolsDrawer";
 import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
@@ -187,7 +187,6 @@ export default function Mapa() {
   // COLOR REGIONS
   const renderMacroregiones = (
     <Macroregiones
-      // <Macroregiones_in_progress
       actualView={actualView}
       actualRegion={actualRegion}
       mapHover={mapHover}
@@ -386,18 +385,14 @@ export default function Mapa() {
     </Box>
   );
   // TITULO MACROREGIONES
-  const renderTituloMacroregion = actualRegion ? (
-    <TituloMacroregion title={actualRegion.fullName} />
-  ) : (
-    <TituloMacroregion title={"Macroregiones"} label="COLOMBIA" />
+  const renderTituloMacroregion = (
+    <TituloMacroregion title={actualRegion?.fullName} />
   );
 
   // MODEL3D
   const renderModel3D = actualView > 0 && (
     <Model3D
       mapRef={mapRef}
-      // origin={[-73.67469375, 2.97575038]}
-      // origin={[2.97575038, -73.67469375]}
       origin={[destination.longitude, destination.latitude]}
       modelURL={modelURL2}
       scale={1} //10
@@ -406,10 +401,16 @@ export default function Mapa() {
     />
   );
 
+  const renderFooter = <FooterLogoCNMH />;
+
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
       {renderBreadcrumbs}
       {renderConflictAreasSwitch}
+      {renderDrawer}
+      {renderTituloMacroregion}
+      {renderFooter}
+      {renderDialogLugar}
       <Map
         ref={mapRef}
         initialViewState={actualViewport}
@@ -435,17 +436,12 @@ export default function Mapa() {
         interactiveLayerIds={interactiveLayerIds}
         terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}
       >
-        {renderTituloMacroregion}
         {renderMacroregiones}
-        {renderConflictAreas}
         {flyToDestination}
         {renderMarkersAndClusters}
-        {renderDialogLugar}
-        {renderDrawer}
-
-        <FooterLogoCNMH />
 
         {renderModel3D}
+        {renderConflictAreas}
       </Map>
     </Box>
   );
