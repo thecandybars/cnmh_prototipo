@@ -17,6 +17,7 @@ MapToolsDrawer.propTypes = {
   selectedMarker: PropTypes.object,
   activeFilters: PropTypes.array,
   setActiveFilters: PropTypes.func,
+  views: PropTypes.array,
 };
 
 export default function MapToolsDrawer(props) {
@@ -27,6 +28,15 @@ export default function MapToolsDrawer(props) {
     tiposLugares?.length &&
       props.setActiveFilters(tiposLugares.map((tipo) => tipo.id));
   }, [tiposLugares]);
+
+  useEffect(() => {
+    // DEFAULT OPEN DRAWER
+    const open = props.views.find(
+      (view) => view.id === props.actualView
+    )?.defaultOpenDrawer;
+    props.setOpenDrawer(open);
+  }, [props.actualView, props.views]);
+
   const handleActiveFilters = (id) => {
     if (props.activeFilters.includes(id))
       props.setActiveFilters((prev) =>
@@ -118,9 +128,11 @@ export default function MapToolsDrawer(props) {
   );
 
   return (
-    <Box>
-      {renderClosedFilterDrawer}
-      {renderOpenedFilterDrawer}
-    </Box>
+    !!renderDrawerContents && (
+      <Box>
+        {renderClosedFilterDrawer}
+        {renderOpenedFilterDrawer}
+      </Box>
+    )
   );
 }
