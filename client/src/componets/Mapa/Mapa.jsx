@@ -21,6 +21,7 @@ import macroregionesData from "../../geojson/macroregiones.json";
 import Model3D from "../ThreeD/Model3D";
 import modelURL1 from "../../assets/pajarosAnimados.glb";
 import modelURL2 from "../../assets/BarramundiFish.glb";
+import Breadcrumbs from "./components/Breadcrumbs";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -355,35 +356,47 @@ export default function Mapa() {
 
   // BREADCUMBS
   const renderBreadcrumbs = (
-    <Box
-      spacing={1}
-      sx={{
-        position: "absolute",
-        top: "47px",
-        zIndex: 100,
-        left: 0,
+    <Breadcrumbs
+      actualView={actualView}
+      actualRegion={actualRegion}
+      selectedMarker={selectedMarker}
+      handleClickLevel0={() => {
+        setActualView(0);
+        setActualRegion(null);
+        setSelectedMarker(null);
+        setDestination({ ...viewports[0], pitch: 0 });
       }}
-    >
-      <ViewsBreadcrumbs
-        actualView={actualView}
-        actualRegion={actualRegion}
-        actualLugar={selectedMarker}
-        onClickView0={() => {
-          setActualView(0);
-          setActualRegion(null);
-          setSelectedMarker(null);
-          setDestination({ ...viewports[0], pitch: 0 });
-        }}
-        onClickView1={() => {
-          setActualView(1);
-          setSelectedMarker(null);
-          setDestination(
-            viewports.find((viewport) => viewport.id === actualRegion.id)
-          );
-        }}
-      />
-    </Box>
+      handleClickLevel1={() => {
+        setActualView(1);
+        setSelectedMarker(null);
+        setDestination(
+          viewports.find((viewport) => viewport.id === actualRegion.id)
+        );
+      }}
+    />
   );
+
+  // const renderBreadcrumbs = (
+  //   <Breadcrumbs
+  //     actualView={actualView}
+  //     actualRegion={actualRegion}
+  //     selectedMarker={selectedMarker}
+  //     handleClickLevel0={() => {
+  //       setActualView(0);
+  //       setActualRegion(null);
+  //       setSelectedMarker(null);
+  //       setDestination({ ...viewports[0], pitch: 0 });
+  //     }}
+  //     handleClickLevel1={() => {
+  //       setActualView(1);
+  //       setSelectedMarker(null);
+  //       setDestination(
+  //         viewports.find((viewport) => viewport.id === actualRegion.id)
+  //       );
+  //     }}
+  //   />
+  // );
+
   // TITULO MACROREGIONES
   const renderTituloMacroregion = (
     <TituloMacroregion title={actualRegion?.fullName} />
