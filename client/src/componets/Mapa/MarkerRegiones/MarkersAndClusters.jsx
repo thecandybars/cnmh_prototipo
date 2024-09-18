@@ -5,6 +5,41 @@ import PopupMarkerPreview from "../components/PopupMarkerPreview";
 import PopupClusterPreview from "../components/PopupClusterPreview";
 
 function MarkersAndClusters(props) {
+  // HANDLE SELECT
+  const handleSelectedCluster = (e, cluster, supercluster) => {
+    const [longitude, latitude] = cluster.geometry.coordinates;
+    e.stopPropagation();
+    const expansionZoom = Math.min(
+      supercluster.getClusterExpansionZoom(cluster.id),
+      20
+    );
+    const destination = {
+      latitude,
+      longitude,
+      zoom: expansionZoom,
+      transitionDuration: 500,
+      pitch: props.actualViewport.pitch,
+    };
+    props.setDestination(destination);
+  };
+  const handleSelectedMarker = useCallback(
+    (e, id) => {
+      e.stopPropagation();
+      const lugar = props.lugares.find((lugar) => lugar.id === id);
+      props.setSelectedMarker(lugar);
+      props.setActualView(2);
+      lugar &&
+        props.setDestination({
+          longitude: lugar.longitud,
+          latitude: lugar.latitud,
+          speed: 0.4,
+          curve: 1.42,
+          zoom: 16.5, //15
+          pitch: 70,
+        });
+    },
+    [props.lugares]
+  );
   // HANDLERS MARKERS
   const [previewMarker, setPreviewMarker] = useState(null);
   const handlePreviewMarker = useCallback(
@@ -34,31 +69,33 @@ function MarkersAndClusters(props) {
   }, []);
 
   return (
-    <div>
-      <MarkersLugares
-        handleSelectedCluster={props.handleSelectedCluster}
-        handlePreviewCluster={handlePreviewCluster}
-        handleSelectedMarker={props.handleSelectedMarker}
-        handlePreviewMarker={handlePreviewMarker}
-        actualViewport={props.actualViewport}
-        actualView={props.actualView}
-        lugares={props.lugares}
-        activeFilters={props.activeFilters}
-        mapRef={props.mapRef}
-      />
-      {previewMarker && props.actualView === 1 && (
-        <PopupMarkerPreview
-          previewMarker={previewMarker}
-          onClose={() => setPreviewMarker(null)}
+    props.lugares?.length && (
+      <div>
+        <MarkersLugares
+          handleSelectedCluster={handleSelectedCluster}
+          handlePreviewCluster={handlePreviewCluster}
+          handleSelectedMarker={handleSelectedMarker}
+          handlePreviewMarker={handlePreviewMarker}
+          actualViewport={props.actualViewport}
+          actualView={props.actualView}
+          lugares={props.lugares}
+          activeFilters={props.activeFilters}
+          mapRef={props.mapRef}
         />
-      )}
-      {previewCluster && props.actualView === 1 && (
-        <PopupClusterPreview
-          previewCluster={previewCluster}
-          onClose={() => setPreviewCluster(null)}
-        />
-      )}
-    </div>
+        {previewMarker && props.actualView === 1 && (
+          <PopupMarkerPreview
+            previewMarker={previewMarker}
+            onClose={() => setPreviewMarker(null)}
+          />
+        )}
+        {previewCluster && props.actualView === 1 && (
+          <PopupClusterPreview
+            previewCluster={previewCluster}
+            onClose={() => setPreviewCluster(null)}
+          />
+        )}
+      </div>
+    )
   );
 }
 
@@ -72,6 +109,9 @@ MarkersAndClusters.propTypes = {
   lugares: PropTypes.array,
   activeFilters: PropTypes.array,
   mapRef: PropTypes.object,
+  setDestination: PropTypes.func,
+  setSelectedMarker: PropTypes.func,
+  setActualView: PropTypes.func,
 };
 
 export default MarkersAndClusters;
