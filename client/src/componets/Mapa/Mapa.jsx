@@ -3,19 +3,15 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import getEnv from "../../utils/getEnv";
 import useFetch from "../common/customHooks/useFetch";
 import { getAllDepartamentos } from "../../services/departamentos";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
-import { Box, Dialog, FormControlLabel, Stack, Switch } from "@mui/material";
-import { Photo_360 } from "../../App";
+import { Box, Dialog } from "@mui/material";
 import "./styles/styles.css";
-import ViewsBreadcrumbs from "./components/ViewsBreadcrumbs";
-import ZonasDeConflicto from "./MapLayers/ZonasDeConflicto";
 import Macroregiones from "./MapLayers/Macroregiones";
 // import Macroregiones from "./MapLayers/Macroregiones_in_progress";
 import MapToolsDrawer from "./components/MapToolsDrawer";
 import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
-import MultimediaSliders from "../Exhibiciones/MultimediaSliders";
 import MarkersAndClusters from "./MarkerRegiones/MarkersAndClusters";
 import macroregionesData from "../../geojson/macroregiones.json";
 import Model3D from "../ThreeD/Model3D";
@@ -23,6 +19,7 @@ import modelURL1 from "../../assets/pajarosAnimados.glb";
 import modelURL2 from "../../assets/BarramundiFish.glb";
 import Breadcrumbs from "./components/Breadcrumbs";
 import Lugar from "../Lugares/Lugar";
+import OverlayDataLayers from "./MapLayers/OverlayDataLayers";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -194,33 +191,8 @@ export default function Mapa() {
       mapHover={mapHover}
     />
   );
-  // COLOR CONFLICT AREAS
-  const [drawConflictAreas, setDrawConflictAreas] = useState(false);
-  const renderConflictAreasSwitch = (
-    <Stack
-      spacing={1}
-      sx={{
-        position: "absolute",
-        top: "100px",
-        zIndex: 100,
-        right: 0,
-        bgcolor: "secondary.main",
-        px: 4,
-        borderRadius: "30px 0 0 30px",
-      }}
-    >
-      <FormControlLabel
-        control={
-          <Switch
-            checked={drawConflictAreas}
-            onChange={() => setDrawConflictAreas((prev) => !prev)}
-          />
-        }
-        label="Zonas de conflicto"
-      />
-    </Stack>
-  );
-  const renderConflictAreas = drawConflictAreas && <ZonasDeConflicto />;
+  // OVERLAY DATA LAYERS aka ConflictAreas
+  const renderOverlayDataLayers = <OverlayDataLayers />;
 
   // FLY TO DESTINATION ??
   const [destination, setDestination] = useState(null);
@@ -343,7 +315,6 @@ export default function Mapa() {
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
       {renderBreadcrumbs}
-      {renderConflictAreasSwitch}
       {renderDrawer}
       {renderTituloMacroregion}
       {renderFooter}
@@ -378,7 +349,7 @@ export default function Mapa() {
         {renderMarkersAndClusters}
 
         {renderModel3D}
-        {renderConflictAreas}
+        {renderOverlayDataLayers}
       </Map>
     </Box>
   );
