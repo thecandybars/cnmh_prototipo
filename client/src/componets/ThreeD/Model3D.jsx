@@ -24,7 +24,6 @@ export default function Model3D({
 }) {
   useEffect(() => {
     const map = mapRef.current.getMap();
-    console.log("🚀 ~ useEffect ~ map:", map);
     const modelOrigin = origin;
     // const modelOrigin = [-73.7028614, 10.8263749];
     // const modelOrigin = [148.9819, -35.39847];
