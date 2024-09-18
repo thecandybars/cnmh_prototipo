@@ -272,16 +272,14 @@ export default function Mapa() {
   );
   // DRAWER
   const [openDrawer, setOpenDrawer] = useState(false);
-
-  useEffect(() => {
-    // DEFAULT OPEN DRAWER
-    const open = views.find(
-      (view) => view.id === actualView
-    )?.defaultOpenDrawer;
-    setOpenDrawer(open);
-  }, [actualView]);
-
-  const renderDrawer = actualView !== 0 && (
+  // useEffect(() => {
+  //   // DEFAULT OPEN DRAWER
+  //   const open = views.find(
+  //     (view) => view.id === actualView
+  //   )?.defaultOpenDrawer;
+  //   setOpenDrawer(open);
+  // }, [actualView]);
+  const renderDrawer = (
     <MapToolsDrawer
       openDrawer={openDrawer}
       setOpenDrawer={setOpenDrawer}
@@ -290,10 +288,11 @@ export default function Mapa() {
       handleOpenDialogLugar={() => setOpenDialogLugar(true)}
       activeFilters={activeFilters}
       setActiveFilters={setActiveFilters}
+      views={views}
     />
   );
 
-  // FLY TO DESTINATION
+  // FLY TO DESTINATION ??
   const [destination, setDestination] = useState(null);
   const [isFlying, setIsFlying] = useState(false);
   const flyToDestination = useMemo(() => {
@@ -325,7 +324,7 @@ export default function Mapa() {
     }
   }, [destination]);
 
-  // DIALOG LUGAR
+  // DIALOG LUGAR !
   const [openDialogLugar, setOpenDialogLugar] = useState(false);
   const renderDialogLugar = (
     <Dialog
@@ -337,19 +336,10 @@ export default function Mapa() {
         onClose={() => setOpenDialogLugar(false)}
         selectedMarker={selectedMarker}
       />
-      {/* {(selectedMarker &&
-        Math.floor(Math.abs(selectedMarker.latitud * 100)) % 2) === 0 ? (
-        <Photo_360 onClose={() => setOpenDialogLugar(false)} />
-      ) : (
-        <MultimediaSliders
-          exhibicionId={17}
-          onClose={() => setOpenDialogLugar(false)}
-        />
-      )} */}
     </Dialog>
   );
 
-  // BREADCUMBS
+  // BREADCUMBS !
   const renderBreadcrumbs = (
     <Breadcrumbs
       actualView={actualView}
@@ -371,12 +361,12 @@ export default function Mapa() {
     />
   );
 
-  // TITULO MACROREGIONES
+  // TITULO MACROREGIONES !
   const renderTituloMacroregion = (
     <TituloMacroregion title={actualRegion?.fullName} />
   );
 
-  // MODEL3D
+  // MODEL3D ??
   const renderModel3D = actualView > 0 && (
     <Model3D
       mapRef={mapRef}
@@ -388,6 +378,7 @@ export default function Mapa() {
     />
   );
 
+  // FOOTER !
   const renderFooter = <FooterLogoCNMH />;
 
   return (
