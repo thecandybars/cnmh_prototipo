@@ -22,6 +22,7 @@ import Model3D from "../ThreeD/Model3D";
 import modelURL1 from "../../assets/pajarosAnimados.glb";
 import modelURL2 from "../../assets/BarramundiFish.glb";
 import Breadcrumbs from "./components/Breadcrumbs";
+import Lugar from "../Lugares/Lugar";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -286,7 +287,7 @@ export default function Mapa() {
       setOpenDrawer={setOpenDrawer}
       actualView={actualView}
       selectedMarker={selectedMarker}
-      handleOpenDialogLugar={() => handleOpenDialogLugar()}
+      handleOpenDialogLugar={() => setOpenDialogLugar(true)}
       activeFilters={activeFilters}
       setActiveFilters={setActiveFilters}
     />
@@ -294,7 +295,6 @@ export default function Mapa() {
 
   // FLY TO DESTINATION
   const [destination, setDestination] = useState(null);
-  console.log("🚀 ~ Mapa ~ destination:", destination);
   const [isFlying, setIsFlying] = useState(false);
   const flyToDestination = useMemo(() => {
     {
@@ -327,30 +327,25 @@ export default function Mapa() {
 
   // DIALOG LUGAR
   const [openDialogLugar, setOpenDialogLugar] = useState(false);
-  const handleOpenDialogLugar = () => {
-    setOpenDialogLugar(true);
-  };
-  const handleCloseDialogLugar = () => {
-    setOpenDialogLugar(false);
-  };
-  const index =
-    selectedMarker && Math.floor(Math.abs(selectedMarker.latitud * 100)) % 2;
-  const renderDialogContent =
-    index === 0 ? (
-      <Photo_360 onClose={() => handleCloseDialogLugar()} />
-    ) : (
-      <MultimediaSliders
-        exhibicionId={17}
-        onClose={() => handleCloseDialogLugar()}
-      />
-    );
   const renderDialogLugar = (
     <Dialog
       open={openDialogLugar}
-      onClose={() => handleCloseDialogLugar()}
+      onClose={() => setOpenDialogLugar(false)}
       fullScreen
     >
-      {renderDialogContent}
+      <Lugar
+        onClose={() => setOpenDialogLugar(false)}
+        selectedMarker={selectedMarker}
+      />
+      {/* {(selectedMarker &&
+        Math.floor(Math.abs(selectedMarker.latitud * 100)) % 2) === 0 ? (
+        <Photo_360 onClose={() => setOpenDialogLugar(false)} />
+      ) : (
+        <MultimediaSliders
+          exhibicionId={17}
+          onClose={() => setOpenDialogLugar(false)}
+        />
+      )} */}
     </Dialog>
   );
 
@@ -375,27 +370,6 @@ export default function Mapa() {
       }}
     />
   );
-
-  // const renderBreadcrumbs = (
-  //   <Breadcrumbs
-  //     actualView={actualView}
-  //     actualRegion={actualRegion}
-  //     selectedMarker={selectedMarker}
-  //     handleClickLevel0={() => {
-  //       setActualView(0);
-  //       setActualRegion(null);
-  //       setSelectedMarker(null);
-  //       setDestination({ ...viewports[0], pitch: 0 });
-  //     }}
-  //     handleClickLevel1={() => {
-  //       setActualView(1);
-  //       setSelectedMarker(null);
-  //       setDestination(
-  //         viewports.find((viewport) => viewport.id === actualRegion.id)
-  //       );
-  //     }}
-  //   />
-  // );
 
   // TITULO MACROREGIONES
   const renderTituloMacroregion = (
