@@ -39,10 +39,10 @@ export default function Model3D({
       modelOrigin,
       modelAltitude
     );
-    console.log(
-      "🚀 ~ useEffect ~ modelAsMercatorCoordinate:",
-      modelAsMercatorCoordinate
-    );
+    // console.log(
+    //   "🚀 ~ useEffect ~ modelAsMercatorCoordinate:",
+    //   modelAsMercatorCoordinate
+    // );
     const modelRotate = [Math.PI / 2, 0, 0];
     const clock = new THREE.Clock(); // Clock to track time for animations
     let mixer; // AnimationMixer to control the animations

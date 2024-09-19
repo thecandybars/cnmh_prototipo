@@ -3,8 +3,12 @@ import colombiaRegionsData from "../../../geojson/col.json";
 import useFetch from "../../common/customHooks/useFetch";
 import { getAllDepartamentos } from "../../../services/departamentos";
 import { theme } from "../../../utils/theme";
+import useAppStore from "../../../store/useAppStore";
 
-export default function Macroregiones(props) {
+export default function Macroregiones() {
+  const actualView = useAppStore((state) => state.actualView);
+  const actualRegion = useAppStore((state) => state.actualRegion);
+
   const [departamentos] = useFetch(() => getAllDepartamentos());
 
   const DrawRegions =
@@ -16,7 +20,7 @@ export default function Macroregiones(props) {
         color: theme.palette[region.name]?.first || "pink",
         opacity: 0.5,
       };
-      if (props.actualView !== 0 && region?.id === props.actualRegion.id)
+      if (actualView !== 0 && region?.id === actualRegion.id)
         regionColor.opacity = 0;
       return (
         <Source

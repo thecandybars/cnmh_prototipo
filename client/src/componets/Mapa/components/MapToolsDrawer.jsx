@@ -18,6 +18,7 @@ MapToolsDrawer.propTypes = {
   activeFilters: PropTypes.array,
   setActiveFilters: PropTypes.func,
   views: PropTypes.array,
+  display: PropTypes.bool,
 };
 
 export default function MapToolsDrawer(props) {
@@ -128,7 +129,8 @@ export default function MapToolsDrawer(props) {
   );
 
   return (
-    !!renderDrawerContents && (
+    !!renderDrawerContents &&
+    props.display && (
       <Box>
         {renderClosedFilterDrawer}
         {renderOpenedFilterDrawer}
