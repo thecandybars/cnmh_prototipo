@@ -1,17 +1,36 @@
 import { Box, Breadcrumbs, Link } from "@mui/material";
 import { NavigateNextIcon } from "../../common/icons";
 import { theme } from "../../../utils/theme";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
+import useAppStore from "../../../store/useAppStore";
+import viewports from "../../common/viewports";
 
-ViewsBreadcrumbs.propTypes = {
-  actualView: PropTypes.number,
-  actualRegion: PropTypes.number,
-  actualLugar: PropTypes.object,
-  onClickView0: PropTypes.func,
-  onClickView1: PropTypes.func,
-};
+// ViewsBreadcrumbs.propTypes = {
+// };
 
-export default function ViewsBreadcrumbs(props) {
+export default function ViewsBreadcrumbs() {
+  const actualView = useAppStore((state) => state.actualView);
+  const actualRegion = useAppStore((state) => state.actualRegion);
+  const selectedMarker = useAppStore((state) => state.selectedMarker);
+  const setActualView = useAppStore((state) => state.setActualView);
+  const setActualRegion = useAppStore((state) => state.setActualRegion);
+  const setSelectedMarker = useAppStore((state) => state.setSelectedMarker);
+  const setDestination = useAppStore((state) => state.setDestination);
+
+  const handleClickLevel0 = () => {
+    setActualView(0);
+    setActualRegion(null);
+    setSelectedMarker(null);
+    setDestination({ ...viewports[0], pitch: 0 });
+  };
+  const handleClickLevel1 = () => {
+    setActualView(1);
+    setSelectedMarker(null);
+    setDestination(
+      viewports.find((viewport) => viewport.id === actualRegion.id)
+    );
+  };
+
   return (
     <Box
       sx={{
@@ -26,34 +45,34 @@ export default function ViewsBreadcrumbs(props) {
         separator={<NavigateNextIcon fontSize="small" color="primary" />}
       >
         <Link
-          underline={props.actualView === 0 ? "none" : "always"}
-          onClick={() => props.onClickView0()}
+          underline={actualView === 0 ? "none" : "always"}
+          onClick={handleClickLevel0}
           sx={{
-            cursor: props.actualView === 0 ? "default" : "pointer",
+            cursor: actualView === 0 ? "default" : "pointer",
           }}
         >
           Vista general
         </Link>
-        {props.actualView > 0 && (
+        {actualView > 0 && (
           <Link
-            underline={props.actualView === 1 ? "none" : "always"}
-            onClick={() => props.onClickView1()}
+            underline={actualView === 1 ? "none" : "always"}
+            onClick={handleClickLevel1}
             sx={{
-              cursor: props.actualView === 1 ? "default" : "pointer",
+              cursor: actualView === 1 ? "default" : "pointer",
             }}
           >
-            {`Región ${props.actualRegion.fullName}`}
+            {`Región ${actualRegion.fullName}`}
           </Link>
         )}
-        {props.actualView > 1 && (
+        {actualView > 1 && (
           <Link
             underline="none"
             sx={{
               cursor: "default",
             }}
           >
-            {props.actualLugar.nombreCorto ||
-              props.actualLugar.nombre.slice(0, 35) + " ..."}
+            {selectedMarker.nombreCorto ||
+              selectedMarker.nombre.slice(0, 35) + " ..."}
           </Link>
         )}
       </Breadcrumbs>
