@@ -20,6 +20,7 @@ import modelURL2 from "../../assets/BarramundiFish.glb";
 import Breadcrumbs from "./components/Breadcrumbs";
 import Lugar from "../Lugares/Lugar";
 import OverlayDataLayers from "./MapLayers/OverlayDataLayers";
+import useAppStore from "../../store/useAppStore";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -117,12 +118,17 @@ export default function Mapa() {
   const [fetchedLugares] = useFetch(() => getAllLugares());
   const [departamentos] = useFetch(() => getAllDepartamentos());
 
-  const [actualView, setActualView] = useState(0); // 0:pais, 1:region, 2:lugar
-  console.log("🚀 ~ Mapa ~ actualView:", actualView);
-  const [actualRegion, setActualRegion] = useState(null);
+  // USE GLOBAL STATE
+  // actualView -> 0:Pais, 1:Region, 2:Lugar
+  const actualView = useAppStore((state) => state.actualView);
+  const setActualView = useAppStore((state) => state.setActualView);
+  // actualRegion -> {fullName: "Andina",id: 2,name: "andina",}
+  const actualRegion = useAppStore((state) => state.actualRegion);
+  const setActualRegion = useAppStore((state) => state.setActualRegion);
 
   const [activeFilters, setActiveFilters] = useState([]);
 
+  // // ANIMATION INTRO
   // useEffect(() => {
   //   mapRef?.current?.on("load", () => {
   //     setDestination({
@@ -175,24 +181,12 @@ export default function Mapa() {
       )
     );
   // HANDLE MAP INTERACTIONS
-  const [mapHover, setMapHover] = useState(2);
+  const [mapHover, setMapHover] = useState(5);
   const handleMouseMove = (e) => {
     if (e.features.length > 0) {
       setMapHover(e.features[0].source || "");
     }
   };
-
-  //////////// LAYERS
-  // COLOR REGIONS
-  const renderMacroregiones = (
-    <Macroregiones
-      actualView={actualView}
-      actualRegion={actualRegion}
-      mapHover={mapHover}
-    />
-  );
-  // OVERLAY DATA LAYERS aka ConflictAreas
-  const renderOverlayDataLayers = <OverlayDataLayers />;
 
   // FLY TO DESTINATION ??
   const [destination, setDestination] = useState(null);
@@ -226,6 +220,14 @@ export default function Mapa() {
     }
   }, [destination]);
 
+  ///////////////////// RENDER UI ELEMENTS
+
+  // MACROREGIONES !
+  const renderMacroregiones = <Macroregiones mapHover={mapHover} />;
+
+  // OVERLAY DATA LAYERS aka ConflictAreas !
+  const renderOverlayDataLayers = <OverlayDataLayers />;
+
   // MARKERS AND CLUSTERS !
   const [selectedMarker, setSelectedMarker] = useState(null);
   const renderMarkersAndClusters = (
@@ -240,6 +242,7 @@ export default function Mapa() {
       setActualView={setActualView}
     />
   );
+
   // DRAWER !
   const [openDrawer, setOpenDrawer] = useState(false);
   const renderDrawer = (
@@ -252,6 +255,7 @@ export default function Mapa() {
       activeFilters={activeFilters}
       setActiveFilters={setActiveFilters}
       views={views}
+      display={true}
     />
   );
 
@@ -302,9 +306,9 @@ export default function Mapa() {
     <Model3D
       mapRef={mapRef}
       origin={[destination.longitude, destination.latitude]}
-      modelURL={modelURL2}
-      scale={1} //10
-      altitude={20} //500
+      modelURL={modelURL1}
+      scale={10} //10
+      altitude={50} //500
       display={actualView === 2}
     />
   );
@@ -315,10 +319,10 @@ export default function Mapa() {
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
       {renderBreadcrumbs}
-      {renderDrawer}
       {renderTituloMacroregion}
       {renderFooter}
       {renderDialogLugar}
+      {renderDrawer}
       <Map
         ref={mapRef}
         initialViewState={actualViewport}

@@ -48,6 +48,7 @@ import colombiaRegionsData from "../../../geojson/macroregiones.json";
 import { theme } from "../../../utils/theme";
 
 export default function Macroregiones(props) {
+  console.log("🚀 ~ Macroregiones ~ props:", props);
   const DrawRegions = colombiaRegionsData.features.map((feature) => {
     const id = parseInt(feature.properties.id);
     const isHover = id === props.mapHover;
@@ -98,7 +99,7 @@ export default function Macroregiones(props) {
           type="line"
           paint={{
             "line-color": "#cacaca",
-            "line-width": 2,
+            "line-width": 5,
             "line-opacity": 0.3,
             // "line-dasharray": [2, 4],
           }}
