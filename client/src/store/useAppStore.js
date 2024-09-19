@@ -8,6 +8,18 @@ const useAppStore = create((set) => ({
   // Macroregion seleccionada, obj -> {fullName: "Andina",id: 2,name: "andina",}
   actualRegion: null,
   setActualRegion: (region) => set({ actualRegion: region }),
+
+  // Macroregion seleccionada, obj -> {fullName: "Andina",id: 2,name: "andina",}
+  actualLugar: null,
+  setActualLugar: (lugar) => set({ actualLugar: lugar }),
+
+  // Macroregion seleccionada, obj -> {fullName: "Andina",id: 2,name: "andina",}
+  selectedMarker: null,
+  setSelectedMarker: (marker) => set({ selectedMarker: marker }),
+
+  //
+  destination: null,
+  setDestination: (destination) => set({ destination: destination }),
 }));
 
 export default useAppStore;

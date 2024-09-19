@@ -3,7 +3,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import getEnv from "../../utils/getEnv";
 import useFetch from "../common/customHooks/useFetch";
 import { getAllDepartamentos } from "../../services/departamentos";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
 import { Box, Dialog } from "@mui/material";
 import "./styles/styles.css";
@@ -21,77 +21,13 @@ import Breadcrumbs from "./components/Breadcrumbs";
 import Lugar from "../Lugares/Lugar";
 import OverlayDataLayers from "./MapLayers/OverlayDataLayers";
 import useAppStore from "../../store/useAppStore";
+import viewports from "../common/viewports";
 
 const TOKEN = getEnv("mapboxToken");
 
 const colombiaBounds = [
   [-89.0, -10.0], // Southwest coordinates
   [-47.0, 13.0], // Northeast coordinates
-];
-
-const viewports = [
-  {
-    id: 0,
-    name: "init",
-    latitude: 3.040459790793207,
-    longitude: -72.36877483252725,
-    zoom: 5,
-    bearing: -8.12,
-    pitch: 30.477,
-    curve: 1.2,
-    speed: 0.4,
-
-    // latitude: 1.362425462023893,
-    // longitude: -72.75696872711507,
-    // zoom: 15.344,
-    // bearing: -75,
-    // pitch: 79.33,
-  },
-  {
-    id: 1,
-    name: "atlantica",
-    latitude: 9.623258819486551,
-    longitude: -74.34607646380869,
-    bearing: 0,
-    pitch: 55.5,
-    zoom: 6.8,
-  },
-  {
-    id: 2,
-    name: "andina",
-    latitude: 4.6031532264371435,
-    longitude: -75.18776978314327,
-    bearing: -12,
-    pitch: 68,
-    zoom: 6.8,
-  },
-  {
-    id: 3,
-    name: "orinoquia",
-    latitude: 4.070452284593742,
-    longitude: -71.6532422060435,
-    bearing: 0,
-    pitch: 57.5,
-    zoom: 6.9,
-  },
-  {
-    id: 4,
-    name: "pacifico",
-    latitude: 4.558676216895876,
-    longitude: -77.6577498889891,
-    bearing: -90.4,
-    pitch: 57,
-    zoom: 6.8,
-  },
-  {
-    id: 5,
-    name: "amazonia",
-    latitude: -0.7819996812872176,
-    longitude: -71.81094028047556,
-    bearing: -9.560178795705497,
-    pitch: 41.500000000000355,
-    zoom: 6.173886199823472,
-  },
 ];
 
 const views = [
@@ -125,6 +61,12 @@ export default function Mapa() {
   // actualRegion -> {fullName: "Andina",id: 2,name: "andina",}
   const actualRegion = useAppStore((state) => state.actualRegion);
   const setActualRegion = useAppStore((state) => state.setActualRegion);
+  // selectedMarker -> {...lugar}
+  const selectedMarker = useAppStore((state) => state.selectedMarker);
+  const setSelectedMarker = useAppStore((state) => state.setSelectedMarker);
+  // destination -> {...lugar}
+  const destination = useAppStore((state) => state.destination);
+  const setDestination = useAppStore((state) => state.setDestination);
 
   const [activeFilters, setActiveFilters] = useState([]);
 
@@ -189,7 +131,6 @@ export default function Mapa() {
   };
 
   // FLY TO DESTINATION ??
-  const [destination, setDestination] = useState(null);
   const [isFlying, setIsFlying] = useState(false);
   const flyToDestination = useMemo(() => {
     {
@@ -229,7 +170,6 @@ export default function Mapa() {
   const renderOverlayDataLayers = <OverlayDataLayers />;
 
   // MARKERS AND CLUSTERS !
-  const [selectedMarker, setSelectedMarker] = useState(null);
   const renderMarkersAndClusters = (
     <MarkersAndClusters
       actualViewport={actualViewport}
@@ -275,26 +215,7 @@ export default function Mapa() {
   );
 
   // BREADCUMBS !
-  const renderBreadcrumbs = (
-    <Breadcrumbs
-      actualView={actualView}
-      actualRegion={actualRegion}
-      selectedMarker={selectedMarker}
-      handleClickLevel0={() => {
-        setActualView(0);
-        setActualRegion(null);
-        setSelectedMarker(null);
-        setDestination({ ...viewports[0], pitch: 0 });
-      }}
-      handleClickLevel1={() => {
-        setActualView(1);
-        setSelectedMarker(null);
-        setDestination(
-          viewports.find((viewport) => viewport.id === actualRegion.id)
-        );
-      }}
-    />
-  );
+  const renderBreadcrumbs = <Breadcrumbs />;
 
   // TITULO MACROREGIONES !
   const renderTituloMacroregion = (
@@ -327,8 +248,8 @@ export default function Mapa() {
         ref={mapRef}
         initialViewState={actualViewport}
         maxBounds={colombiaBounds}
-        // mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
-        mapStyle="mapbox://styles/juancortes79/cm15gwoxb000i01qkdie1g1og"
+        mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
+        // mapStyle="mapbox://styles/juancortes79/cm15gwoxb000i01qkdie1g1og"
         mapboxAccessToken={TOKEN}
         onClick={handleMapClick}
         // onMouseMove={(e) => handleMouseMove(e)}
