@@ -52,15 +52,7 @@ export default function Test() {
       bearing: 111.63575975157869,
       pitch: 68.00000000000016,
       zoom: 16.649172318083263,
-    },
-    {
-      // RIO
-      latitude: 1.6788498162166212,
-      longitude: -75.62709522047167,
-      bearing: 111.63575975157869,
-      pitch: 68.00000000000016,
-      zoom: 16.649172318083263,
-      speed: 0.1,
+      speed: 0.05,
     },
     {
       // PANORAMICA
