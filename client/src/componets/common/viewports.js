@@ -1,7 +1,7 @@
 const viewports = [
   {
     id: 0,
-    name: "init",
+    name: "general",
     latitude: 3.040459790793207,
     longitude: -72.36877483252725,
     zoom: 5,

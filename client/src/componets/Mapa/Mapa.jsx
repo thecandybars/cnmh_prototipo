@@ -85,6 +85,13 @@ export default function Mapa() {
   //   });
   // }, [mapRef.current]);
 
+  const [isFlying, setIsFlying] = useState(null);
+
+  useEffect(() => {
+    mapRef?.current?.on("movestart", () => isFlying && setIsFlying(false));
+    mapRef?.current?.on("moveend", () => isFlying && setIsFlying(false));
+  }, [mapRef, isFlying]);
+
   // FILTER LUGARES
   const lugares = useMemo(
     () =>
@@ -131,7 +138,7 @@ export default function Mapa() {
   };
 
   // FLY TO DESTINATION ??
-  const [isFlying, setIsFlying] = useState(false);
+  console.log("🚀 ~ Mapa ~ isFlying:", isFlying);
   const flyToDestination = useMemo(() => {
     {
       if (destination) {
@@ -151,7 +158,7 @@ export default function Mapa() {
         });
         // mapRef.current.once("moveend", () => {
         //   // End of flyTo animation
-        //   setIsFlying(false);
+        //   // setIsFlying(false);
         //   console.log("FlyTo animation complete");
         // });
       } else {
@@ -259,7 +266,7 @@ export default function Mapa() {
         }}
         onMoveStart={() => {
           if (isFlying) {
-            setIsFlying(false);
+            // setIsFlying(false);
             // setDestination(null);
           }
         }}
