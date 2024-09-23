@@ -3,12 +3,10 @@ import useAppStore from "../../../store/useAppStore";
 import { useEffect, useState } from "react";
 import { Fade, Typography } from "@mui/material";
 
-function useTextAndCameraAnimation({
-  animationSequence,
-  animate,
-  isCameraMoving,
-}) {
-  const [animationIndex, setAnimationIndex] = useState(0);
+function useTextAndCameraAnimation({ animationSequence }) {
+  const [animationIndex, setAnimationIndex] = useState(3);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const isCameraMoving = useAppStore((state) => state.camera.isMoving);
 
   // SETUP CAMERA ANIMATION
   const setDestination = useAppStore((state) => state.setDestination);
@@ -16,14 +14,15 @@ function useTextAndCameraAnimation({
   // RENDER CAMERA ANIMATION
   useEffect(() => {
     if (
-      animate &&
+      isPlaying &&
       !isCameraMoving &&
       animationIndex < animationSequence.length
     ) {
       setDestination(animationSequence[animationIndex]);
       setAnimationIndex((prev) => prev + 1);
     }
-  }, [isCameraMoving, animate]);
+    if (animationIndex >= animationSequence.length) setIsPlaying(false);
+  }, [isCameraMoving, isPlaying]);
 
   // RENDER TEXT ANIMATION
   const [renderAnimationText, setRenderAnimationText] = useState("");
@@ -44,7 +43,7 @@ function useTextAndCameraAnimation({
     );
     return () => window.clearTimeout(renderTextTimeout);
   }, [animationIndex]);
-  const renderAnimatedText = animate && (
+  const renderAnimatedText = isPlaying && (
     <Fade
       in={playAnimationText}
       timeout={{
@@ -62,14 +61,11 @@ function useTextAndCameraAnimation({
       </Typography>
     </Fade>
   );
-
-  return renderAnimatedText;
+  return [renderAnimatedText, setIsPlaying];
 }
 
 useTextAndCameraAnimation.propTypes = {
   animationSequence: PropTypes.array,
-  animate: PropTypes.bool,
-  isMoving: PropTypes.bool,
 };
 
 export default useTextAndCameraAnimation;
