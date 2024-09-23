@@ -1,10 +1,12 @@
-import { Box, Fade, Typography } from "@mui/material";
+import { Box, Button, Fade, Stack, Typography } from "@mui/material";
 import getEnv from "../../utils/getEnv";
 import Map from "react-map-gl";
 import { useEffect, useRef, useState } from "react";
 import useAppStore from "../../store/useAppStore";
 
 export default function Test() {
+  const [isInit, setIsInit] = useState(true);
+
   const mapRef = useRef(null);
   const [actualViewport, setActualViewport] = useState({
     // latitude: 1.663549967166091,
@@ -18,7 +20,7 @@ export default function Test() {
   const [isFlying, setIsFlying] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
 
-  // destination -> {...lugar}
+  // destination -> {longitude,latitude,speed,curve,zoom,bearing,pitch}
   const destination = useAppStore((state) => state.destination);
   const setDestination = useAppStore((state) => state.setDestination);
 
@@ -42,7 +44,6 @@ export default function Test() {
   // //
   const [animate, setAnimate] = useState(false);
   const [animationIndex, setAnimationIndex] = useState(0);
-  console.log("🚀 ~ Test ~ animationIndex:", animationIndex);
 
   const animationSequence = [
     {
@@ -57,6 +58,7 @@ export default function Test() {
     {
       // PANORAMICA
       textStart: "Nibh dictum inceptos senectus suspendisse augue lacinia",
+      textDuration: 500,
       latitude: 1.6698718032300093,
       bearing: 140.8357597515801,
       longitude: -75.61635039781017,
@@ -99,15 +101,25 @@ export default function Test() {
 
   // RENDER TEXT ANIMATION
   const [renderAnimationText, setRenderAnimationText] = useState("");
+  const [playAnimationText, setPlayAnimationText] = useState(false);
   useEffect(() => {
-    if (animationIndex && animationSequence[animationIndex - 1].textStart)
+    if (animationIndex && animationSequence[animationIndex - 1].textStart) {
       setRenderAnimationText(animationSequence[animationIndex - 1].textStart);
+      setPlayAnimationText(true);
+    }
     const renderTextTimeout = window.setTimeout(
-      () => setRenderAnimationText(""),
-      5000
+      () => setPlayAnimationText(false),
+      animationIndex &&
+        Object.keys(animationSequence[animationIndex - 1]).includes(
+          "textDuration"
+        )
+        ? animationSequence[animationIndex - 1].textDuration
+        : 3000
     );
     return () => window.clearTimeout(renderTextTimeout);
   }, [animationIndex]);
+
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
 
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
@@ -119,7 +131,7 @@ export default function Test() {
         onMove={(evt) => {
           setActualViewport(evt.viewState);
         }}
-        onLoad={() => setAnimate(true)}
+        onLoad={() => setIsMapLoaded(true)}
         terrain={{ source: "mapbox-dem", exaggeration: 1.0 }}
         onMoveStart={() => {
           setIsMoving(true);
@@ -128,26 +140,72 @@ export default function Test() {
           setIsFlying(false);
           setIsMoving(false);
         }}
-      >
-        {/* {flyToDestination} */}
-      </Map>
+      />
       <Box sx={{ position: "absolute", top: 300 }}>
         {/* <button onClick={() => setAnimate((prev) => !prev)}>pause</button> */}
         <Box
           display="flex"
-          justifyContents={"center"}
+          justifyContent={"center"}
           alignItems={"center"}
           width="100%"
         >
-          <Fade in={!!renderAnimationText}>
-            <Typography
-              variant="h1"
-              sx={{ width: "85%", margin: "0 auto" }}
-              textAlign="center"
+          {!isInit && (
+            <Fade
+              in={playAnimationText}
+              timeout={{
+                appear: 10000,
+                enter: 2000,
+                exit: 3000,
+              }}
             >
-              {renderAnimationText}
-            </Typography>
-          </Fade>
+              <Typography
+                variant="h1"
+                sx={{ width: "85%", margin: "0 auto" }}
+                textAlign="center"
+              >
+                {renderAnimationText}
+              </Typography>
+            </Fade>
+          )}
+          {isInit && (
+            <Fade
+              in={isInit}
+              timeout={{
+                appear: 10000,
+                enter: 6000,
+                exit: 3000,
+              }}
+            >
+              <Stack
+                spacing={2}
+                sx={{
+                  alignItems: "center",
+                  width: "35%",
+                  margin: "0 auto",
+                  border: "2px solid white",
+                  p: 4,
+                  borderRadius: 2,
+                  backgroundColor: "rgba(255,255,255,0.1)",
+                }}
+              >
+                <Typography variant="h5" textAlign="center">
+                  Bienvenidus, congue sed accumsan eros nisi, penatibus etiam
+                  aliquet volutpat eget auctor proin erat viverra vulputate
+                  praesent per velit facilisis
+                </Typography>
+                <Button
+                  disabled={!isMapLoaded}
+                  variant="outlined"
+                  onClick={() => {
+                    setIsInit(false);
+                    setAnimate(true);
+                  }}
+                >
+                  Iniciar
+                </Button>
+              </Stack>
+            </Fade>
+          )}
         </Box>
       </Box>
     </Box>
