@@ -3,47 +3,16 @@ import getEnv from "../../utils/getEnv";
 import Map from "react-map-gl";
 import { useEffect, useRef, useState } from "react";
 import useAppStore from "../../store/useAppStore";
+import useTextAndCameraAnimation from "../common/customHooks/useTextAndCameraAnimation";
 
 export default function Test() {
-  const [isInit, setIsInit] = useState(true);
-
-  const mapRef = useRef(null);
-  const [actualViewport, setActualViewport] = useState({
-    // latitude: 1.663549967166091,
-    // longitude: -75.61292136539856,
-    // zoom: 16.708146,
-    // bearing: 133.6,
-    // pitch: 31.5,
-  });
-  // console.log("🚀 ~ Test ~ actualViewport:", actualViewport);
-
-  const [isFlying, setIsFlying] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(true);
   const [isMoving, setIsMoving] = useState(false);
 
-  // destination -> {longitude,latitude,speed,curve,zoom,bearing,pitch}
-  const destination = useAppStore((state) => state.destination);
-  const setDestination = useAppStore((state) => state.setDestination);
+  const mapRef = useRef(null);
+  const [actualViewport, setActualViewport] = useState({});
 
-  useEffect(() => {
-    {
-      if (destination) {
-        setIsFlying(true);
-        mapRef.current?.flyTo({
-          center: [destination.longitude, destination.latitude],
-          speed: destination.speed || 0.01,
-          curve: destination.curve || 1.42,
-          zoom: destination.zoom || actualViewport.zoom,
-          bearing: destination.bearing,
-          pitch: destination.pitch,
-          essential: true,
-        });
-      }
-    }
-  }, [destination]);
-
-  // //
   const [animate, setAnimate] = useState(false);
-  const [animationIndex, setAnimationIndex] = useState(0);
 
   const animationSequence = [
     {
@@ -91,34 +60,32 @@ export default function Test() {
       curve: 4,
     },
   ];
-  // RENDER CAMERA ANIMATION
-  useEffect(() => {
-    if (animate && !isMoving && animationIndex < animationSequence.length) {
-      setDestination(animationSequence[animationIndex]);
-      setAnimationIndex((prev) => prev + 1);
-    }
-  }, [isMoving, animate]);
 
-  // RENDER TEXT ANIMATION
-  const [renderAnimationText, setRenderAnimationText] = useState("");
-  const [playAnimationText, setPlayAnimationText] = useState(false);
-  useEffect(() => {
-    if (animationIndex && animationSequence[animationIndex - 1].textStart) {
-      setRenderAnimationText(animationSequence[animationIndex - 1].textStart);
-      setPlayAnimationText(true);
-    }
-    const renderTextTimeout = window.setTimeout(
-      () => setPlayAnimationText(false),
-      animationIndex &&
-        Object.keys(animationSequence[animationIndex - 1]).includes(
-          "textDuration"
-        )
-        ? animationSequence[animationIndex - 1].textDuration
-        : 3000
-    );
-    return () => window.clearTimeout(renderTextTimeout);
-  }, [animationIndex]);
+  const renderAnimatedText = useTextAndCameraAnimation({
+    animationSequence: animationSequence,
+    animate: animate,
+    isCameraMoving: isMoving,
+  });
 
+  // SETUP CAMERA ANIMATION
+  const destination = useAppStore((state) => state.destination);
+  useEffect(() => {
+    {
+      if (destination) {
+        mapRef.current?.flyTo({
+          center: [destination.longitude, destination.latitude],
+          speed: destination.speed || 0.01,
+          curve: destination.curve || 1.42,
+          zoom: destination.zoom || actualViewport.zoom,
+          bearing: destination.bearing,
+          pitch: destination.pitch,
+          essential: true,
+        });
+      }
+    }
+  }, [destination]);
+
+  // MAP STATE
   const [isMapLoaded, setIsMapLoaded] = useState(false);
 
   return (
@@ -137,42 +104,23 @@ export default function Test() {
           setIsMoving(true);
         }}
         onMoveEnd={() => {
-          setIsFlying(false);
           setIsMoving(false);
         }}
       />
       <Box sx={{ position: "absolute", top: 300 }}>
-        {/* <button onClick={() => setAnimate((prev) => !prev)}>pause</button> */}
         <Box
           display="flex"
           justifyContent={"center"}
           alignItems={"center"}
           width="100%"
         >
-          {!isInit && (
+          {renderAnimatedText}
+          {showWelcome && (
             <Fade
-              in={playAnimationText}
+              in={showWelcome}
               timeout={{
-                appear: 10000,
-                enter: 2000,
-                exit: 3000,
-              }}
-            >
-              <Typography
-                variant="h1"
-                sx={{ width: "85%", margin: "0 auto" }}
-                textAlign="center"
-              >
-                {renderAnimationText}
-              </Typography>
-            </Fade>
-          )}
-          {isInit && (
-            <Fade
-              in={isInit}
-              timeout={{
-                appear: 10000,
-                enter: 6000,
+                appear: 100,
+                enter: 3000,
                 exit: 3000,
               }}
             >
@@ -197,7 +145,7 @@ export default function Test() {
                   disabled={!isMapLoaded}
                   variant="outlined"
                   onClick={() => {
-                    setIsInit(false);
+                    setShowWelcome(false);
                     setAnimate(true);
                   }}
                 >
