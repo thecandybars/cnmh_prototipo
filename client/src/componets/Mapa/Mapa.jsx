@@ -22,6 +22,8 @@ import Lugar from "../Lugares/Lugar";
 import OverlayDataLayers from "./MapLayers/OverlayDataLayers";
 import useAppStore from "../../store/useAppStore";
 import viewports from "../common/viewports";
+import useTextAndCameraAnimation from "../common/customHooks/useTextAndCameraAnimation";
+import Welcome from "./Welcome";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -68,22 +70,9 @@ export default function Mapa() {
   const destination = useAppStore((state) => state.destination);
   const setDestination = useAppStore((state) => state.setDestination);
 
-  const [activeFilters, setActiveFilters] = useState([]);
+  const setIsMoving = useAppStore((state) => state.setIsMoving);
 
-  // // ANIMATION INTRO
-  // useEffect(() => {
-  //   mapRef?.current?.on("load", () => {
-  //     setDestination({
-  //       latitude: 3.040459790793207,
-  //       longitude: -72.36877483252725,
-  //       zoom: 5,
-  //       bearing: -8.12,
-  //       pitch: 30.477,
-  //       curve: 1.2,
-  //       speed: 0.4,
-  //     });
-  //   });
-  // }, [mapRef.current]);
+  const [activeFilters, setActiveFilters] = useState([]);
 
   const [isFlying, setIsFlying] = useState(null);
 
@@ -104,11 +93,65 @@ export default function Mapa() {
     [fetchedLugares, actualRegion]
   );
 
+  // ANMIATION INTRO
+  const animationSequence = [
+    {
+      // RIO
+      latitude: 1.6688498162166212,
+      longitude: -75.61709522047167,
+      bearing: 111.63575975157869,
+      pitch: 68.00000000000016,
+      zoom: 16.649172318083263,
+      speed: 0.05,
+    },
+    {
+      // PANORAMICA
+      textStart: "Nibh dictum inceptos senectus suspendisse augue lacinia",
+      textDuration: 500,
+      latitude: 1.6698718032300093,
+      bearing: 140.8357597515801,
+      longitude: -75.61635039781017,
+      pitch: 71.50000000000014,
+      zoom: 14.794007750896629,
+      curve: 4,
+      speed: 0.05,
+    },
+    {
+      // PANEO
+      textStart: "Ultricies orci placerat dapibus a egestas conubia suscipit",
+      bearing: 165.23575975157735,
+      latitude: 1.6709179971907417,
+      longitude: -75.61471299189078,
+      pitch: 69.50000000000011,
+      zoom: 14.794007750896629,
+      curve: 4,
+      speed: 0.03,
+    },
+    {
+      // PULL OUT
+      textStart:
+        "Dignissim nascetur metus magna pharetra venenatis hac cras ligula malesuada",
+      bearing: -13.591805834206525,
+      latitude: 3.1683874325679824,
+      longitude: -73.8218955201097,
+      pitch: 9.053774213024917,
+      zoom: 4.871835060074412,
+      speed: 1,
+      // speed: 0.1,
+      curve: 4,
+    },
+  ];
+
+  const [renderAnimatedText, setIsPlaying] = useTextAndCameraAnimation({
+    animationSequence: animationSequence,
+  });
+
   // HANDLE MOVE
   const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
 
   // HANDLE CLICKS ON INTERACTIVE REGIONS
   const handleMapClick = (event) => {
+    // setIsPlaying(false);
     if (event.features.length > 0) {
       const clickedId = parseInt(event.features[0].properties.dpto);
       const clickedRegion = departamentos.find(
@@ -131,39 +174,26 @@ export default function Mapa() {
     );
   // HANDLE MAP INTERACTIONS
   const [mapHover, setMapHover] = useState(5);
-  const handleMouseMove = (e) => {
-    if (e.features.length > 0) {
-      setMapHover(e.features[0].source || "");
-    }
-  };
+  // const handleMouseMove = (e) => {
+  //   if (e.features.length > 0) {
+  //     setMapHover(e.features[0].source || "");
+  //   }
+  // };
 
   // FLY TO DESTINATION ??
-  console.log("🚀 ~ Mapa ~ isFlying:", isFlying);
-  const flyToDestination = useMemo(() => {
+  useEffect(() => {
     {
       if (destination) {
-        setIsFlying(true);
+        setIsMoving(true);
         mapRef.current?.flyTo({
-          ...actualViewport,
           center: [destination.longitude, destination.latitude],
-          speed: destination.speed || 0.4,
+          speed: destination.speed || 1,
           curve: destination.curve || 1.42,
-          zoom: destination.zoom || 15,
-          bearing:
-            typeof destination.bearing === "number"
-              ? destination.bearing
-              : actualViewport.bearing + Math.random() * 50 - 25,
+          zoom: destination.zoom || actualViewport.zoom,
+          bearing: destination.bearing,
           pitch: destination.pitch,
           essential: true,
         });
-        // mapRef.current.once("moveend", () => {
-        //   // End of flyTo animation
-        //   // setIsFlying(false);
-        //   console.log("FlyTo animation complete");
-        // });
-      } else {
-        // setIsFlying(false);
-        // setDestination(null);
       }
     }
   }, [destination]);
@@ -244,6 +274,23 @@ export default function Mapa() {
   // FOOTER !
   const renderFooter = <FooterLogoCNMH />;
 
+  // INIT
+  const [showWelcome, setShowWelcome] = useState(true);
+  // MAP STATE
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
+
+  // WELCOME
+  const renderWelcome = (
+    <Welcome
+      show={showWelcome}
+      disabled={!isMapLoaded}
+      onClick={() => {
+        setShowWelcome(false);
+        setIsPlaying(true);
+      }}
+    />
+  );
+
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
       {renderBreadcrumbs}
@@ -251,35 +298,50 @@ export default function Mapa() {
       {renderFooter}
       {renderDialogLugar}
       {renderDrawer}
+
       <Map
         ref={mapRef}
-        initialViewState={actualViewport}
+        initialViewState={animationSequence[0]}
         maxBounds={colombiaBounds}
         mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
-        // mapStyle="mapbox://styles/juancortes79/cm15gwoxb000i01qkdie1g1og"
         mapboxAccessToken={TOKEN}
         onClick={handleMapClick}
-        // onMouseMove={(e) => handleMouseMove(e)}
-        onMove={(evt) => {
-          // setIsFlying(false);
-          setActualViewport(evt.viewState);
+        onMove={(e) => {
+          setActualViewport(e.viewState);
         }}
+        onLoad={() => setIsMapLoaded(true)}
         onMoveStart={() => {
-          if (isFlying) {
-            // setIsFlying(false);
-            // setDestination(null);
-          }
+          setIsMoving(true);
         }}
-        onDragStart={() => {
-          // setIsFlying(false);
+        onMoveEnd={() => {
+          setIsMoving(false);
         }}
         interactiveLayerIds={interactiveLayerIds}
         terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}
       >
         {renderMacroregiones}
-        {flyToDestination}
         {renderMarkersAndClusters}
-
+        <Box
+          sx={{
+            position: "absolute",
+            top: 300,
+            margin: "0 auto",
+            width: "100vw",
+            pointerEvents: "none",
+          }}
+        >
+          {renderAnimatedText}
+        </Box>
+        <Box
+          sx={{
+            position: "absolute",
+            top: 300,
+            margin: "0 auto",
+            width: "100vw",
+          }}
+        >
+          {renderWelcome}
+        </Box>
         {renderModel3D}
         {renderOverlayDataLayers}
       </Map>

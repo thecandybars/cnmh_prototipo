@@ -20,6 +20,13 @@ const useAppStore = create((set) => ({
   //
   destination: null,
   setDestination: (destination) => set({ destination: destination }),
+
+  //
+  camera: { isMoving: false },
+  setIsMoving: (isMoving) =>
+    set((state) => ({
+      camera: { ...state.camera, isMoving: isMoving },
+    })),
 }));
 
 export default useAppStore;
