@@ -24,30 +24,20 @@ export default function Model3D({
 }) {
   useEffect(() => {
     const map = mapRef.current.getMap();
-    const modelOrigin = origin;
-    // const modelOrigin = [-73.7028614, 10.8263749];
-    // const modelOrigin = [148.9819, -35.39847];
-    // const altitude = Math.pow(2, 20 - zoom)
+    const modelOrigin = origin; // [-73.7028614, 10.8263749];
 
     // Query the terrain elevation at the model's origin
-    // const elevation = map.queryTerrainElevation(origin) || 0; // Fallback to 0 if terrain elevation is unavailable
-    const elevation = mapRef.current.queryTerrainElevation(origin); // Fallback to 0 if terrain elevation is unavailable
+    const elevation = mapRef.current.queryTerrainElevation(origin);
     const modelAltitude = Math.ceil(elevation) + altitude; // Add desired altitude above terrain
-    // const modelAltitude = altitude; // 3300; //100
 
     const modelAsMercatorCoordinate = mapboxgl.MercatorCoordinate.fromLngLat(
       modelOrigin,
       modelAltitude
     );
-    // console.log(
-    //   "🚀 ~ useEffect ~ modelAsMercatorCoordinate:",
-    //   modelAsMercatorCoordinate
-    // );
+
     const modelRotate = [Math.PI / 2, 0, 0];
     const clock = new THREE.Clock(); // Clock to track time for animations
     let mixer; // AnimationMixer to control the animations
-
-    // console.log(modelAsMercatorCoordinate.meterInMercatorCoordinateUnits());
 
     const modelTransform = {
       translateX: modelAsMercatorCoordinate.x,
@@ -79,11 +69,9 @@ export default function Model3D({
         // Load 3D model with animation
         const loader = new GLTFLoader();
         loader.load(
-          modelURL,
-          // "https://docs.mapbox.com/mapbox-gl-js/assets/34M_17/34M_17.gltf",
+          modelURL, // "https://docs.mapbox.com/mapbox-gl-js/assets/34M_17/34M_17.gltf",
           (gltf) => {
             this.scene.add(gltf.scene);
-
             // Setup the AnimationMixer and play the animation
             mixer = new THREE.AnimationMixer(gltf.scene);
             if (gltf.animations && gltf.animations.length > 0) {
@@ -107,10 +95,7 @@ export default function Model3D({
       render: function (gl, matrix) {
         const delta = clock.getDelta(); // Get time elapsed since last frame
 
-        // Update the animation mixer if it exists
-        if (mixer) {
-          mixer.update(delta); // Update animations
-        }
+        if (mixer) mixer.update(delta); // Update animations if mixer exists
 
         const rotationX = new THREE.Matrix4().makeRotationAxis(
           new THREE.Vector3(1, 0, 0),
@@ -150,11 +135,7 @@ export default function Model3D({
       },
     };
 
-    // map.on("style.load", () => {
-    map.addLayer(customLayer), `${uuidv4()}`;
-    // map.addLayer(customLayer, `${uuidv4()}`);
-
-    // });
+    map.addLayer(customLayer), `${uuidv4()}`; // Add animation layer to map
 
     // Cleanup function, wrong: resets animation on every mouse movement
     return () => {

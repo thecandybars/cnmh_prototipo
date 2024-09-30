@@ -18,10 +18,10 @@ export default function Macroregiones() {
       const region = departamentos?.find((dpto) => dpto.geoId === id)?.Region;
       const regionColor = {
         color: theme.palette[region.name]?.first || "pink",
-        opacity: 0.5,
+        opacity: 0.3,
       };
       if (actualView !== 0 && region?.id === actualRegion.id)
-        regionColor.opacity = 0;
+        regionColor.opacity = 0.1;
       return (
         <Source
           key={`zone-${id}`}
@@ -38,14 +38,14 @@ export default function Macroregiones() {
               "fill-opacity": regionColor.opacity,
             }}
           />
-          {/* <Layer
-          id={`zone-${id}-line`}
-          type="line"
-          paint={{
-            "line-color": colorRegion,
-            "line-width": 1,
-          }}
-        /> */}
+          <Layer
+            id={`zone-${id}-line`}
+            type="line"
+            paint={{
+              "line-color": "rgba(0, 125, 15, 0.18)",
+              "line-width": 1,
+            }}
+          />
         </Source>
       );
     });

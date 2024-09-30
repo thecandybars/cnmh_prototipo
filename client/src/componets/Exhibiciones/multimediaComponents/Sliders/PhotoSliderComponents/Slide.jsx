@@ -5,6 +5,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import useSelectMediaSource from "../../../../common/customHooks/useSelectMediaSource";
 
 export default function Slide(props) {
+  console.log("🚀 ~ Slide ~ props:", props);
   // Get media sources. Slide may have one or two media sources
   const source0 = useSelectMediaSource({
     primary: props.slide.Medios[0].url,

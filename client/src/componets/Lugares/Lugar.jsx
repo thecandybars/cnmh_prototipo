@@ -10,7 +10,7 @@ function Lugar(props) {
     ) : (
       <MultimediaSliders exhibicionId={17} onClose={props.onClose} />
     );
-  return { renderContents };
+  return renderContents;
 }
 
 Lugar.propTypes = { selectedMarker: PropTypes.object, onClose: PropTypes.func };

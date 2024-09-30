@@ -90,7 +90,6 @@ const StyledMarker = (props) => {
 
 StyledMarker.propTypes = {
   marca: PropTypes.object,
-  zoom: PropTypes.number,
   onClick: PropTypes.func,
   text: PropTypes.any,
 };

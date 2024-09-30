@@ -14,9 +14,9 @@ import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
 import MarkersAndClusters from "./MarkerRegiones/MarkersAndClusters";
 import macroregionesData from "../../geojson/macroregiones.json";
-import Model3D from "../ThreeD/Model3D";
-import modelURL1 from "../../assets/pajarosAnimados.glb";
-import modelURL2 from "../../assets/BarramundiFish.glb";
+// import Model3D from "../ThreeD/Model3D";
+// import modelURL1 from "../../assets/pajarosAnimados.glb";
+// import modelURL2 from "../../assets/BarramundiFish.glb";
 import Breadcrumbs from "./components/Breadcrumbs";
 import Lugar from "../Lugares/Lugar";
 import OverlayDataLayers from "./MapLayers/OverlayDataLayers";
@@ -65,7 +65,7 @@ export default function Mapa() {
   const setActualRegion = useAppStore((state) => state.setActualRegion);
   // selectedMarker -> {...lugar}
   const selectedMarker = useAppStore((state) => state.selectedMarker);
-  const setSelectedMarker = useAppStore((state) => state.setSelectedMarker);
+  // const setSelectedMarker = useAppStore((state) => state.setSelectedMarker);
   // destination -> {...lugar}
   const destination = useAppStore((state) => state.destination);
   const setDestination = useAppStore((state) => state.setDestination);
@@ -106,8 +106,8 @@ export default function Mapa() {
     },
     {
       // PANORAMICA
-      textStart: "Nibh dictum inceptos senectus suspendisse augue lacinia",
-      textDuration: 500,
+      textStart: "Nibh dictum inceptos",
+      textDuration: 1300,
       latitude: 1.6698718032300093,
       bearing: 140.8357597515801,
       longitude: -75.61635039781017,
@@ -136,8 +136,8 @@ export default function Mapa() {
       longitude: -73.8218955201097,
       pitch: 9.053774213024917,
       zoom: 4.871835060074412,
-      speed: 1,
-      // speed: 0.1,
+      // speed: 1,
+      speed: 0.1,
       curve: 4,
     },
   ];
@@ -148,6 +148,7 @@ export default function Mapa() {
 
   // HANDLE MOVE
   const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
+  console.log("🚀 ~ Mapa ~ actualViewport:", actualViewport);
 
   // HANDLE CLICKS ON INTERACTIVE REGIONS
   const handleMapClick = (event) => {
@@ -173,7 +174,7 @@ export default function Mapa() {
       )
     );
   // HANDLE MAP INTERACTIONS
-  const [mapHover, setMapHover] = useState(5);
+  // const [mapHover, setMapHover] = useState(5);
   // const handleMouseMove = (e) => {
   //   if (e.features.length > 0) {
   //     setMapHover(e.features[0].source || "");
@@ -182,26 +183,31 @@ export default function Mapa() {
 
   // FLY TO DESTINATION ??
   useEffect(() => {
-    {
-      if (destination) {
-        setIsMoving(true);
-        mapRef.current?.flyTo({
-          center: [destination.longitude, destination.latitude],
-          speed: destination.speed || 1,
-          curve: destination.curve || 1.42,
-          zoom: destination.zoom || actualViewport.zoom,
-          bearing: destination.bearing,
-          pitch: destination.pitch,
-          essential: true,
-        });
+    try {
+      {
+        if (destination) {
+          setIsMoving(true);
+          mapRef.current?.flyTo({
+            center: [destination.longitude, destination.latitude],
+            speed: destination.speed || 1,
+            curve: destination.curve || 1.42,
+            zoom: destination.zoom || actualViewport.zoom,
+            bearing: destination.bearing || 0,
+            pitch: destination.pitch || 0,
+            // essential: true,
+          });
+        }
       }
+    } catch (error) {
+      console.error("Error flying to destination:", error);
     }
   }, [destination]);
 
   ///////////////////// RENDER UI ELEMENTS
 
   // MACROREGIONES !
-  const renderMacroregiones = <Macroregiones mapHover={mapHover} />;
+  const renderMacroregiones = <Macroregiones />;
+  // const renderMacroregiones = <Macroregiones mapHover={mapHover} />;
 
   // OVERLAY DATA LAYERS aka ConflictAreas !
   const renderOverlayDataLayers = <OverlayDataLayers />;
@@ -210,13 +216,9 @@ export default function Mapa() {
   const renderMarkersAndClusters = (
     <MarkersAndClusters
       actualViewport={actualViewport}
-      actualView={actualView}
       lugares={lugares}
       activeFilters={activeFilters}
       mapRef={mapRef}
-      setDestination={setDestination}
-      setSelectedMarker={setSelectedMarker}
-      setActualView={setActualView}
     />
   );
 
@@ -260,16 +262,16 @@ export default function Mapa() {
   );
 
   // MODEL3D ??
-  const renderModel3D = actualView > 0 && (
-    <Model3D
-      mapRef={mapRef}
-      origin={[destination.longitude, destination.latitude]}
-      modelURL={modelURL1}
-      scale={10} //10
-      altitude={50} //500
-      display={actualView === 2}
-    />
-  );
+  // const renderModel3D =  actualView > 0 && (
+  //   <Model3D
+  //     mapRef={mapRef}
+  //     origin={[destination.longitude, destination.latitude]}
+  //     modelURL={modelURL1}
+  //     scale={10} //10
+  //     altitude={50} //500
+  //     display={actualView === 2}
+  //   />
+  // );
 
   // FOOTER !
   const renderFooter = <FooterLogoCNMH />;
@@ -287,6 +289,11 @@ export default function Mapa() {
       onClick={() => {
         setShowWelcome(false);
         setIsPlaying(true);
+      }}
+      onSkip={() => {
+        setShowWelcome(false);
+        setIsPlaying(false);
+        setDestination({ ...viewports[0], speed: 1.8 });
       }}
     />
   );
@@ -309,6 +316,10 @@ export default function Mapa() {
         onMove={(e) => {
           setActualViewport(e.viewState);
         }}
+        // onLoad={() => {
+        //   setShowWelcome(false);
+        //   setIsPlaying(true);
+        // }}
         onLoad={() => setIsMapLoaded(true)}
         onMoveStart={() => {
           setIsMoving(true);
@@ -342,7 +353,7 @@ export default function Mapa() {
         >
           {renderWelcome}
         </Box>
-        {renderModel3D}
+        {/* {renderModel3D} */}
         {renderOverlayDataLayers}
       </Map>
     </Box>
