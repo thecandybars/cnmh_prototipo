@@ -5,8 +5,7 @@ import Photo360 from "./componets/Lugares/Photo360/Photo360";
 import PhotoGallery from "./componets/Lugares/PhotoGallery/PhotoGallery";
 import CasaMemoriaTumaco from "./componets/Lugares/CasaMemoriaTumaco";
 import Test from "./componets/Test/Test";
-import Test2 from "./componets/Test/Test2";
-import Test3 from "./componets/Test/Test3";
+import Guardianes from "./componets/Guardianes/Guardianes";
 
 const NotFoundPage = () => (
   <div>
@@ -26,8 +25,7 @@ const App = () => {
           <Route path="/galeria" element={<PhotoGallery />} />
           <Route path="/casa" element={<CasaMemoriaTumaco />} />
           <Route path="/test" element={<Test />} />
-          <Route path="/test2" element={<Test2 />} />
-          <Route path="/test3" element={<Test3 />} />
+          <Route path="/guardianes" element={<Guardianes />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
