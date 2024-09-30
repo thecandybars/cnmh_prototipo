@@ -6,7 +6,7 @@ import { theme } from "../../utils/theme";
 export default function MainNav() {
   const items = [
     {
-      title: "LUGARES",
+      title: "MAPA",
       link: "/",
     },
     {

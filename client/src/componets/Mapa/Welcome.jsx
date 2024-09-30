@@ -1,7 +1,7 @@
-import { Button, Fade, Stack, Typography } from "@mui/material";
+import { Box, Button, Fade, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 
-function Welcome({ show, disabled, onClick }) {
+function Welcome({ show, disabled, onClick, onSkip }) {
   return (
     show && (
       <Fade
@@ -26,12 +26,16 @@ function Welcome({ show, disabled, onClick }) {
         >
           <Typography variant="h5" textAlign="center">
             Bienvenidus, congue sed accumsan eros nisi, penatibus etiam aliquet
-            volutpat eget auctor proin erat viverra vulputate praesent per velit
-            facilisis
+            volutpat pro in erat.
           </Typography>
-          <Button disabled={disabled} variant="outlined" onClick={onClick}>
-            Iniciar
-          </Button>
+          <Box display="flex" gap={2}>
+            <Button disabled={disabled} variant="outlined" onClick={onClick}>
+              Iniciar
+            </Button>
+            <Button disabled={disabled} variant="outlined" onClick={onSkip}>
+              {"Saltar >>"}
+            </Button>
+          </Box>
         </Stack>
       </Fade>
     )
@@ -42,6 +46,7 @@ Welcome.propTypes = {
   show: PropTypes.bool,
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
+  onSkip: PropTypes.func,
 };
 
 export default Welcome;

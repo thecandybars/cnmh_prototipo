@@ -8,8 +8,8 @@ MarkersLugares.propTypes = {
   handleSelectedCluster: PropTypes.func,
   handleSelectedMarker: PropTypes.func,
   handlePreviewMarker: PropTypes.func,
+  handlePreviewCluster: PropTypes.func,
   actualViewport: PropTypes.object,
-  actualView: PropTypes.number,
   lugares: PropTypes.array,
   activeFilters: PropTypes.array,
   mapRef: PropTypes.object,
@@ -45,7 +45,6 @@ export default function MarkersLugares(props) {
         >
           <StyledMarker
             marca={{ latitud: latitude, longitud: longitude }}
-            zoom={props.actualViewport.zoom}
             text={pointCount}
           />
         </Box>
@@ -54,7 +53,9 @@ export default function MarkersLugares(props) {
       return (
         <Box
           key={`marker-${cluster.properties.id}`}
-          onClick={(e) => props.handleSelectedMarker(e, cluster.properties.id)}
+          onClick={(e) => {
+            props.handleSelectedMarker(e, cluster.properties.id);
+          }}
           onMouseOver={(e) =>
             props.handlePreviewMarker({
               action: "over",
@@ -67,13 +68,8 @@ export default function MarkersLugares(props) {
               data: null,
             })
           }
-          // onMouseOver={(e) => props.handlePreviewMarker(e, cluster.properties.id)}
-          // onMouseOut={() => setPreviewMarker(null)}
         >
-          <StyledMarker
-            marca={cluster.properties}
-            zoom={props.actualViewport.zoom}
-          />
+          <StyledMarker marca={cluster.properties} />
         </Box>
       );
     }
@@ -135,5 +131,5 @@ export default function MarkersLugares(props) {
     props.mapRef,
   ]);
 
-  return props.actualView !== 0 && renderMarkers;
+  return renderMarkers;
 }

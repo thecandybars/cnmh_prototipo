@@ -18,7 +18,7 @@ const App = () => {
   return (
     <Router>
       <div>
-        {/* {location.pathname !== "/casa" && <MainNav />} */}
+        {location.pathname !== "/casa" && <MainNav />}
         <Routes>
           <Route path="/" element={<Mapa />} />
           <Route path="/foto360" element={<Photo360 />} />

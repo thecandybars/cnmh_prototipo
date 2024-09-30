@@ -21,7 +21,7 @@ export default function ViewsBreadcrumbs() {
     setActualView(0);
     setActualRegion(null);
     setSelectedMarker(null);
-    setDestination({ ...viewports[0], pitch: 0 });
+    setDestination({ ...viewports[0], pitch: 0, speed: 0.5 });
   };
   const handleClickLevel1 = () => {
     setActualView(1);

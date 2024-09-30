@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Fade, Typography } from "@mui/material";
 
 function useTextAndCameraAnimation({ animationSequence }) {
-  const [animationIndex, setAnimationIndex] = useState(3);
+  const [animationIndex, setAnimationIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const isCameraMoving = useAppStore((state) => state.camera.isMoving);
 
