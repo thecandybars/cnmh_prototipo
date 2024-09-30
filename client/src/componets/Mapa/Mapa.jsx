@@ -14,8 +14,8 @@ import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
 import MarkersAndClusters from "./MarkerRegiones/MarkersAndClusters";
 import macroregionesData from "../../geojson/macroregiones.json";
-// import Model3D from "../ThreeD/Model3D";
-// import modelURL1 from "../../assets/pajarosAnimados.glb";
+import Model3D from "../ThreeD/Model3D";
+import modelURL1 from "../../assets/pajarosAnimados.glb";
 // import modelURL2 from "../../assets/BarramundiFish.glb";
 import Breadcrumbs from "./components/Breadcrumbs";
 import Lugar from "../Lugares/Lugar";
@@ -262,16 +262,16 @@ export default function Mapa() {
   );
 
   // MODEL3D ??
-  // const renderModel3D =  actualView > 0 && (
-  //   <Model3D
-  //     mapRef={mapRef}
-  //     origin={[destination.longitude, destination.latitude]}
-  //     modelURL={modelURL1}
-  //     scale={10} //10
-  //     altitude={50} //500
-  //     display={actualView === 2}
-  //   />
-  // );
+  const renderModel3D = actualView > 0 && (
+    <Model3D
+      mapRef={mapRef}
+      origin={[destination.longitude, destination.latitude]}
+      modelURL={modelURL1}
+      scale={10} //10
+      altitude={50} //500
+      display={actualView === 2}
+    />
+  );
 
   // FOOTER !
   const renderFooter = <FooterLogoCNMH />;
@@ -353,7 +353,7 @@ export default function Mapa() {
         >
           {renderWelcome}
         </Box>
-        {/* {renderModel3D} */}
+        {renderModel3D}
         {renderOverlayDataLayers}
       </Map>
     </Box>
