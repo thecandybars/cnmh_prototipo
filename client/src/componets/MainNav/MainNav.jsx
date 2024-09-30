@@ -11,8 +11,7 @@ export default function MainNav() {
     },
     {
       title: "GUARDIANES DE LA MEMORIA",
-      link: "/regiones",
-      // link: "/landing2",
+      link: "/guardianes",
     },
   ];
   const renderMenuItems = items.map((item) => (
