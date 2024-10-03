@@ -20,7 +20,9 @@ function MarkersAndClusters(props) {
   // FILTER LUGARES
   useEffect(() => {
     const filteredLugares =
-      actualRegion !== null && fetchedLugares?.length
+      actualRegion === 0
+        ? fetchedLugares
+        : actualRegion !== null && fetchedLugares?.length
         ? fetchedLugares.filter(
             (lugar) =>
               lugar.Municipio.Departamento.Region.id === actualRegion.id
@@ -113,7 +115,7 @@ function MarkersAndClusters(props) {
 
   return (
     lugares?.length &&
-    actualView !== 0 && (
+    actualView !== null && (
       <div>
         <MarkersLugares
           handleSelectedCluster={handleSelectedCluster}

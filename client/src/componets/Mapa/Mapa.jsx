@@ -104,28 +104,40 @@ export default function Mapa() {
       // curve: 1,
     },
     {
-      // PANEO DER
-      textStart: "Explora los lugares de memoria,",
-      textDuration: 3500,
-      bearing: -80.36966754533574,
-      latitude: 1.6175855289341143,
-      longitude: -75.60995393323645,
-      pitch: 51.34807188445705,
-      zoom: 15.766346313931173,
-      speed: 0.05,
+      // CENITAL LUGAR
+      textStart: "",
+      // textDuration: 3500,
+      bearing: -85.54392589268775,
+      latitude: 1.6183063802543245,
+      longitude: -75.6079977030613,
+      pitch: 36.018177439255886,
+      zoom: 18.433982882761157,
+      speed: 0.3,
       curve: 1,
     },
     {
       // PANEO IZQ
-      textStart: "conoce las historias de los territorios",
+      textStart: "Explora los lugares de memoria,",
       textDuration: 4500,
       bearing: 19.26091928327901,
       latitude: 1.606257157175591,
       longitude: -75.6031489937609,
       pitch: 80,
       zoom: 14.639,
-      curve: 2,
-      speed: 0.05,
+      curve: 1.42,
+      speed: 0.2,
+    },
+    {
+      // PULL OUT
+      textStart: "conoce las historias de los territorios",
+      textDuration: 5500,
+      bearing: 0,
+      latitude: 1.5447215811481243,
+      longitude: -75.83822350099797,
+      pitch: 78.49860518025343,
+      zoom: 10.647996810048566,
+      curve: 1.42,
+      speed: 0.2,
     },
     {
       // PLANO GENERAL
@@ -137,10 +149,59 @@ export default function Mapa() {
       // longitude: -73.8218955201097,
       // pitch: 9.053774213024917,
       // zoom: 4.871835060074412,
-      speed: 0.1,
-      curve: 4,
+      speed: 0.15,
+      curve: 2,
     },
   ];
+  // const animationSequence = [
+  //   {
+  //     // INICIAL
+  //     latitude: 1.6245616206546316,
+  //     longitude: -75.60920114714031,
+  //     bearing: 12.223664343968721,
+  //     pitch: 77.65485079421936,
+  //     zoom: 15.25,
+  //     // speed: 0.5,
+  //     // curve: 1,
+  //   },
+  //   {
+  //     // PANEO DER
+  //     textStart: "Explora los lugares de memoria,",
+  //     textDuration: 3500,
+  //     bearing: -80.36966754533574,
+  //     latitude: 1.6175855289341143,
+  //     longitude: -75.60995393323645,
+  //     pitch: 51.34807188445705,
+  //     zoom: 15.766346313931173,
+  //     speed: 0.05,
+  //     curve: 1,
+  //   },
+  //   {
+  //     // PANEO IZQ
+  //     textStart: "conoce las historias de los territorios",
+  //     textDuration: 4500,
+  //     bearing: 19.26091928327901,
+  //     latitude: 1.606257157175591,
+  //     longitude: -75.6031489937609,
+  //     pitch: 80,
+  //     zoom: 14.639,
+  //     curve: 1.42,
+  //     speed: 0.05,
+  //   },
+  //   {
+  //     // PLANO GENERAL
+  //     ...viewports[0],
+  //     textStart: "y contribuye a preservar la memoria de nuestro pais.",
+  //     textDuration: 5500,
+  //     // bearing: -13.591805834206525,
+  //     // latitude: 3.1683874325679824,
+  //     // longitude: -73.8218955201097,
+  //     // pitch: 9.053774213024917,
+  //     // zoom: 4.871835060074412,
+  //     speed: 0.1,
+  //     curve: 4,
+  //   },
+  // ];
 
   const [renderAnimatedText, setIsPlaying] = useTextAndCameraAnimation({
     animationSequence: animationSequence,
