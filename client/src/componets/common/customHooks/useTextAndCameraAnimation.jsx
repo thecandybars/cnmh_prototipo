@@ -6,6 +6,7 @@ import { Fade, Typography } from "@mui/material";
 function useTextAndCameraAnimation({ animationSequence }) {
   const [animationIndex, setAnimationIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLastKeyframe, setIsLastKeyframe] = useState(false);
   const isCameraMoving = useAppStore((state) => state.camera.isMoving);
 
   // SETUP CAMERA ANIMATION
@@ -28,6 +29,7 @@ function useTextAndCameraAnimation({ animationSequence }) {
   const [renderAnimationText, setRenderAnimationText] = useState("");
   const [playAnimationText, setPlayAnimationText] = useState(false);
   useEffect(() => {
+    if (animationIndex === animationSequence.length) setIsLastKeyframe(true);
     if (animationIndex && animationSequence[animationIndex - 1].textStart) {
       setRenderAnimationText(animationSequence[animationIndex - 1].textStart);
       setPlayAnimationText(true);
@@ -43,6 +45,7 @@ function useTextAndCameraAnimation({ animationSequence }) {
     );
     return () => window.clearTimeout(renderTextTimeout);
   }, [animationIndex]);
+
   const renderAnimatedText = isPlaying && (
     <Fade
       in={playAnimationText}
@@ -61,7 +64,7 @@ function useTextAndCameraAnimation({ animationSequence }) {
       </Typography>
     </Fade>
   );
-  return [renderAnimatedText, setIsPlaying];
+  return [renderAnimatedText, setIsPlaying, isLastKeyframe, setIsLastKeyframe];
 }
 
 useTextAndCameraAnimation.propTypes = {

@@ -5,7 +5,7 @@ import useFetch from "../common/customHooks/useFetch";
 import { getAllDepartamentos } from "../../services/departamentos";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
-import { Box, Dialog } from "@mui/material";
+import { Box, Dialog, Fade } from "@mui/material";
 import "./styles/styles.css";
 import Macroregiones from "./MapLayers/Macroregiones";
 import MapToolsDrawer from "./components/MapToolsDrawer";
@@ -203,13 +203,13 @@ export default function Mapa() {
   //   },
   // ];
 
-  const [renderAnimatedText, setIsPlaying] = useTextAndCameraAnimation({
-    animationSequence: animationSequence,
-  });
+  const [renderAnimatedText, setIsPlaying, isLastKeyframe, setIsLastKeyframe] =
+    useTextAndCameraAnimation({
+      animationSequence: animationSequence,
+    });
 
   // HANDLE MOVE
   const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
-  console.log("🚀 ~ Mapa ~ actualViewport:", actualViewport);
 
   // HANDLE CLICKS ON INTERACTIVE REGIONS
   const handleMapClick = (event) => {
@@ -267,8 +267,7 @@ export default function Mapa() {
   ///////////////////// RENDER UI ELEMENTS
 
   // MACROREGIONES !
-  const renderMacroregiones = <Macroregiones />;
-  // const renderMacroregiones = <Macroregiones mapHover={mapHover} />;
+  const renderMacroregiones = isLastKeyframe && <Macroregiones />;
 
   // OVERLAY DATA LAYERS aka ConflictAreas !
   const renderOverlayDataLayers = <OverlayDataLayers />;
@@ -354,6 +353,7 @@ export default function Mapa() {
       onSkip={() => {
         setShowWelcome(false);
         setIsPlaying(false);
+        setIsLastKeyframe(true);
         setDestination({ ...viewports[0], speed: 1.8 });
       }}
     />

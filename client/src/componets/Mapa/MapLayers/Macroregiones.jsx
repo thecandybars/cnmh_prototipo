@@ -42,7 +42,7 @@ export default function Macroregiones() {
             id={`zone-${id}-line`}
             type="line"
             paint={{
-              "line-color": "rgba(0, 125, 15, 0.18)",
+              "line-color": "rgba(90, 125, 0, 0.18)",
               "line-width": 1,
             }}
           />
