@@ -5,9 +5,10 @@ import useFetch from "../common/customHooks/useFetch";
 import { getAllDepartamentos } from "../../services/departamentos";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
-import { Box, Dialog, Fade } from "@mui/material";
+import { Box, Dialog } from "@mui/material";
 import "./styles/styles.css";
-import Macroregiones from "./MapLayers/Macroregiones";
+// import Macroregiones from "./MapLayers/Macroregiones";
+import Macroregiones2 from "./MapLayers/Macroregiones_in_progress";
 import MapToolsDrawer from "./components/MapToolsDrawer";
 import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
@@ -22,6 +23,7 @@ import useAppStore from "../../store/useAppStore";
 import viewports from "../common/viewports";
 import useTextAndCameraAnimation from "../common/customHooks/useTextAndCameraAnimation";
 import Welcome from "./Welcome";
+import { getAllRegions } from "../../services/regions";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -53,6 +55,7 @@ export default function Mapa() {
 
   const [fetchedLugares] = useFetch(() => getAllLugares());
   const [departamentos] = useFetch(() => getAllDepartamentos());
+  const [regiones] = useFetch(() => getAllRegions());
 
   // USE GLOBAL STATE
   // actualView -> 0:Pais, 1:Region, 2:Lugar
@@ -213,17 +216,16 @@ export default function Mapa() {
 
   // HANDLE CLICKS ON INTERACTIVE REGIONS
   const handleMapClick = (event) => {
+    console.log("🚀 ~ handleMapClick ~ event:", event.features);
     // setIsPlaying(false);
     if (event.features.length > 0) {
-      const clickedId = parseInt(event.features[0].properties.dpto);
-      const clickedRegion = departamentos.find(
-        (dpto) => dpto.geoId === clickedId
-      );
+      const clickedId = parseInt(event.features[0].properties.id);
+      // const clickedRegion = departamentos.find(
+      //   (dpto) => dpto.geoId === clickedId
+      // );
       setActualView(1);
-      setActualRegion(clickedRegion.Region);
-      setDestination(
-        viewports.find((viewport) => viewport.id === clickedRegion.RegionId)
-      );
+      setActualRegion(regiones.find((region) => region.id === clickedId));
+      setDestination(viewports.find((viewport) => viewport.id === clickedId));
     }
   };
   // INTERACTIVE DEPARTAMENTOS
@@ -267,7 +269,13 @@ export default function Mapa() {
   ///////////////////// RENDER UI ELEMENTS
 
   // MACROREGIONES !
-  const renderMacroregiones = isLastKeyframe && <Macroregiones />;
+  const [hoverFeature, setHoverFeature] = useState(null);
+  // const renderMacroregiones = isLastKeyframe && (
+  //   <Macroregiones hoverFeature={hoverFeature} />
+  // );
+  const renderMacroregiones2 = isLastKeyframe && (
+    <Macroregiones2 hoverFeature={hoverFeature} />
+  );
 
   // OVERLAY DATA LAYERS aka ConflictAreas !
   const renderOverlayDataLayers = <OverlayDataLayers />;
@@ -371,9 +379,15 @@ export default function Mapa() {
         ref={mapRef}
         initialViewState={animationSequence[0]}
         maxBounds={colombiaBounds}
+        // mapStyle="mapbox://styles/juancortes79/cm15gwoxb000i01qkdie1g1og"
         mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
         mapboxAccessToken={TOKEN}
         onClick={handleMapClick}
+        on
+        onMouseMove={(e) => {
+          // console.log("🚀 ~ Mapa ~ e:", e.features[0].layer);
+          setHoverFeature(e.features[0]?.layer);
+        }}
         onMove={(e) => {
           setActualViewport(e.viewState);
         }}
@@ -391,7 +405,8 @@ export default function Mapa() {
         interactiveLayerIds={interactiveLayerIds}
         terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}
       >
-        {renderMacroregiones}
+        {/* {renderMacroregiones} */}
+        {renderMacroregiones2}
         {renderMarkersAndClusters}
         <Box
           sx={{

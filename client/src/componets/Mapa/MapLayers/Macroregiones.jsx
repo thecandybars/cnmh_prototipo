@@ -5,7 +5,7 @@ import { getAllDepartamentos } from "../../../services/departamentos";
 import { theme } from "../../../utils/theme";
 import useAppStore from "../../../store/useAppStore";
 
-export default function Macroregiones() {
+export default function Macroregiones(props) {
   const actualView = useAppStore((state) => state.actualView);
   const actualRegion = useAppStore((state) => state.actualRegion);
 
@@ -17,11 +17,13 @@ export default function Macroregiones() {
       const id = parseInt(feature.properties.dpto);
       const region = departamentos?.find((dpto) => dpto.geoId === id)?.Region;
       const regionColor = {
-        color: theme.palette[region.name]?.first || "pink",
+        color: theme.palette[region.name]?.first || "gray",
         opacity: 0.3,
       };
       if (actualView !== 0 && region?.id === actualRegion?.id)
         regionColor.opacity = 0.1;
+      if (props.hoverFeature?.id === `zone-${id}-fill`)
+        regionColor.color = "pink";
       return (
         <Source
           key={`zone-${id}`}
