@@ -53,7 +53,7 @@ function useTextAndCameraAnimation({ animationSequence }) {
       }}
     >
       <Typography
-        variant="h1"
+        variant="intro"
         sx={{ width: "85%", margin: "0 auto" }}
         textAlign="center"
       >

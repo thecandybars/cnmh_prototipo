@@ -16,17 +16,18 @@ function Welcome({ show, disabled, onClick, onSkip }) {
           spacing={2}
           sx={{
             alignItems: "center",
-            width: "35%",
+            width: "50%",
             margin: "0 auto",
             border: "2px solid white",
             p: 4,
             borderRadius: 2,
-            backgroundColor: "rgba(255,255,255,0.1)",
+            backgroundColor: "rgba(55, 55, 55, 0.7)",
           }}
         >
           <Typography variant="h5" textAlign="center">
-            Bienvenidus, congue sed accumsan eros nisi, penatibus etiam aliquet
-            volutpat pro in erat.
+            Bienvenido/a al Museo Virtual, un espacio dedicado a preservar y
+            compartir la memoria histórica de Colombia, a través de testimonios,
+            documentos y archivos relacionados con el conflicto armado.
           </Typography>
           <Box display="flex" gap={2}>
             <Button disabled={disabled} variant="outlined" onClick={onClick}>

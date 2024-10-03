@@ -20,7 +20,7 @@ export default function Macroregiones() {
         color: theme.palette[region.name]?.first || "pink",
         opacity: 0.3,
       };
-      if (actualView !== 0 && region?.id === actualRegion.id)
+      if (actualView !== 0 && region?.id === actualRegion?.id)
         regionColor.opacity = 0.1;
       return (
         <Source

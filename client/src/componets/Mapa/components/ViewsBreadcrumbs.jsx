@@ -21,7 +21,7 @@ export default function ViewsBreadcrumbs() {
     setActualView(0);
     setActualRegion(null);
     setSelectedMarker(null);
-    setDestination({ ...viewports[0], pitch: 0, speed: 0.5 });
+    setDestination({ ...viewports[0], speed: 0.5 });
   };
   const handleClickLevel1 = () => {
     setActualView(1);
@@ -61,7 +61,7 @@ export default function ViewsBreadcrumbs() {
               cursor: actualView === 1 ? "default" : "pointer",
             }}
           >
-            {`Región ${actualRegion.fullName}`}
+            {`Región ${actualRegion?.fullName}`}
           </Link>
         )}
         {actualView > 1 && (
