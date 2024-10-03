@@ -19,6 +19,7 @@ const viewports = [
     bearing: 0,
     pitch: 55.5,
     zoom: 6.8,
+    speed: 0.3,
   },
   {
     id: 2,
@@ -28,6 +29,7 @@ const viewports = [
     bearing: -12,
     pitch: 68,
     zoom: 6.8,
+    speed: 0.3,
   },
   {
     id: 3,
@@ -37,6 +39,7 @@ const viewports = [
     bearing: 0,
     pitch: 57.5,
     zoom: 6.9,
+    speed: 0.3,
   },
   {
     id: 4,
@@ -46,6 +49,7 @@ const viewports = [
     bearing: -90.4,
     pitch: 57,
     zoom: 6.8,
+    speed: 0.3,
   },
   {
     id: 5,
@@ -55,6 +59,7 @@ const viewports = [
     bearing: -9.560178795705497,
     pitch: 41.500000000000355,
     zoom: 6.173886199823472,
+    speed: 0.3,
   },
 ];
 
