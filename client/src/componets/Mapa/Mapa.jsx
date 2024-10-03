@@ -8,7 +8,6 @@ import { getAllLugares } from "../../services/lugares";
 import { Box, Dialog } from "@mui/material";
 import "./styles/styles.css";
 import Macroregiones from "./MapLayers/Macroregiones";
-// import Macroregiones from "./MapLayers/Macroregiones_in_progress";
 import MapToolsDrawer from "./components/MapToolsDrawer";
 import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
@@ -16,7 +15,6 @@ import MarkersAndClusters from "./MarkerRegiones/MarkersAndClusters";
 import macroregionesData from "../../geojson/macroregiones.json";
 import Model3D from "../ThreeD/Model3D";
 import modelURL1 from "../../assets/pajarosAnimados.glb";
-// import modelURL2 from "../../assets/BarramundiFish.glb";
 import Breadcrumbs from "./components/Breadcrumbs";
 import Lugar from "../Lugares/Lugar";
 import OverlayDataLayers from "./MapLayers/OverlayDataLayers";
@@ -96,47 +94,49 @@ export default function Mapa() {
   // ANMIATION INTRO
   const animationSequence = [
     {
-      // RIO
-      latitude: 1.6688498162166212,
-      longitude: -75.61709522047167,
-      bearing: 111.63575975157869,
-      pitch: 68.00000000000016,
-      zoom: 16.649172318083263,
+      // INICIAL
+      latitude: 1.6245616206546316,
+      longitude: -75.60920114714031,
+      bearing: 12.223664343968721,
+      pitch: 77.65485079421936,
+      zoom: 15.25,
+      // speed: 0.5,
+      // curve: 1,
+    },
+    {
+      // PANEO DER
+      textStart: "Explora los lugares de memoria,",
+      textDuration: 3500,
+      bearing: -80.36966754533574,
+      latitude: 1.6175855289341143,
+      longitude: -75.60995393323645,
+      pitch: 51.34807188445705,
+      zoom: 15.766346313931173,
+      speed: 0.05,
+      curve: 1,
+    },
+    {
+      // PANEO IZQ
+      textStart: "conoce las historias de los territorios",
+      textDuration: 4500,
+      bearing: 19.26091928327901,
+      latitude: 1.606257157175591,
+      longitude: -75.6031489937609,
+      pitch: 80,
+      zoom: 14.639,
+      curve: 2,
       speed: 0.05,
     },
     {
-      // PANORAMICA
-      textStart: "Nibh dictum inceptos",
-      textDuration: 1300,
-      latitude: 1.6698718032300093,
-      bearing: 140.8357597515801,
-      longitude: -75.61635039781017,
-      pitch: 71.50000000000014,
-      zoom: 14.794007750896629,
-      curve: 4,
-      speed: 0.05,
-    },
-    {
-      // PANEO
-      textStart: "Ultricies orci placerat dapibus a egestas conubia suscipit",
-      bearing: 165.23575975157735,
-      latitude: 1.6709179971907417,
-      longitude: -75.61471299189078,
-      pitch: 69.50000000000011,
-      zoom: 14.794007750896629,
-      curve: 4,
-      speed: 0.03,
-    },
-    {
-      // PULL OUT
-      textStart:
-        "Dignissim nascetur metus magna pharetra venenatis hac cras ligula malesuada",
-      bearing: -13.591805834206525,
-      latitude: 3.1683874325679824,
-      longitude: -73.8218955201097,
-      pitch: 9.053774213024917,
-      zoom: 4.871835060074412,
-      // speed: 1,
+      // PLANO GENERAL
+      ...viewports[0],
+      textStart: "y contribuye a preservar la memoria de nuestro pais.",
+      textDuration: 5500,
+      // bearing: -13.591805834206525,
+      // latitude: 3.1683874325679824,
+      // longitude: -73.8218955201097,
+      // pitch: 9.053774213024917,
+      // zoom: 4.871835060074412,
       speed: 0.1,
       curve: 4,
     },
@@ -193,7 +193,7 @@ export default function Mapa() {
             curve: destination.curve || 1.42,
             zoom: destination.zoom || actualViewport.zoom,
             bearing: destination.bearing || 0,
-            pitch: destination.pitch || 0,
+            pitch: destination.pitch || actualViewport.pitch || 0,
             // essential: true,
           });
         }
@@ -267,8 +267,8 @@ export default function Mapa() {
       mapRef={mapRef}
       origin={[destination.longitude, destination.latitude]}
       modelURL={modelURL1}
-      scale={10} //10
-      altitude={50} //500
+      scale={100} //10
+      altitude={150} //500
       display={actualView === 2}
     />
   );
@@ -335,10 +335,12 @@ export default function Mapa() {
         <Box
           sx={{
             position: "absolute",
-            top: 300,
+            top: "50vh",
             margin: "0 auto",
             width: "100vw",
             pointerEvents: "none",
+            display: "flex",
+            justifyContent: "center",
           }}
         >
           {renderAnimatedText}

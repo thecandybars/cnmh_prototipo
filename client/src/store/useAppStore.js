@@ -14,6 +14,7 @@ const useAppStore = create((set) => ({
   selectedMarker: null,
   setSelectedMarker: (marker) => set({ selectedMarker: marker }),
   //
+
   destination: null,
   setDestination: (destination) => set({ destination: destination }),
   //
