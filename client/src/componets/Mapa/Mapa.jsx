@@ -82,6 +82,11 @@ export default function Mapa() {
     mapRef?.current?.on("moveend", () => isFlying && setIsFlying(false));
   }, [mapRef, isFlying]);
 
+  // useEffect(() => {
+  //   mapRef.current.setPrefetchZoomDelta(4);
+  //   console.log("🚀 ~ Mapa ~ mapRef:", mapRef);
+  // }, [mapRef]);
+
   // FILTER LUGARES
   const lugares = useMemo(
     () =>
@@ -213,10 +218,10 @@ export default function Mapa() {
 
   // HANDLE MOVE
   const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
+  // console.log("🚀 ~ Mapa ~ actualViewport:", actualViewport);
 
   // HANDLE CLICKS ON INTERACTIVE REGIONS
   const handleMapClick = (event) => {
-    console.log("🚀 ~ handleMapClick ~ event:", event.features);
     // setIsPlaying(false);
     if (event.features.length > 0) {
       const clickedId = parseInt(event.features[0].properties.id);
@@ -236,13 +241,6 @@ export default function Mapa() {
         (macroregion) => `macroregion-${macroregion.properties.id}`
       )
     );
-  // HANDLE MAP INTERACTIONS
-  // const [mapHover, setMapHover] = useState(5);
-  // const handleMouseMove = (e) => {
-  //   if (e.features.length > 0) {
-  //     setMapHover(e.features[0].source || "");
-  //   }
-  // };
 
   // FLY TO DESTINATION ??
   useEffect(() => {
@@ -250,14 +248,20 @@ export default function Mapa() {
       {
         if (destination) {
           setIsMoving(true);
-          mapRef.current?.flyTo({
+          const mapboxMap = mapRef.current.getMap();
+          const elevation = mapboxMap.queryTerrainElevation(
+            [destination.longitude, destination.latitude],
+            { exaggerated: true }
+          );
+          mapboxMap.flyTo({
             center: [destination.longitude, destination.latitude],
             speed: destination.speed || 1,
             curve: destination.curve || 1.42,
             zoom: destination.zoom || actualViewport.zoom,
             bearing: destination.bearing || 0,
             pitch: destination.pitch || actualViewport.pitch || 0,
-            // essential: true,
+            offset: [0, -elevation],
+            essential: true,
           });
         }
       }
@@ -367,6 +371,69 @@ export default function Mapa() {
     />
   );
 
+  const handleOnLoad = () => {
+    setIsMapLoaded(true);
+    if (mapRef.current && mapRef.current.getMap) {
+      const mapboxMap = mapRef.current.getMap(); // Access Mapbox GL map instance
+      // PRELOAD TILES
+      mapboxMap.eagerTileLoading = true; // Enable eager loading
+      // mapboxMap.setPrefetchZoomDelta(4);
+
+      ////
+      // Agregar la fuente de elevación de Mapbox
+      // mapboxMap.addSource("mapbox-dem", {
+      //   type: "raster-dem",
+      //   url: "mapbox://mapbox.terrain-rgb",
+      //   tileSize: 512,
+      //   maxzoom: 6, // 14,
+      // });
+
+      // // Configurar el mapa para usar la fuente de terreno 3D
+      // // mapboxMap.setTerrain({ source: "mapbox-dem", exaggeration: 0 }); // Exaggeration controla la altura visual
+
+      // // Agregar una capa para representar el relieve
+      // mapboxMap.addLayer({
+      //   id: "hillshade",
+      //   source: "mapbox-dem",
+      //   type: "hillshade",
+      // });
+
+      // // Opcional: Cambiar la luz para hacer que el terreno 3D sea más visible
+      // mapboxMap.setLight({ anchor: "map", intensity: 0.5 });
+
+      // const mapOption = "VIIRS_SNPP_CorrectedReflectance_TrueColor";
+      const layerName = "MODIS_Terra_CorrectedReflectance_TrueColor";
+
+      const tilePath =
+        // "wmts/epsg4326/best/" +
+        "wmts/epsg3857/best/" +
+        layerName +
+        "/default/" +
+        "2018-06-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg";
+
+      // const tilePath =
+      //   "wmts/epsg3857/all/" +
+      //   "MODIS_Terra_CorrectedReflectance_TrueColor/default/" +
+      //   "2018-06-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg";
+
+      // mapboxMap.addSource("nasa-gibs", {
+      //   type: "raster",
+      //   tiles: [
+      //     "https://gibs-a.earthdata.nasa.gov/" + tilePath,
+      //     "https://gibs-b.earthdata.nasa.gov/" + tilePath,
+      //     "https://gibs-c.earthdata.nasa.gov/" + tilePath,
+      //   ],
+      //   tileSize: 256,
+      // });
+
+      // mapboxMap.addLayer({
+      //   id: "nasa-gibs-layer",
+      //   type: "raster",
+      //   source: "nasa-gibs",
+      // });
+    }
+  };
+
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
       {renderBreadcrumbs}
@@ -380,22 +447,43 @@ export default function Mapa() {
         initialViewState={animationSequence[0]}
         maxBounds={colombiaBounds}
         // mapStyle="mapbox://styles/juancortes79/cm15gwoxb000i01qkdie1g1og"
-        mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
+        // mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
+        mapStyle="mapbox://styles/mapbox/standard-satellite"
+        // mapStyle="mapbox://styles/mapbox/satellite-v9"
+        // mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
         mapboxAccessToken={TOKEN}
         onClick={handleMapClick}
-        on
+        // onIdle={() =>
+        //   setDestination({
+        //     latitude: destination.latitude + (Math.random() - 0.5) * 0.02,
+        //     longitude: destination.longitude + (Math.random() - 0.5) * 0.02,
+        //     zoom: 10,
+        //     // zoom: 5.131581510066996,
+        //     bearing: destination.bearing + (Math.random() - 0.5) * 0.02,
+        //     pitch: 30,
+        //     curve: 1.42,
+        //     speed: 0.001,
+        //   })
+        // }
+        // onIdle={() =>
+        //   setDestination({
+        //     latitude: destination.latitude + (Math.random() - 0.5) * 0.2,
+        //     longitude: destination.longitude + (Math.random() - 0.5) * 0.2,
+        //     zoom: 5,
+        //     // zoom: 5.131581510066996,
+        //     bearing: destination.bearing + (Math.random() - 0.5) * 0.2,
+        //     pitch: 30,
+        //     curve: 1.42,
+        //     speed: 1,
+        //   })
+        // }
         onMouseMove={(e) => {
-          // console.log("🚀 ~ Mapa ~ e:", e.features[0].layer);
           setHoverFeature(e.features[0]?.layer);
         }}
         onMove={(e) => {
           setActualViewport(e.viewState);
         }}
-        // onLoad={() => {
-        //   setShowWelcome(false);
-        //   setIsPlaying(true);
-        // }}
-        onLoad={() => setIsMapLoaded(true)}
+        onLoad={handleOnLoad}
         onMoveStart={() => {
           setIsMoving(true);
         }}
