@@ -81,9 +81,9 @@ function MarkersAndClusters(props) {
         longitude: lugar.longitud,
         latitude: lugar.latitud,
         speed: 0.4,
-        curve: 1.42,
+        curve: 1,
         zoom: 16.5, //15
-        pitch: 70,
+        pitch: 70, //70,
       });
   };
 
