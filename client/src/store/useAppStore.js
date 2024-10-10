@@ -5,7 +5,7 @@ const useAppStore = create((set) => ({
   actualView: 0,
   setActualView: (view) => set({ actualView: view }),
   // Macroregion seleccionada, obj -> {fullName: "Andina",id: 2,name: "andina",}
-  actualRegion: null,
+  actualRegion: { fullName: "Amazonia", id: 5, name: "amazonia" },
   setActualRegion: (region) => set({ actualRegion: region }),
   //
   actualLugar: null,
