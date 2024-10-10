@@ -103,6 +103,8 @@ export default function Mapa() {
   const animationSequence = [
     {
       // INICIAL
+      // textStart: "Explora los lugares de memoria,",
+      // textDuration: 4500,
       latitude: 1.6245616206546316,
       longitude: -75.60920114714031,
       bearing: 12.223664343968721,
@@ -113,14 +115,14 @@ export default function Mapa() {
     },
     {
       // CENITAL LUGAR
-      textStart: "",
-      // textDuration: 3500,
+      // textStart: "Explora los lugares de memoria,",
+      // textDuration: 4500,
       bearing: -85.54392589268775,
       latitude: 1.6183063802543245,
       longitude: -75.6079977030613,
       pitch: 36.018177439255886,
       zoom: 18.433982882761157,
-      speed: 0.3,
+      speed: 0.2,
       curve: 1,
     },
     {
@@ -133,7 +135,7 @@ export default function Mapa() {
       pitch: 80,
       zoom: 14.639,
       curve: 1.42,
-      speed: 0.2,
+      speed: 0.1,
     },
     {
       // PULL OUT
@@ -270,13 +272,15 @@ export default function Mapa() {
     }
   }, [destination]);
 
+  useEffect(() => {
+    isLastKeyframe && setActualRegion(null);
+    isLastKeyframe && setActualView(0);
+  }, [isLastKeyframe]);
+
   ///////////////////// RENDER UI ELEMENTS
 
   // MACROREGIONES !
   const [hoverFeature, setHoverFeature] = useState(null);
-  // const renderMacroregiones = isLastKeyframe && (
-  //   <Macroregiones hoverFeature={hoverFeature} />
-  // );
   const renderMacroregiones2 = isLastKeyframe && (
     <Macroregiones2 hoverFeature={hoverFeature} />
   );
@@ -374,13 +378,12 @@ export default function Mapa() {
   const handleOnLoad = () => {
     setIsMapLoaded(true);
     if (mapRef.current && mapRef.current.getMap) {
-      const mapboxMap = mapRef.current.getMap(); // Access Mapbox GL map instance
+      const mapboxMap = mapRef.current.getMap();
       // PRELOAD TILES
       mapboxMap.eagerTileLoading = true; // Enable eager loading
       // mapboxMap.setPrefetchZoomDelta(4);
 
-      ////
-      // Agregar la fuente de elevación de Mapbox
+      //// ELEVATION TERRAIN
       // mapboxMap.addSource("mapbox-dem", {
       //   type: "raster-dem",
       //   url: "mapbox://mapbox.terrain-rgb",
@@ -388,28 +391,25 @@ export default function Mapa() {
       //   maxzoom: 6, // 14,
       // });
 
-      // // Configurar el mapa para usar la fuente de terreno 3D
       // // mapboxMap.setTerrain({ source: "mapbox-dem", exaggeration: 0 }); // Exaggeration controla la altura visual
 
-      // // Agregar una capa para representar el relieve
       // mapboxMap.addLayer({
       //   id: "hillshade",
       //   source: "mapbox-dem",
       //   type: "hillshade",
       // });
 
-      // // Opcional: Cambiar la luz para hacer que el terreno 3D sea más visible
       // mapboxMap.setLight({ anchor: "map", intensity: 0.5 });
 
       // const mapOption = "VIIRS_SNPP_CorrectedReflectance_TrueColor";
-      const layerName = "MODIS_Terra_CorrectedReflectance_TrueColor";
+      // const layerName = "MODIS_Terra_CorrectedReflectance_TrueColor";
 
-      const tilePath =
-        // "wmts/epsg4326/best/" +
-        "wmts/epsg3857/best/" +
-        layerName +
-        "/default/" +
-        "2018-06-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg";
+      // const tilePath =
+      //   // "wmts/epsg4326/best/" +
+      //   "wmts/epsg3857/best/" +
+      //   layerName +
+      //   "/default/" +
+      //   "2018-06-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg";
 
       // const tilePath =
       //   "wmts/epsg3857/all/" +
@@ -448,9 +448,9 @@ export default function Mapa() {
         maxBounds={colombiaBounds}
         // mapStyle="mapbox://styles/juancortes79/cm15gwoxb000i01qkdie1g1og"
         // mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
-        mapStyle="mapbox://styles/mapbox/standard-satellite"
+        // mapStyle="mapbox://styles/mapbox/standard-satellite"
         // mapStyle="mapbox://styles/mapbox/satellite-v9"
-        // mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
+        mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
         mapboxAccessToken={TOKEN}
         onClick={handleMapClick}
         // onIdle={() =>
@@ -493,7 +493,6 @@ export default function Mapa() {
         interactiveLayerIds={interactiveLayerIds}
         terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}
       >
-        {/* {renderMacroregiones} */}
         {renderMacroregiones2}
         {renderMarkersAndClusters}
         <Box

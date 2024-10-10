@@ -57,7 +57,7 @@ function useTextAndCameraAnimation({ animationSequence }) {
     >
       <Typography
         variant="intro"
-        sx={{ width: "85%", margin: "0 auto" }}
+        sx={{ width: "85%", margin: "0 auto", bgcolor: "#cacaca00", p: 1 }}
         textAlign="center"
       >
         {renderAnimationText}

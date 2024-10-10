@@ -117,6 +117,9 @@ const muiTheme = createTheme({
       fontWeight: 500,
       fontSize: "3.5rem",
       lineHeight: "3.5rem",
+      // textShadow: "3px 3px 4px black",
+      textShadow:
+        "-2px 2px 2px #000,2px 2px 2px #000,2px -2px 2px #000,-2px -2px 2px #00000033",
     },
     body: {
       fontFamily: "Nunito Sans",
