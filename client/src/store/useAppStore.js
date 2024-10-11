@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 const useAppStore = create((set) => ({
   // Niveles de vista del Mapa, number -> 0:pais, 1:region, 2:lugar
-  actualView: 0,
+  actualView: 1,
   setActualView: (view) => set({ actualView: view }),
   // Macroregion seleccionada, obj -> {fullName: "Andina",id: 2,name: "andina",}
   actualRegion: { fullName: "Amazonia", id: 5, name: "amazonia" },

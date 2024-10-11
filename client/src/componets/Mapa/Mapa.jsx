@@ -60,6 +60,7 @@ export default function Mapa() {
   // USE GLOBAL STATE
   // actualView -> 0:Pais, 1:Region, 2:Lugar
   const actualView = useAppStore((state) => state.actualView);
+  console.log("🚀 ~ Mapa ~ actualView:", actualView);
   const setActualView = useAppStore((state) => state.setActualView);
   // actualRegion -> {fullName: "Andina",id: 2,name: "andina",}
   const actualRegion = useAppStore((state) => state.actualRegion);
@@ -338,14 +339,13 @@ export default function Mapa() {
   );
 
   // MODEL3D ??
-  const renderModel3D = actualView > 0 && (
+  const renderModel3D = destination && (
     <Model3D
       mapRef={mapRef}
       origin={[destination.longitude, destination.latitude]}
       modelURL={modelURL1}
       scale={100} //10
       altitude={150} //500
-      display={actualView === 2}
     />
   );
 

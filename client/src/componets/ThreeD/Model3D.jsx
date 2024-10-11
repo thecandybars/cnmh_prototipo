@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid";
+import useAppStore from "../../store/useAppStore";
 
 Model3D.propTypes = {
   mapRef: PropTypes.object,
@@ -14,14 +15,9 @@ Model3D.propTypes = {
   display: PropTypes.bool,
 };
 
-export default function Model3D({
-  mapRef,
-  origin,
-  modelURL,
-  scale,
-  altitude,
-  display,
-}) {
+export default function Model3D({ mapRef, origin, modelURL, scale, altitude }) {
+  const actualView = useAppStore((state) => state.actualView);
+
   useEffect(() => {
     const map = mapRef.current.getMap();
     const modelOrigin = origin; // [-73.7028614, 10.8263749];
@@ -139,11 +135,11 @@ export default function Model3D({
 
     // Cleanup function, wrong: resets animation on every mouse movement
     return () => {
-      if (map.getLayer(customLayer.id) && display === false) {
+      if (map.getLayer(customLayer.id) && actualView !== 2) {
         map.removeLayer(customLayer.id);
       }
     };
-  }, [altitude, mapRef, modelURL, origin, scale]);
+  }, [altitude, mapRef, modelURL, origin, scale, actualView]);
 
   return null; // No UI for this component, it's purely for adding the custom layer
 }
