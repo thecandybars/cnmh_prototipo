@@ -78,9 +78,8 @@ export default function MarkersLugares(props) {
   // CREATE MARKERS SUPERCLUSTER
 
   useEffect(() => {
-    const zoom = props.actualViewport.zoom;
     const index = new Supercluster({
-      radius: zoom < 6 ? 65 : zoom < 5 ? 50 : 40, // 75, //50, //40,
+      radius: 50, //40,
       maxZoom: 10, //16,
     });
     props.lugares?.length > 0 &&
