@@ -4,28 +4,30 @@ import { Marker } from "react-map-gl";
 import { capitaliaze } from "../../../utils/strings";
 import { Typography } from "@mui/material";
 
+const styles = {
+  textBox: {
+    variant: "h6",
+    color: "black",
+    bgcolor: "white",
+    p: 1,
+    sx: { borderRadius: "20px" },
+  },
+};
 function MarkersMacroregion() {
-  const regions = viewports.filter((viewport) =>
-    Object.keys(viewport).includes("center")
-  );
-  const renderMarkersMacroregion = regions.map((viewport) => (
-    <Marker
-      key={viewport.id}
-      latitude={viewport.center[0]}
-      longitude={viewport.center[1]}
-      anchor="bottom"
-    >
-      <Typography
-        variant="h5"
-        color="black"
-        bgcolor="white"
-        p={1}
-        sx={{ borderRadius: "20px" }}
+  const renderMarkersMacroregion = viewports
+    .filter((viewport) => Object.keys(viewport).includes("center"))
+    .map((viewport) => (
+      <Marker
+        key={viewport.id}
+        latitude={viewport.center[0]}
+        longitude={viewport.center[1]}
+        anchor="bottom"
       >
-        {capitaliaze(viewport.name)}
-      </Typography>
-    </Marker>
-  ));
+        <Typography {...styles.textBox}>
+          {capitaliaze(viewport.name)}
+        </Typography>
+      </Marker>
+    ));
 
   return renderMarkersMacroregion;
 }
