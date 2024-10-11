@@ -115,7 +115,7 @@ function MarkersAndClusters(props) {
 
   return (
     lugares?.length &&
-    actualView !== null && (
+    actualView !== 0 && (
       <div>
         <MarkersLugares
           handleSelectedCluster={handleSelectedCluster}
