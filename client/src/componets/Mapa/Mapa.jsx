@@ -7,8 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
 import { Box, Dialog } from "@mui/material";
 import "./styles/styles.css";
-// import Macroregiones from "./MapLayers/Macroregiones";
-import Macroregiones2 from "./MapLayers/Macroregiones_in_progress";
+import Macroregiones from "./MapLayers/Macroregiones";
 import MapToolsDrawer from "./components/MapToolsDrawer";
 import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
@@ -283,7 +282,7 @@ export default function Mapa() {
   // MACROREGIONES !
   const [hoverFeature, setHoverFeature] = useState(null);
   const renderMacroregiones2 = isLastKeyframe && (
-    <Macroregiones2 hoverFeature={hoverFeature} />
+    <Macroregiones hoverFeature={hoverFeature} />
   );
 
   // OVERLAY DATA LAYERS aka ConflictAreas !
