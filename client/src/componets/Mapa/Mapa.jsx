@@ -24,6 +24,7 @@ import viewports from "../common/viewports";
 import useTextAndCameraAnimation from "../common/customHooks/useTextAndCameraAnimation";
 import Welcome from "./Welcome";
 import { getAllRegions } from "../../services/regions";
+import MarkersMacroregion from "./MarkerRegiones/MarkersMacroregion";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -60,7 +61,6 @@ export default function Mapa() {
   // USE GLOBAL STATE
   // actualView -> 0:Pais, 1:Region, 2:Lugar
   const actualView = useAppStore((state) => state.actualView);
-  console.log("🚀 ~ Mapa ~ actualView:", actualView);
   const setActualView = useAppStore((state) => state.setActualView);
   // actualRegion -> {fullName: "Andina",id: 2,name: "andina",}
   const actualRegion = useAppStore((state) => state.actualRegion);
@@ -434,6 +434,8 @@ export default function Mapa() {
     }
   };
 
+  const renderMarkersMacroregion = actualView === 0 && <MarkersMacroregion />;
+
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
       {renderBreadcrumbs}
@@ -520,6 +522,7 @@ export default function Mapa() {
         </Box>
         {renderModel3D}
         {renderOverlayDataLayers}
+        {renderMarkersMacroregion}
       </Map>
     </Box>
   );
