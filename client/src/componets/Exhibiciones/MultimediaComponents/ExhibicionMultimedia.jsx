@@ -5,6 +5,7 @@ import ButtonSlider from "./Sliders/ButtonSlider";
 import { useState } from "react";
 import Slider from "./Sliders/Slider";
 import useSelectMediaSource from "../../common/customHooks/useSelectMediaSource";
+import { theme } from "../../../utils/theme";
 
 ExhibicionMultimedia.propTypes = {
   data: PropTypes.object,
@@ -43,7 +44,11 @@ export default function ExhibicionMultimedia(props) {
   const renderCloseButton = (
     <CloseCancelButton
       onClick={props.onClose}
-      sx={{ position: "absolute", right: 0 }}
+      sx={{
+        position: "absolute",
+        right: 0,
+        color: theme.palette.secondary.main,
+      }}
     />
   );
   const renderPortada = portadaSource && (
