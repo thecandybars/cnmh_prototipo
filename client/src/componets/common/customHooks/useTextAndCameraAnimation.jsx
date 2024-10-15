@@ -29,10 +29,16 @@ function useTextAndCameraAnimation({ animationSequence }) {
   const [renderAnimationText, setRenderAnimationText] = useState("");
   const [playAnimationText, setPlayAnimationText] = useState(false);
   useEffect(() => {
+    const delay =
+      animationIndex && animationSequence[animationIndex - 1].delay
+        ? animationSequence[animationIndex - 1].delay
+        : 0;
     if (animationIndex === animationSequence.length) setIsLastKeyframe(true);
     if (animationIndex && animationSequence[animationIndex - 1].textStart) {
-      setRenderAnimationText(animationSequence[animationIndex - 1].textStart);
-      setPlayAnimationText(true);
+      setTimeout(() => {
+        setRenderAnimationText(animationSequence[animationIndex - 1].textStart);
+        setPlayAnimationText(true);
+      }, delay);
     }
     const renderTextTimeout = window.setTimeout(
       () => setPlayAnimationText(false),
@@ -40,8 +46,8 @@ function useTextAndCameraAnimation({ animationSequence }) {
         Object.keys(animationSequence[animationIndex - 1]).includes(
           "textDuration"
         )
-        ? animationSequence[animationIndex - 1].textDuration
-        : 3000
+        ? animationSequence[animationIndex - 1].textDuration + delay
+        : 3000 + delay
     );
     return () => window.clearTimeout(renderTextTimeout);
   }, [animationIndex]);
@@ -50,7 +56,7 @@ function useTextAndCameraAnimation({ animationSequence }) {
     <Fade
       in={playAnimationText}
       timeout={{
-        appear: 10000,
+        appear: false,
         enter: 2000,
         exit: 3000,
       }}
