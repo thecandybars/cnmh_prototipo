@@ -295,6 +295,7 @@ export default function Mapa() {
       lugares={lugares}
       activeFilters={activeFilters}
       mapRef={mapRef}
+      handleOpenDialogLugar={() => setOpenDialogLugar(true)}
     />
   );
 
@@ -456,12 +457,12 @@ export default function Mapa() {
         onClick={handleMapClick}
         // onIdle={() =>
         //   setDestination({
-        //     latitude: destination.latitude + (Math.random() - 0.5) * 0.02,
-        //     longitude: destination.longitude + (Math.random() - 0.5) * 0.02,
-        //     zoom: 10,
+        //     latitude: destination.latitude + (Math.random() - 0.5) * 0.2,
+        //     longitude: destination.longitude + (Math.random() - 0.5) * 0.2,
+        //     zoom: actualViewport.zoom,
         //     // zoom: 5.131581510066996,
-        //     bearing: destination.bearing + (Math.random() - 0.5) * 0.02,
-        //     pitch: 30,
+        //     bearing: destination.bearing + (Math.random() - 0.5) * 0.2,
+        //     pitch: actualViewport.pitch,
         //     curve: 1.42,
         //     speed: 0.001,
         //   })

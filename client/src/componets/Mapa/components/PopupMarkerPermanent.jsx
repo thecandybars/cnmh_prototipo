@@ -2,9 +2,9 @@ import { Popup } from "react-map-gl";
 import PropTypes from "prop-types";
 import { Box, Stack, Typography } from "@mui/material";
 import { theme } from "../../../utils/theme";
+import useAppStore from "../../../store/useAppStore";
 
 PopupMarkerPermanent.propTypes = {
-  selectedMarker: PropTypes.object,
   handleClosePopup: PropTypes.func,
   handleOpenDialogLugar: PropTypes.func,
 };
@@ -41,10 +41,11 @@ const tipologiasLugares = [
 ];
 
 export default function PopupMarkerPermanent(props) {
+  const selectedMarker = useAppStore((state) => state.selectedMarker);
   return (
     <Popup
-      latitude={props.selectedMarker.latitud}
-      longitude={props.selectedMarker.longitud}
+      latitude={selectedMarker.latitud}
+      longitude={selectedMarker.longitud}
       anchor="top"
       onClose={() => props.handleClosePopup()}
       maxWidth="350px"
@@ -64,7 +65,7 @@ export default function PopupMarkerPermanent(props) {
             alt=""
             src={`${
               tipologiasLugares[
-                Math.floor(Math.abs(props.selectedMarker.latitud * 100)) % 4
+                Math.floor(Math.abs(selectedMarker.latitud * 100)) % 4
               ].image
             }.png`}
             width="80px"
@@ -85,21 +86,21 @@ export default function PopupMarkerPermanent(props) {
 
             <Stack spacing={0}>
               <Typography variant="captionStrong" color="primary" align="left">
-                {`REGIÓN ${props.selectedMarker.Municipio.Departamento.Region.fullName.toUpperCase()} - ${
-                  props.selectedMarker.Municipio.nombre
+                {`REGIÓN ${selectedMarker.Municipio.Departamento.Region.fullName.toUpperCase()} - ${
+                  selectedMarker.Municipio.nombre
                 }`}
               </Typography>
               <Typography variant="caption" color="primary" align="left">
-                {props.selectedMarker.nombre.toUpperCase()}
+                {selectedMarker.nombre.toUpperCase()}
               </Typography>
               <Typography variant="caption" color="primary" align="left">
-                {props.selectedMarker.TipologiasLugare.nombre}
+                {selectedMarker.TipologiasLugare.nombre}
               </Typography>
             </Stack>
           </Stack>
         </Box>
         <Typography variant="body" color="primary" align="left">
-          {props.selectedMarker.descripcion}
+          {selectedMarker.descripcion}
         </Typography>
       </Stack>
     </Popup>
