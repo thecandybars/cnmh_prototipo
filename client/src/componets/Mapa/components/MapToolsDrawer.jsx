@@ -3,7 +3,7 @@ import { ExpandIcon } from "../../common/icons";
 import PropTypes from "prop-types";
 import { theme } from "../../../utils/theme";
 import useViewport from "../../common/customHooks/useViewport";
-import InfoLugar from "./InfoLugar";
+// import InfoLugar from "./InfoLugar";
 import FilterLugares from "../Region/Filter/FilterLugares";
 import useFetch from "../../common/customHooks/useFetch";
 import { getTiposLugares } from "../../../services/tiposLugares";
@@ -29,14 +29,6 @@ export default function MapToolsDrawer(props) {
     tiposLugares?.length &&
       props.setActiveFilters(tiposLugares.map((tipo) => tipo.id));
   }, [tiposLugares]);
-
-  useEffect(() => {
-    // DEFAULT OPEN DRAWER
-    const open = props.views.find(
-      (view) => view.id === props.actualView
-    )?.defaultOpenDrawer;
-    props.setOpenDrawer(open);
-  }, [props.actualView, props.views]);
 
   const handleActiveFilters = (id) => {
     if (props.activeFilters.includes(id))
@@ -90,19 +82,20 @@ export default function MapToolsDrawer(props) {
     </Drawer>
   );
 
-  const renderDrawerContents =
-    tiposLugares?.length && props.actualView === 1 ? (
+  const renderDrawerContents = tiposLugares?.length &&
+    props.actualView === 1 && (
       <FilterLugares
         tiposLugares={tiposLugares}
         handleActiveFilters={handleActiveFilters}
         activeFilters={props.activeFilters}
       />
-    ) : props.actualView === 2 ? (
-      <InfoLugar
-        selectedMarker={props.selectedMarker}
-        handleOpenDialogLugar={() => props.handleOpenDialogLugar()}
-      />
-    ) : null;
+    );
+  // : props.actualView === 2 ? (
+  //   <InfoLugar
+  //     selectedMarker={props.selectedMarker}
+  //     handleOpenDialogLugar={() => props.handleOpenDialogLugar()}
+  //   />
+  // ) : null;
 
   const renderOpenedFilterDrawer = (
     <Drawer

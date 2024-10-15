@@ -6,6 +6,7 @@ import PopupClusterPreview from "../components/PopupClusterPreview";
 import useAppStore from "../../../store/useAppStore";
 import { getAllLugares } from "../../../services/lugares";
 import useFetch from "../../common/customHooks/useFetch";
+import PopupMarkerPermanent from "../components/PopupMarkerPermanent";
 
 function MarkersAndClusters(props) {
   const setDestination = useAppStore((state) => state.setDestination);
@@ -47,43 +48,19 @@ function MarkersAndClusters(props) {
       pitch: props.actualViewport.pitch,
     });
   };
-  // const handleSelectedMarker = (e, id) => {
-  //   e.stopPropagation();
-  //   const lugar = lugares.find((lugar) => {
-  //     return lugar.id === id;
-  //   });
-  //   if (!lugar) {
-  //     console.error("Selected marker not found", id);
-  //     return;
-  //   }
-  //   setSelectedMarker(lugar);
-  //   setActualView(2);
-  //   if (lugar && true)
-  //     setDestination({
-  //       longitude: lugar.longitud,
-  //       latitude: lugar.latitud,
-  //       speed: 0.4,
-  //       curve: 1.42,
-  //       zoom: 16.5, //15
-  //       pitch: 70,
-  //     });
-  // };
   const handleSelectedMarker = (e, id) => {
     e.stopPropagation();
-    const lugar = lugares.find((lugar) => {
-      return lugar.id === id;
-    });
+    const lugar = lugares.find((lugar) => lugar.id === id);
     setSelectedMarker(lugar);
     setActualView(2);
     lugar &&
-      true &&
       setDestination({
         longitude: lugar.longitud,
         latitude: lugar.latitud,
         speed: 0.4,
         curve: 1,
-        zoom: 16.5, //15
-        pitch: 70, //70,
+        zoom: 16.5,
+        pitch: 70,
       });
   };
 
@@ -139,6 +116,12 @@ function MarkersAndClusters(props) {
             onClose={() => setPreviewCluster(null)}
           />
         )}
+        {actualView === 2 && (
+          <PopupMarkerPermanent
+            handleClosePopup={() => setActualView(1)}
+            handleOpenDialogLugar={props.handleOpenDialogLugar}
+          />
+        )}
       </div>
     )
   );
@@ -148,6 +131,7 @@ MarkersAndClusters.propTypes = {
   actualViewport: PropTypes.object,
   activeFilters: PropTypes.array,
   mapRef: PropTypes.object,
+  handleOpenDialogLugar: PropTypes.func,
 };
 
 export default MarkersAndClusters;
