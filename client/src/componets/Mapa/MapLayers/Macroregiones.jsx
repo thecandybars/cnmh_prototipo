@@ -22,6 +22,9 @@ export default function Macroregiones(props) {
           ? 0.2
           : 0;
       }
+      if (actualView === 2) {
+        return 0;
+      }
     };
     const paint = {
       "fill-color": "#cacaca",
