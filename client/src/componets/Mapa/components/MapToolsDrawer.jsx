@@ -1,50 +1,34 @@
 import { Box, Button, Drawer } from "@mui/material";
 import { ExpandIcon } from "../../common/icons";
-import PropTypes from "prop-types";
 import { theme } from "../../../utils/theme";
 import useViewport from "../../common/customHooks/useViewport";
-// import InfoLugar from "./InfoLugar";
 import FilterLugares from "../Region/Filter/FilterLugares";
 import useFetch from "../../common/customHooks/useFetch";
 import { getTiposLugares } from "../../../services/tiposLugares";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import useAppStore from "../../../store/useAppStore";
 
-MapToolsDrawer.propTypes = {
-  openDrawer: PropTypes.bool,
-  setOpenDrawer: PropTypes.func,
-  actualView: PropTypes.number,
-  handleOpenDialogLugar: PropTypes.func,
-  selectedMarker: PropTypes.object,
-  activeFilters: PropTypes.array,
-  setActiveFilters: PropTypes.func,
-  views: PropTypes.array,
-  display: PropTypes.bool,
-};
-
-export default function MapToolsDrawer(props) {
+export default function MapToolsDrawer() {
   const { vh } = useViewport();
+  const [openDrawer, setOpenDrawer] = useState(false);
+  // const [activeFilters, setActiveFilters] = useState([]);
+
+  const actualView = useAppStore((state) => state.actualView); // 0:Pais, 1:Region, 2:Lugar
+  const setActiveFilters = useAppStore((state) => state.setActiveFilters);
 
   const [tiposLugares] = useFetch(() => getTiposLugares());
   useEffect(() => {
     tiposLugares?.length &&
-      props.setActiveFilters(tiposLugares.map((tipo) => tipo.id));
+      setActiveFilters(tiposLugares.map((tipo) => tipo.id));
   }, [tiposLugares]);
 
-  const handleActiveFilters = (id) => {
-    if (props.activeFilters.includes(id))
-      props.setActiveFilters((prev) =>
-        prev.filter((activeFilterId) => activeFilterId !== id)
-      );
-    else props.setActiveFilters((prev) => prev.concat([id]));
-  };
-
   const renderCloseFilterButton = (
-    <Button onClick={() => props.setOpenDrawer(false)}>
+    <Button onClick={() => setOpenDrawer(false)}>
       <ExpandIcon size="large" color="title" />
     </Button>
   );
   const renderOpenFilterButton = (
-    <Button onClick={() => props.setOpenDrawer(true)} sx={{ height: "100%" }}>
+    <Button onClick={() => setOpenDrawer(true)} sx={{ height: "100%" }}>
       <ExpandIcon
         size="large"
         color="title"
@@ -56,8 +40,8 @@ export default function MapToolsDrawer(props) {
     <Drawer
       variant="persistent"
       anchor="right"
-      open={!props.openDrawer}
-      onClose={() => props.setOpenDrawer(!false)}
+      open={!openDrawer}
+      onClose={() => setOpenDrawer(!false)}
       PaperProps={{
         sx: {
           height: "360px",
@@ -82,27 +66,16 @@ export default function MapToolsDrawer(props) {
     </Drawer>
   );
 
-  const renderDrawerContents = tiposLugares?.length &&
-    props.actualView === 1 && (
-      <FilterLugares
-        tiposLugares={tiposLugares}
-        handleActiveFilters={handleActiveFilters}
-        activeFilters={props.activeFilters}
-      />
-    );
-  // : props.actualView === 2 ? (
-  //   <InfoLugar
-  //     selectedMarker={props.selectedMarker}
-  //     handleOpenDialogLugar={() => props.handleOpenDialogLugar()}
-  //   />
-  // ) : null;
+  const renderDrawerContents = tiposLugares?.length && actualView === 1 && (
+    <FilterLugares tiposLugares={tiposLugares} />
+  );
 
   const renderOpenedFilterDrawer = (
     <Drawer
       variant="persistent"
       anchor="right"
-      open={props.openDrawer}
-      onClose={() => props.setOpenDrawer(false)}
+      open={openDrawer}
+      onClose={() => setOpenDrawer(false)}
       PaperProps={{
         sx: {
           height: "360px",
@@ -122,8 +95,7 @@ export default function MapToolsDrawer(props) {
   );
 
   return (
-    !!renderDrawerContents &&
-    props.display && (
+    !!renderDrawerContents && (
       <Box>
         {renderClosedFilterDrawer}
         {renderOpenedFilterDrawer}

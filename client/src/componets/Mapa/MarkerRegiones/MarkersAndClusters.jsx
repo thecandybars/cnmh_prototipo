@@ -14,6 +14,8 @@ function MarkersAndClusters(props) {
   const setActualView = useAppStore((state) => state.setActualView);
   const setSelectedMarker = useAppStore((state) => state.setSelectedMarker);
   const actualRegion = useAppStore((state) => state.actualRegion);
+  const activeFilters = useAppStore((state) => state.activeFilters);
+
   // LUGARES
   const [fetchedLugares] = useFetch(() => getAllLugares());
   const [lugares, setLugares] = useState([]);
@@ -101,7 +103,7 @@ function MarkersAndClusters(props) {
           handlePreviewMarker={handlePreviewMarker}
           actualViewport={props.actualViewport}
           lugares={lugares}
-          activeFilters={props.activeFilters}
+          activeFilters={activeFilters}
           mapRef={props.mapRef}
         />
         {previewMarker && actualView === 1 && (
@@ -116,12 +118,7 @@ function MarkersAndClusters(props) {
             onClose={() => setPreviewCluster(null)}
           />
         )}
-        {actualView === 2 && (
-          <PopupMarkerPermanent
-            handleClosePopup={() => setActualView(1)}
-            handleOpenDialogLugar={props.handleOpenDialogLugar}
-          />
-        )}
+        {actualView === 2 && <PopupMarkerPermanent />}
       </div>
     )
   );
@@ -131,7 +128,6 @@ MarkersAndClusters.propTypes = {
   actualViewport: PropTypes.object,
   activeFilters: PropTypes.array,
   mapRef: PropTypes.object,
-  handleOpenDialogLugar: PropTypes.func,
 };
 
 export default MarkersAndClusters;

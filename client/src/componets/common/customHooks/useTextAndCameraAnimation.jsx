@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import useAppStore from "../../../store/useAppStore";
 import { useEffect, useState } from "react";
-import { Fade, Typography } from "@mui/material";
+import { Box, Fade, Typography } from "@mui/material";
 
 function useTextAndCameraAnimation({ animationSequence }) {
   const [animationIndex, setAnimationIndex] = useState(0);
@@ -65,22 +65,34 @@ function useTextAndCameraAnimation({ animationSequence }) {
   }, [animationIndex]);
 
   const renderAnimatedText = isPlaying && (
-    <Fade
-      in={playAnimationText}
-      timeout={{
-        // appear: false,
-        enter: 2000,
-        exit: 3000,
+    <Box
+      sx={{
+        position: "absolute",
+        top: "50vh",
+        margin: "0 auto",
+        width: "100vw",
+        pointerEvents: "none",
+        display: "flex",
+        justifyContent: "center",
       }}
     >
-      <Typography
-        variant="intro"
-        sx={{ width: "85%", margin: "0 auto", bgcolor: "#cacaca00", p: 1 }}
-        textAlign="center"
+      <Fade
+        in={playAnimationText}
+        timeout={{
+          // appear: false,
+          enter: 2000,
+          exit: 3000,
+        }}
       >
-        {renderAnimationText}
-      </Typography>
-    </Fade>
+        <Typography
+          variant="intro"
+          sx={{ width: "85%", margin: "0 auto", bgcolor: "#cacaca00", p: 1 }}
+          textAlign="center"
+        >
+          {renderAnimationText}
+        </Typography>
+      </Fade>
+    </Box>
   );
   return [renderAnimatedText, setIsPlaying, isLastKeyframe, setIsLastKeyframe];
 }

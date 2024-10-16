@@ -14,7 +14,6 @@ const useAppStore = create((set) => ({
   selectedMarker: null,
   setSelectedMarker: (marker) => set({ selectedMarker: marker }),
   //
-
   destination: null,
   setDestination: (destination) => set({ destination: destination }),
   //
@@ -23,6 +22,12 @@ const useAppStore = create((set) => ({
     set((state) => ({
       camera: { ...state.camera, isMoving: isMoving },
     })),
+  //
+  openDialogLugar: false,
+  setOpenDialogLugar: (isOpen) => set({ openDialogLugar: isOpen }),
+  //
+  activeFilters: [],
+  setActiveFilters: (activeFilters) => set({ activeFilters: activeFilters }),
 }));
 
 export default useAppStore;

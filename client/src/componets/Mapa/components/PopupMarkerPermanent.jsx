@@ -1,13 +1,7 @@
 import { Popup } from "react-map-gl";
-import PropTypes from "prop-types";
 import { Box, Stack, Typography } from "@mui/material";
 import { theme } from "../../../utils/theme";
 import useAppStore from "../../../store/useAppStore";
-
-PopupMarkerPermanent.propTypes = {
-  handleClosePopup: PropTypes.func,
-  handleOpenDialogLugar: PropTypes.func,
-};
 
 const tipologiasLugares = [
   {
@@ -40,14 +34,17 @@ const tipologiasLugares = [
   },
 ];
 
-export default function PopupMarkerPermanent(props) {
+export default function PopupMarkerPermanent() {
   const selectedMarker = useAppStore((state) => state.selectedMarker);
+  const setOpenDialogLugar = useAppStore((state) => state.setOpenDialogLugar);
+  const setActualView = useAppStore((state) => state.setActualView);
+
   return (
     <Popup
       latitude={selectedMarker.latitud}
       longitude={selectedMarker.longitud}
       anchor="top"
-      onClose={() => props.handleClosePopup()}
+      onClose={() => setActualView(1)}
       maxWidth="350px"
       closeButton={false}
       className="custom-popup"
@@ -75,7 +72,7 @@ export default function PopupMarkerPermanent(props) {
               variant="h4"
               color={theme.palette.title.main}
               align="right"
-              onClick={props.handleOpenDialogLugar}
+              onClick={setOpenDialogLugar}
               sx={{
                 cursor: "pointer",
                 textDecoration: "underline",
