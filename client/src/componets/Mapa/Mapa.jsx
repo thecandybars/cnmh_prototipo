@@ -71,21 +71,14 @@ export default function Mapa() {
   const destination = useAppStore((state) => state.destination);
   const setDestination = useAppStore((state) => state.setDestination);
 
+  // const isCameraMoving = useAppStore((state) => state.camera.isMoving);
+  // console.log("🚀 ~ Mapa ~ isCameraMoving:", isCameraMoving);
+
   const setIsMoving = useAppStore((state) => state.setIsMoving);
 
   const [activeFilters, setActiveFilters] = useState([]);
 
-  const [isFlying, setIsFlying] = useState(null);
-
-  useEffect(() => {
-    mapRef?.current?.on("movestart", () => isFlying && setIsFlying(false));
-    mapRef?.current?.on("moveend", () => isFlying && setIsFlying(false));
-  }, [mapRef, isFlying]);
-
-  // useEffect(() => {
-  //   mapRef.current.setPrefetchZoomDelta(4);
-  //   console.log("🚀 ~ Mapa ~ mapRef:", mapRef);
-  // }, [mapRef]);
+  const [isFlying, setIsFlying] = useState(false);
 
   // FILTER LUGARES
   const lugares = useMemo(
@@ -103,20 +96,17 @@ export default function Mapa() {
   const animationSequence = [
     {
       // INICIAL
-      // textStart: "Explora los lugares de memoria,",
-      // textDuration: 4500,
       latitude: 1.6245616206546316,
       longitude: -75.60920114714031,
       bearing: 12.223664343968721,
       pitch: 77.65485079421936,
       zoom: 15.25,
-      // speed: 0.5,
-      // curve: 1,
     },
     {
-      // CENITAL LUGAR
-      // textStart: "Explora los lugares de memoria,",
-      // textDuration: 4500,
+      // PP LUGAR
+      textStart: "Explora los lugares de memoria,",
+      textDuration: 5500,
+      delay: 3000,
       bearing: -85.54392589268775,
       latitude: 1.6183063802543245,
       longitude: -75.6079977030613,
@@ -126,92 +116,27 @@ export default function Mapa() {
       curve: 1,
     },
     {
-      // PANEO IZQ
-      textStart: "Explora los lugares de memoria,",
-      textDuration: 4500,
-      bearing: 19.26091928327901,
-      latitude: 1.606257157175591,
-      longitude: -75.6031489937609,
-      pitch: 80,
-      zoom: 14.639,
-      curve: 1.42,
-      speed: 0.1,
-    },
-    {
-      // PULL OUT
+      // PULL OUT TERRITORIO
       textStart: "conoce las historias de los territorios",
-      textDuration: 5500,
+      textDuration: 7500,
+      delay: 2000,
       bearing: 0,
       latitude: 1.5447215811481243,
       longitude: -75.83822350099797,
       pitch: 78.49860518025343,
       zoom: 10.647996810048566,
       curve: 1.42,
-      speed: 0.2,
+      speed: 0.3,
     },
     {
       // PLANO GENERAL
       ...viewports[0],
       textStart: "y contribuye a preservar la memoria de nuestro pais.",
       textDuration: 5500,
-      // bearing: -13.591805834206525,
-      // latitude: 3.1683874325679824,
-      // longitude: -73.8218955201097,
-      // pitch: 9.053774213024917,
-      // zoom: 4.871835060074412,
       speed: 0.15,
       curve: 2,
     },
   ];
-  // const animationSequence = [
-  //   {
-  //     // INICIAL
-  //     latitude: 1.6245616206546316,
-  //     longitude: -75.60920114714031,
-  //     bearing: 12.223664343968721,
-  //     pitch: 77.65485079421936,
-  //     zoom: 15.25,
-  //     // speed: 0.5,
-  //     // curve: 1,
-  //   },
-  //   {
-  //     // PANEO DER
-  //     textStart: "Explora los lugares de memoria,",
-  //     textDuration: 3500,
-  //     bearing: -80.36966754533574,
-  //     latitude: 1.6175855289341143,
-  //     longitude: -75.60995393323645,
-  //     pitch: 51.34807188445705,
-  //     zoom: 15.766346313931173,
-  //     speed: 0.05,
-  //     curve: 1,
-  //   },
-  //   {
-  //     // PANEO IZQ
-  //     textStart: "conoce las historias de los territorios",
-  //     textDuration: 4500,
-  //     bearing: 19.26091928327901,
-  //     latitude: 1.606257157175591,
-  //     longitude: -75.6031489937609,
-  //     pitch: 80,
-  //     zoom: 14.639,
-  //     curve: 1.42,
-  //     speed: 0.05,
-  //   },
-  //   {
-  //     // PLANO GENERAL
-  //     ...viewports[0],
-  //     textStart: "y contribuye a preservar la memoria de nuestro pais.",
-  //     textDuration: 5500,
-  //     // bearing: -13.591805834206525,
-  //     // latitude: 3.1683874325679824,
-  //     // longitude: -73.8218955201097,
-  //     // pitch: 9.053774213024917,
-  //     // zoom: 4.871835060074412,
-  //     speed: 0.1,
-  //     curve: 4,
-  //   },
-  // ];
 
   const [renderAnimatedText, setIsPlaying, isLastKeyframe, setIsLastKeyframe] =
     useTextAndCameraAnimation({
@@ -220,16 +145,11 @@ export default function Mapa() {
 
   // HANDLE MOVE
   const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
-  // console.log("🚀 ~ Mapa ~ actualViewport:", actualViewport);
 
   // HANDLE CLICKS ON INTERACTIVE REGIONS
   const handleMapClick = (event) => {
-    // setIsPlaying(false);
     if (event.features.length > 0) {
       const clickedId = parseInt(event.features[0].properties.id);
-      // const clickedRegion = departamentos.find(
-      //   (dpto) => dpto.geoId === clickedId
-      // );
       setActualView(1);
       setActualRegion(regiones.find((region) => region.id === clickedId));
       setDestination(viewports.find((viewport) => viewport.id === clickedId));
@@ -249,12 +169,11 @@ export default function Mapa() {
     try {
       {
         if (destination) {
-          setIsMoving(true);
+          setIsFlying(true);
           const mapboxMap = mapRef.current.getMap();
-          const elevation = mapboxMap.queryTerrainElevation(
-            [destination.longitude, destination.latitude],
-            { exaggerated: true }
-          );
+          // const elevation = mapboxMap.queryTerrainElevation(
+          //   [destination.longitude, destination.latitude]
+          // );
           mapboxMap.flyTo({
             center: [destination.longitude, destination.latitude],
             speed: destination.speed || 1,
@@ -262,7 +181,6 @@ export default function Mapa() {
             zoom: destination.zoom || actualViewport.zoom,
             bearing: destination.bearing || 0,
             pitch: destination.pitch || actualViewport.pitch || 0,
-            offset: [0, -elevation],
             essential: true,
           });
         }
@@ -375,6 +293,23 @@ export default function Mapa() {
     />
   );
 
+  useEffect(() => {
+    if (mapRef.current) {
+      const mapboxMap = mapRef.current.getMap();
+      if (!mapboxMap.getSource("mapbox-dem")) {
+        mapboxMap.addSource("mapbox-dem", {
+          type: "raster-dem",
+          url: "mapbox://mapbox.mapbox-terrain-dem-v1",
+          tileSize: 512,
+          maxzoom: 14,
+        });
+      }
+      if (actualView < 2 || (actualView === 2 && !isFlying)) {
+        mapboxMap.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 }); // Exaggeration controla la altura visual}
+      } else mapboxMap.setTerrain({ source: "mapbox-dem", exaggeration: 0 });
+    }
+  }, [mapRef, actualView, isFlying]);
+
   const handleOnLoad = () => {
     setIsMapLoaded(true);
     if (mapRef.current && mapRef.current.getMap) {
@@ -384,14 +319,14 @@ export default function Mapa() {
       // mapboxMap.setPrefetchZoomDelta(4);
 
       //// ELEVATION TERRAIN
-      // mapboxMap.addSource("mapbox-dem", {
-      //   type: "raster-dem",
-      //   url: "mapbox://mapbox.terrain-rgb",
-      //   tileSize: 512,
-      //   maxzoom: 6, // 14,
-      // });
+      mapboxMap.addSource("mapbox-dem", {
+        type: "raster-dem",
+        url: "mapbox://mapbox.mapbox-terrain-dem-v1",
+        tileSize: 512,
+        maxzoom: 14,
+      });
 
-      // // mapboxMap.setTerrain({ source: "mapbox-dem", exaggeration: 0 }); // Exaggeration controla la altura visual
+      // mapboxMap.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 }); // Exaggeration controla la altura visual
 
       // mapboxMap.addLayer({
       //   id: "hillshade",
@@ -491,9 +426,10 @@ export default function Mapa() {
         }}
         onMoveEnd={() => {
           setIsMoving(false);
+          setIsFlying(false);
         }}
         interactiveLayerIds={interactiveLayerIds}
-        terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}
+        // terrain={{ source: "mapbox-dem", exaggeration: 5.5 }}
       >
         {renderMacroregiones2}
         {renderMarkersAndClusters}

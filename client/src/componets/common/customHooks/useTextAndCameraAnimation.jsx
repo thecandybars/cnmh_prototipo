@@ -34,12 +34,21 @@ function useTextAndCameraAnimation({ animationSequence }) {
         ? animationSequence[animationIndex - 1].delay
         : 0;
     if (animationIndex === animationSequence.length) setIsLastKeyframe(true);
-    if (animationIndex && animationSequence[animationIndex - 1].textStart) {
-      setTimeout(() => {
+
+    const delayTextTimeout = window.setTimeout(() => {
+      if (animationIndex && animationSequence[animationIndex - 1].textStart) {
         setRenderAnimationText(animationSequence[animationIndex - 1].textStart);
         setPlayAnimationText(true);
-      }, delay);
-    }
+      }
+    }, delay);
+
+    // if (animationIndex && animationSequence[animationIndex - 1].textStart) {
+    //   setTimeout(() => {
+    //     setRenderAnimationText(animationSequence[animationIndex - 1].textStart);
+    //     setPlayAnimationText(true);
+    //   }, delay);
+    // }
+
     const renderTextTimeout = window.setTimeout(
       () => setPlayAnimationText(false),
       animationIndex &&
@@ -49,14 +58,17 @@ function useTextAndCameraAnimation({ animationSequence }) {
         ? animationSequence[animationIndex - 1].textDuration + delay
         : 3000 + delay
     );
-    return () => window.clearTimeout(renderTextTimeout);
+    return () => {
+      window.clearTimeout(renderTextTimeout);
+      window.clearTimeout(delayTextTimeout);
+    };
   }, [animationIndex]);
 
   const renderAnimatedText = isPlaying && (
     <Fade
       in={playAnimationText}
       timeout={{
-        appear: false,
+        // appear: false,
         enter: 2000,
         exit: 3000,
       }}
