@@ -2,10 +2,9 @@ import Map from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import getEnv from "../../utils/getEnv";
 import useFetch from "../common/customHooks/useFetch";
-import { getAllDepartamentos } from "../../services/departamentos";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getAllLugares } from "../../services/lugares";
-import { Box, Dialog } from "@mui/material";
+import { Box } from "@mui/material";
 import "./styles/styles.css";
 import Macroregiones from "./MapLayers/Macroregiones";
 import MapToolsDrawer from "./components/MapToolsDrawer";
@@ -32,52 +31,24 @@ const colombiaBounds = [
   [-47.0, 13.0], // Northeast coordinates
 ];
 
-const views = [
-  {
-    id: 0,
-    name: "Pais",
-    defaultOpenDrawer: false,
-  },
-  {
-    id: 1,
-    name: "Region",
-    defaultOpenDrawer: false,
-  },
-  {
-    id: 2,
-    name: "Lugar",
-    defaultOpenDrawer: true,
-  },
-];
-
 export default function Mapa() {
   const mapRef = useRef();
 
   const [fetchedLugares] = useFetch(() => getAllLugares());
-  const [departamentos] = useFetch(() => getAllDepartamentos());
   const [regiones] = useFetch(() => getAllRegions());
 
   // USE GLOBAL STATE
-  // actualView -> 0:Pais, 1:Region, 2:Lugar
-  const actualView = useAppStore((state) => state.actualView);
+  const actualView = useAppStore((state) => state.actualView); // 0:Pais, 1:Region, 2:Lugar
   const setActualView = useAppStore((state) => state.setActualView);
-  // actualRegion -> {fullName: "Andina",id: 2,name: "andina",}
   const actualRegion = useAppStore((state) => state.actualRegion);
   const setActualRegion = useAppStore((state) => state.setActualRegion);
-  // selectedMarker -> {...lugar}
   const selectedMarker = useAppStore((state) => state.selectedMarker);
-  // const setSelectedMarker = useAppStore((state) => state.setSelectedMarker);
-  // destination -> {...lugar}
   const destination = useAppStore((state) => state.destination);
   const setDestination = useAppStore((state) => state.setDestination);
-
-  // const isCameraMoving = useAppStore((state) => state.camera.isMoving);
-  // console.log("🚀 ~ Mapa ~ isCameraMoving:", isCameraMoving);
-
   const setIsMoving = useAppStore((state) => state.setIsMoving);
 
-  const [activeFilters, setActiveFilters] = useState([]);
-
+  // LOCAL STATE
+  const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
   const [isFlying, setIsFlying] = useState(false);
 
   // FILTER LUGARES
@@ -92,7 +63,7 @@ export default function Mapa() {
     [fetchedLugares, actualRegion]
   );
 
-  // ANMIATION INTRO
+  // ANIMATION INTRO
   const animationSequence = [
     {
       // INICIAL
@@ -137,14 +108,10 @@ export default function Mapa() {
       curve: 2,
     },
   ];
-
   const [renderAnimatedText, setIsPlaying, isLastKeyframe, setIsLastKeyframe] =
     useTextAndCameraAnimation({
       animationSequence: animationSequence,
     });
-
-  // HANDLE MOVE
-  const [actualViewport, setActualViewport] = useState({ ...viewports[0] });
 
   // HANDLE CLICKS ON INTERACTIVE REGIONS
   const handleMapClick = (event) => {
@@ -156,13 +123,9 @@ export default function Mapa() {
     }
   };
   // INTERACTIVE DEPARTAMENTOS
-  const interactiveLayerIds = departamentos
-    ?.map((dpto) => `zone-${dpto.geoId}-fill`)
-    .concat(
-      macroregionesData?.features.map(
-        (macroregion) => `macroregion-${macroregion.properties.id}`
-      )
-    );
+  const interactiveLayerIds = macroregionesData?.features.map(
+    (macroregion) => `macroregion-${macroregion.properties.id}`
+  );
 
   // FLY TO DESTINATION ??
   useEffect(() => {
@@ -199,61 +162,8 @@ export default function Mapa() {
 
   // MACROREGIONES !
   const [hoverFeature, setHoverFeature] = useState(null);
-  const renderMacroregiones2 = isLastKeyframe && (
+  const renderMacroregiones = isLastKeyframe && (
     <Macroregiones hoverFeature={hoverFeature} />
-  );
-
-  // OVERLAY DATA LAYERS aka ConflictAreas !
-  const renderOverlayDataLayers = <OverlayDataLayers />;
-
-  // MARKERS AND CLUSTERS !
-  const renderMarkersAndClusters = (
-    <MarkersAndClusters
-      actualViewport={actualViewport}
-      lugares={lugares}
-      activeFilters={activeFilters}
-      mapRef={mapRef}
-      handleOpenDialogLugar={() => setOpenDialogLugar(true)}
-    />
-  );
-
-  // DRAWER !
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const renderDrawer = (
-    <MapToolsDrawer
-      openDrawer={openDrawer}
-      setOpenDrawer={setOpenDrawer}
-      actualView={actualView}
-      selectedMarker={selectedMarker}
-      handleOpenDialogLugar={() => setOpenDialogLugar(true)}
-      activeFilters={activeFilters}
-      setActiveFilters={setActiveFilters}
-      views={views}
-      display={true}
-    />
-  );
-
-  // DIALOG LUGAR !
-  const [openDialogLugar, setOpenDialogLugar] = useState(false);
-  const renderDialogLugar = (
-    <Dialog
-      open={openDialogLugar}
-      onClose={() => setOpenDialogLugar(false)}
-      fullScreen
-    >
-      <Lugar
-        onClose={() => setOpenDialogLugar(false)}
-        selectedMarker={selectedMarker}
-      />
-    </Dialog>
-  );
-
-  // BREADCUMBS !
-  const renderBreadcrumbs = <Breadcrumbs />;
-
-  // TITULO MACROREGIONES !
-  const renderTituloMacroregion = (
-    <TituloMacroregion title={actualRegion?.fullName} />
   );
 
   // MODEL3D ??
@@ -267,32 +177,12 @@ export default function Mapa() {
     />
   );
 
-  // FOOTER !
-  const renderFooter = <FooterLogoCNMH />;
-
   // INIT
   const [showWelcome, setShowWelcome] = useState(true);
   // MAP STATE
   const [isMapLoaded, setIsMapLoaded] = useState(false);
 
-  // WELCOME
-  const renderWelcome = (
-    <Welcome
-      show={showWelcome}
-      disabled={!isMapLoaded}
-      onClick={() => {
-        setShowWelcome(false);
-        setIsPlaying(true);
-      }}
-      onSkip={() => {
-        setShowWelcome(false);
-        setIsPlaying(false);
-        setIsLastKeyframe(true);
-        setDestination({ ...viewports[0], speed: 1.8 });
-      }}
-    />
-  );
-
+  // Turn off elevation momentarily when aproaching Lugar to avoid camera flight errors
   useEffect(() => {
     if (mapRef.current) {
       const mapboxMap = mapRef.current.getMap();
@@ -305,8 +195,8 @@ export default function Mapa() {
         });
       }
       if (actualView < 2 || (actualView === 2 && !isFlying)) {
-        mapboxMap.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 }); // Exaggeration controla la altura visual}
-      } else mapboxMap.setTerrain({ source: "mapbox-dem", exaggeration: 0 });
+        mapboxMap.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 });
+      } else mapboxMap.setTerrain(null);
     }
   }, [mapRef, actualView, isFlying]);
 
@@ -314,79 +204,30 @@ export default function Mapa() {
     setIsMapLoaded(true);
     if (mapRef.current && mapRef.current.getMap) {
       const mapboxMap = mapRef.current.getMap();
-      // PRELOAD TILES
       mapboxMap.eagerTileLoading = true; // Enable eager loading
-      // mapboxMap.setPrefetchZoomDelta(4);
-
-      //// ELEVATION TERRAIN
+      // ELEVATION TERRAIN
       mapboxMap.addSource("mapbox-dem", {
         type: "raster-dem",
         url: "mapbox://mapbox.mapbox-terrain-dem-v1",
         tileSize: 512,
         maxzoom: 14,
       });
-
-      // mapboxMap.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 }); // Exaggeration controla la altura visual
-
-      // mapboxMap.addLayer({
-      //   id: "hillshade",
-      //   source: "mapbox-dem",
-      //   type: "hillshade",
-      // });
-
-      // mapboxMap.setLight({ anchor: "map", intensity: 0.5 });
-
-      // const mapOption = "VIIRS_SNPP_CorrectedReflectance_TrueColor";
-      // const layerName = "MODIS_Terra_CorrectedReflectance_TrueColor";
-
-      // const tilePath =
-      //   // "wmts/epsg4326/best/" +
-      //   "wmts/epsg3857/best/" +
-      //   layerName +
-      //   "/default/" +
-      //   "2018-06-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg";
-
-      // const tilePath =
-      //   "wmts/epsg3857/all/" +
-      //   "MODIS_Terra_CorrectedReflectance_TrueColor/default/" +
-      //   "2018-06-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg";
-
-      // mapboxMap.addSource("nasa-gibs", {
-      //   type: "raster",
-      //   tiles: [
-      //     "https://gibs-a.earthdata.nasa.gov/" + tilePath,
-      //     "https://gibs-b.earthdata.nasa.gov/" + tilePath,
-      //     "https://gibs-c.earthdata.nasa.gov/" + tilePath,
-      //   ],
-      //   tileSize: 256,
-      // });
-
-      // mapboxMap.addLayer({
-      //   id: "nasa-gibs-layer",
-      //   type: "raster",
-      //   source: "nasa-gibs",
-      // });
     }
   };
 
-  const renderMarkersMacroregion = actualView === 0 && <MarkersMacroregion />;
-
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
-      {renderBreadcrumbs}
-      {renderTituloMacroregion}
-      {renderFooter}
-      {renderDialogLugar}
-      {renderDrawer}
+      <Breadcrumbs />
+      <TituloMacroregion title={actualRegion?.fullName} />
+      <FooterLogoCNMH />
+      <Lugar selectedMarker={selectedMarker} />
+      <MapToolsDrawer />
 
       <Map
         ref={mapRef}
         initialViewState={animationSequence[0]}
         maxBounds={colombiaBounds}
-        // mapStyle="mapbox://styles/juancortes79/cm15gwoxb000i01qkdie1g1og"
         // mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
-        // mapStyle="mapbox://styles/mapbox/standard-satellite"
-        // mapStyle="mapbox://styles/mapbox/satellite-v9"
         mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
         mapboxAccessToken={TOKEN}
         onClick={handleMapClick}
@@ -429,36 +270,32 @@ export default function Mapa() {
           setIsFlying(false);
         }}
         interactiveLayerIds={interactiveLayerIds}
-        // terrain={{ source: "mapbox-dem", exaggeration: 5.5 }}
       >
-        {renderMacroregiones2}
-        {renderMarkersAndClusters}
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50vh",
-            margin: "0 auto",
-            width: "100vw",
-            pointerEvents: "none",
-            display: "flex",
-            justifyContent: "center",
+        {renderMacroregiones}
+        <MarkersAndClusters
+          actualViewport={actualViewport}
+          lugares={lugares}
+          mapRef={mapRef}
+        />
+        <Welcome
+          show={showWelcome}
+          disabled={!isMapLoaded}
+          onClick={() => {
+            setShowWelcome(false);
+            setIsPlaying(true);
           }}
-        >
-          {renderAnimatedText}
-        </Box>
-        <Box
-          sx={{
-            position: "absolute",
-            top: 300,
-            margin: "0 auto",
-            width: "100vw",
+          onSkip={() => {
+            setShowWelcome(false);
+            setIsPlaying(false);
+            setIsLastKeyframe(true);
+            setDestination({ ...viewports[0], speed: 1.8 });
           }}
-        >
-          {renderWelcome}
-        </Box>
+        />
         {renderModel3D}
-        {renderOverlayDataLayers}
-        {renderMarkersMacroregion}
+        {renderAnimatedText}
+
+        <OverlayDataLayers />
+        <MarkersMacroregion />
       </Map>
     </Box>
   );
