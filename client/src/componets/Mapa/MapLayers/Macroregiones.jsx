@@ -4,12 +4,9 @@ import useAppStore from "../../../store/useAppStore";
 
 export default function Macroregiones(props) {
   const actualRegion = useAppStore((state) => state.actualRegion);
-  console.log("🚀 ~ Macroregiones ~ actualRegion:", actualRegion);
   const actualView = useAppStore((state) => state.actualView);
 
   const DrawRegions = colombiaRegionsData.features.map((feature) => {
-    console.log("🚀 ~ DrawRegions ~ feature:", feature);
-
     const id = parseInt(feature.properties.id);
     const isHover = props.hoverFeature?.id === `macroregion-${id}`;
     const type = "fill";
