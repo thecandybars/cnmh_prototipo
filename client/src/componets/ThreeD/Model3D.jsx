@@ -5,6 +5,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid";
 import useAppStore from "../../store/useAppStore";
+// import { useMap } from "react-map-gl";
 
 Model3D.propTypes = {
   mapRef: PropTypes.object,
@@ -18,6 +19,8 @@ Model3D.propTypes = {
 export default function Model3D({ mapRef, origin, modelURL, scale, altitude }) {
   const actualView = useAppStore((state) => state.actualView);
 
+  // const { current: map } = useMap();
+  // console.log("🚀 ~ Model3D ~ map:", map);
   useEffect(() => {
     const map = mapRef.current.getMap();
     const modelOrigin = origin; // [-73.7028614, 10.8263749];
@@ -46,7 +49,7 @@ export default function Model3D({ mapRef, origin, modelURL, scale, altitude }) {
     };
 
     const customLayer = {
-      id: "3d-model",
+      id: "3d-model", // + `${uuidv4()}`,
       type: "custom",
       renderingMode: "3d",
       onAdd: function (map, gl) {
@@ -141,5 +144,5 @@ export default function Model3D({ mapRef, origin, modelURL, scale, altitude }) {
     };
   }, [altitude, mapRef, modelURL, origin, scale, actualView]);
 
-  return null; // No UI for this component, it's purely for adding the custom layer
+  return null; // No UI for this component, it's just for adding the custom layer
 }

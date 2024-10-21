@@ -13,7 +13,7 @@ import FooterLogoCNMH from "./components/FooterLogoCNMH";
 import MarkersAndClusters from "./MarkerRegiones/MarkersAndClusters";
 import macroregionesData from "../../geojson/macroregiones.json";
 import Model3D from "../ThreeD/Model3D";
-import modelURL1 from "../../assets/pajarosAnimados.glb";
+import modelURL from "../../assets/PajarosBlancosOCT21V3.glb";
 import Breadcrumbs from "./components/Breadcrumbs";
 import Lugar from "../Lugares/Lugar";
 import OverlayDataLayers from "./MapLayers/OverlayDataLayers";
@@ -167,13 +167,22 @@ export default function Mapa() {
   );
 
   // MODEL3D ??
-  const renderModel3D = destination && (
+  // const renderModel3D_0 = destination && (
+  //   <Model3D
+  //     mapRef={mapRef}
+  //     origin={[destination.longitude, destination.latitude]}
+  //     modelURL={modelURL0}
+  //     scale={100} //10
+  //     altitude={150} //500
+  //   />
+  // );
+  const renderModel3D_1 = destination && (
     <Model3D
       mapRef={mapRef}
       origin={[destination.longitude, destination.latitude]}
-      modelURL={modelURL1}
-      scale={100} //10
-      altitude={150} //500
+      modelURL={modelURL}
+      scale={3} //10
+      altitude={30} //500
     />
   );
 
@@ -212,6 +221,22 @@ export default function Mapa() {
         tileSize: 512,
         maxzoom: 14,
       });
+
+      // GOOGLE MAPS
+      // mapboxMap.addSource("google-earth", {
+      //   type: "raster",
+      //   tiles: [
+      //     `https://maps.googleapis.com/maps/api/staticmap?key=AIzaSyA_Hpw8rcmaKtIqU9wmEIpnHrZB2Tz-hv4&center={y},{x}&zoom={z}&size=256x256&maptype=satellite`,
+      //   ],
+      //   tileSize: 256,
+      // });
+
+      // mapboxMap.addLayer({
+      //   id: "google-earth",
+      //   type: "raster",
+      //   source: "google-earth",
+      //   paint: {},
+      // });
     }
   };
 
@@ -228,6 +253,8 @@ export default function Mapa() {
         initialViewState={animationSequence[0]}
         maxBounds={colombiaBounds}
         // mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
+        // mapStyle="mapbox://styles/rodriguezbadel/cm2jlf1ay002p01quergwb947"
+        // mapStyle="mapbox://styles/mapbox/satellite-v9"
         mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
         mapboxAccessToken={TOKEN}
         onClick={handleMapClick}
@@ -288,10 +315,11 @@ export default function Mapa() {
             setShowWelcome(false);
             setIsPlaying(false);
             setIsLastKeyframe(true);
-            setDestination({ ...viewports[0], speed: 1.8 });
+            setDestination({ ...viewports[0], speed: 1.3, curve: 0.5 });
           }}
         />
-        {renderModel3D}
+        {/* {renderModel3D_0} */}
+        {renderModel3D_1}
         {renderAnimatedText}
 
         <OverlayDataLayers />
