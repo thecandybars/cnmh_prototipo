@@ -21,14 +21,15 @@ export default function ViewsBreadcrumbs() {
     setActualView(0);
     setActualRegion(null);
     setSelectedMarker(null);
-    setDestination({ ...viewports[0], speed: 0.5 });
+    setDestination({ ...viewports[0], speed: 0.3 });
   };
   const handleClickLevel1 = () => {
     setActualView(1);
     setSelectedMarker(null);
-    setDestination(
-      viewports.find((viewport) => viewport.id === actualRegion.id)
-    );
+    setDestination({
+      ...viewports.find((viewport) => viewport.id === actualRegion.id),
+      speed: 0.3,
+    });
   };
 
   return (
