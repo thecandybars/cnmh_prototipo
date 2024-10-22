@@ -117,9 +117,13 @@ export default function Mapa() {
   const handleMapClick = (event) => {
     if (event.features.length > 0) {
       const clickedId = parseInt(event.features[0].properties.id);
+      const speed = actualView === 0 ? 0.5 : 0.2;
       setActualView(1);
       setActualRegion(regiones.find((region) => region.id === clickedId));
-      setDestination(viewports.find((viewport) => viewport.id === clickedId));
+      setDestination({
+        ...viewports.find((viewport) => viewport.id === clickedId),
+        speed,
+      });
     }
   };
   // INTERACTIVE DEPARTAMENTOS

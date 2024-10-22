@@ -9,26 +9,28 @@ import viewports from "../../common/viewports";
 // };
 
 export default function ViewsBreadcrumbs() {
-  const actualView = useAppStore((state) => state.actualView);
   const actualRegion = useAppStore((state) => state.actualRegion);
   const selectedMarker = useAppStore((state) => state.selectedMarker);
+  const actualView = useAppStore((state) => state.actualView);
   const setActualView = useAppStore((state) => state.setActualView);
   const setActualRegion = useAppStore((state) => state.setActualRegion);
   const setSelectedMarker = useAppStore((state) => state.setSelectedMarker);
   const setDestination = useAppStore((state) => state.setDestination);
 
   const handleClickLevel0 = () => {
+    const speed = actualView === 0 ? 0.5 : 0.2;
     setActualView(0);
     setActualRegion(null);
     setSelectedMarker(null);
-    setDestination({ ...viewports[0], speed: 0.3 });
+    setDestination({ ...viewports[0], speed });
   };
   const handleClickLevel1 = () => {
+    const speed = actualView === 0 ? 0.5 : 0.2;
     setActualView(1);
     setSelectedMarker(null);
     setDestination({
       ...viewports.find((viewport) => viewport.id === actualRegion.id),
-      speed: 0.3,
+      speed,
     });
   };
 
