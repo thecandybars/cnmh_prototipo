@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import MuralBocachico from "../../assets/MuralBocachico.glb";
+import MuralBocachico from "../../assets/MuralBocachicoCamaraSinluz.glb";
 import { theme } from "../../utils/theme";
 import { Box, Dialog } from "@mui/material";
 

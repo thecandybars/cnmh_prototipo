@@ -1,163 +1,178 @@
-import Map from "react-map-gl";
-import getEnv from "../../utils/getEnv";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
-// import modelURL from "../../assets/BarramundiFish.glb";
-import modelURL from "../../assets/pajarosAnimados.glb";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import PropTypes from "prop-types";
-import mapboxgl from "mapbox-gl";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import MuralBocachico from "../../assets/MuralBocachicoCamaraSinluz.glb";
+import useWheelCounter from "../common/customHooks/useWheelCounter";
 
-Model3D_cam.propTypes = { mapRef: PropTypes.object };
+export default function Test2() {
+  const canvasRef = useRef(null);
+  const sceneRef = useRef(null);
+  const rendererRef = useRef(null);
+  const mixerRef = useRef(null);
+  const cameraRef = useRef(null);
+  const animationsRef = useRef([]);
 
-function Test2() {
-  const mapRef = useRef(null);
-  //   const posicion = {
-  //     latitude: 3.9974761715434113,
-  //     longitude: -74.25213515499391,
-  //     zoom: 15.44,
-  //     bearing: -102.8,
-  //     pitch: 79,
-  //   };
-  const [actualViewport, setActualViewport] = useState({
-    latitude: 3.9982242677229607,
-    longitude: -74.24507905637381,
-    zoom: 15.44,
-    pitch: 79,
-    bearing: -102.8,
-  });
-  console.log("🚀 ~ Test2 ~ actualViewport:", actualViewport);
-  return (
-    <Map
-      ref={mapRef}
-      initialViewState={actualViewport}
-      style={{ width: "100vw", height: "100vh" }}
-      mapStyle="mapbox://styles/juancortes79/clxpabyhm035q01qofghr7yo7"
-      mapboxAccessToken={getEnv("mapboxToken")}
-      onMove={(evt) => {
-        setActualViewport(evt.viewState);
-      }}
-      antialias={true}
-    >
-      <div
-        style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}
-      >
-        <Model3D_cam mapRef={mapRef} />
-      </div>
-    </Map>
-  );
-}
+  // State for animation control
+  // const [duration, setDuration] = useState(0);
 
-Test2.propTypes = {};
-
-export default Test2;
-
-function Model3D_cam({ mapRef }) {
-  const mountRef = useRef(null);
-  const modelRef = useRef(null);
-  const mixerRef = useRef(null); // Ref for the animation mixer
-  let clock = new THREE.Clock(); // Used for updating animation timing
+  const frame = useWheelCounter();
 
   useEffect(() => {
-    mapRef.current.on("load", () => {
-      console.log("Map is loaded");
+    if (!canvasRef.current) return;
 
-      // SCENE
-      const scene = new THREE.Scene();
-      // CAMERA
-      const camera = new THREE.PerspectiveCamera(
-        75,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
-      );
-      camera.position.z = 1;
-      // RENDERER
-      const renderer = new THREE.WebGLRenderer({ alpha: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setClearColor(0x000000, 0);
-      mountRef.current.appendChild(renderer.domElement);
+    // Scene setup
+    sceneRef.current = new THREE.Scene();
 
-      // LOAD MODEL
-      const loader = new GLTFLoader();
-      loader.load(
-        modelURL,
-        (gltf) => {
-          const model = gltf.scene;
-          model.scale.set(5, 5, 5);
-          model.position.set(0, 0, 0);
-          model.rotation.x = 90;
-          // model.rotation.y = 0.1;
-          modelRef.current = model;
-          scene.add(model);
-
-          // SETUP ANIMATION
-          if (gltf.animations && gltf.animations.length > 0) {
-            const mixer = new THREE.AnimationMixer(model); // Create AnimationMixer
-            mixerRef.current = mixer;
-
-            // Play the first animation
-            const action = mixer.clipAction(gltf.animations[0]);
-            action.play();
-          }
-        },
-        undefined,
-        (error) => {
-          console.error("Error loading GLB model:", error);
-          // Optionally show fallback content or alert user
-        }
-      );
-
-      // LIGHTS
-      const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-      directionalLight.position.set(5, 5, 5);
-      scene.add(ambientLight);
-
-      const handleMapRender = () => {
-        const map = mapRef.current.getMap();
-        const zoom = map.getZoom();
-        const pitch = map.getPitch();
-        const bearing = map.getBearing();
-        const center = map.getCenter(); // Map's center in longitude and latitude
-
-        // Convert the map center (longitude, latitude) to world coordinates
-        const worldCenter = mapboxgl.MercatorCoordinate.fromLngLat([
-          center.lng,
-          center.lat,
-        ]);
-
-        const altitude = Math.pow(2, 20 - zoom);
-        camera.position.set(worldCenter.x, worldCenter.y, altitude);
-
-        camera.rotation.x = THREE.MathUtils.degToRad(pitch);
-        camera.rotation.z = THREE.MathUtils.degToRad(-bearing);
-
-        // Update animation mixer if present
-        if (mixerRef.current) {
-          const delta = clock.getDelta(); // Get time delta
-          mixerRef.current.update(delta); // Update the mixer with the time delta
-        }
-
-        // Render the scene
-        renderer.render(scene, camera);
-      };
-
-      mapRef.current.on("render", handleMapRender);
-
-      const handleResize = () => {
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-      };
-      window.addEventListener("resize", handleResize);
-
-      return () => {
-        window.removeEventListener("resize", handleResize);
-        mountRef.current.removeChild(renderer.domElement);
-      };
+    // Renderer setup
+    rendererRef.current = new THREE.WebGLRenderer({
+      canvas: canvasRef.current,
+      antialias: true,
     });
-  }, [mapRef]);
+    rendererRef.current.setSize(window.innerWidth, window.innerHeight);
+    rendererRef.current.setPixelRatio(window.devicePixelRatio);
 
-  return <div ref={mountRef} style={{ width: "100vw", height: "100vh" }} />;
+    // Default camera (will be replaced by the camera from GLB)
+    const defaultCamera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    defaultCamera.position.set(0, 0, 10);
+    cameraRef.current = defaultCamera;
+
+    // Add lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff);
+    sceneRef.current.add(ambientLight);
+
+    // Load the GLB file
+    const loader = new GLTFLoader();
+    loader.load(
+      MuralBocachico,
+      (gltf) => {
+        console.log("GLB file loaded:", gltf);
+
+        // Add the model to the scene
+        sceneRef.current.add(gltf.scene);
+
+        // Find the camera in the loaded scene
+        let animatedCamera = null;
+        gltf.scene.traverse((node) => {
+          if (node.isCamera) {
+            console.log("Found camera in scene:", node);
+            animatedCamera = node;
+          }
+        });
+
+        if (animatedCamera) {
+          cameraRef.current = animatedCamera;
+          cameraRef.current.aspect = window.innerWidth / window.innerHeight;
+          cameraRef.current.updateProjectionMatrix();
+        } else {
+          console.warn("No camera found in the GLB file, using default camera");
+        }
+
+        // Setup animation mixer if there are animations
+        if (gltf.animations && gltf.animations.length > 0) {
+          console.log("Found animations:", gltf.animations);
+          mixerRef.current = new THREE.AnimationMixer(gltf.scene);
+
+          // Store animations and get the maximum duration
+          let maxDuration = 0;
+          gltf.animations.forEach((clip) => {
+            const action = mixerRef.current.clipAction(clip);
+            action.play();
+            animationsRef.current.push(action);
+            maxDuration = Math.max(maxDuration, clip.duration);
+          });
+
+          // Set the duration for the slider
+          // setDuration(maxDuration);
+        }
+
+        // Start the render loop
+        animate();
+      },
+      (progress) => {
+        console.log(
+          "Loading progress:",
+          (progress.loaded / progress.total) * 100 + "%"
+        );
+      },
+      (error) => {
+        console.error("Error loading GLB:", error);
+      }
+    );
+
+    // Render loop: only render the scene, no animation updates here
+    const animate = () => {
+      requestAnimationFrame(animate);
+      if (rendererRef.current && sceneRef.current && cameraRef.current) {
+        rendererRef.current.render(sceneRef.current, cameraRef.current);
+      }
+    };
+
+    // Handle window resize
+    const handleResize = () => {
+      if (cameraRef.current && rendererRef.current) {
+        cameraRef.current.aspect = window.innerWidth / window.innerHeight;
+        cameraRef.current.updateProjectionMatrix();
+        rendererRef.current.setSize(window.innerWidth, window.innerHeight);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", handleResize);
+
+      if (mixerRef.current) {
+        mixerRef.current.stopAllAction();
+      }
+
+      if (rendererRef.current) {
+        rendererRef.current.dispose();
+      }
+
+      // Clean up geometries and materials
+      if (sceneRef.current) {
+        sceneRef.current.traverse((object) => {
+          if (object instanceof THREE.Mesh) {
+            if (object.geometry) {
+              object.geometry.dispose();
+            }
+            if (object.material) {
+              if (Array.isArray(object.material)) {
+                object.material.forEach((material) => material.dispose());
+              } else {
+                object.material.dispose();
+              }
+            }
+          }
+        });
+      }
+    };
+  }, []);
+
+  // Update animation time when counter changes
+  useEffect(() => {
+    if (mixerRef.current && animationsRef.current.length > 0) {
+      // Reset the mixer's time to 0
+      mixerRef.current.setTime(0);
+      mixerRef.current.setTime(frame / 30);
+    }
+  }, [frame]);
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100vh",
+        overflow: "hidden",
+      }}
+    >
+      <canvas ref={canvasRef} />
+    </div>
+  );
 }
