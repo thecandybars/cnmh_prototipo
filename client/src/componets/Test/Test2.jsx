@@ -15,7 +15,7 @@ export default function Test2() {
   // State for animation control
   // const [duration, setDuration] = useState(0);
 
-  const frame = useWheelCounter();
+  const frame = useWheelCounter({ scale: 30 });
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -159,7 +159,7 @@ export default function Test2() {
     if (mixerRef.current && animationsRef.current.length > 0) {
       // Reset the mixer's time to 0
       mixerRef.current.setTime(0);
-      mixerRef.current.setTime(frame / 30);
+      mixerRef.current.setTime(frame / 1);
     }
   }, [frame]);
 
@@ -170,9 +170,13 @@ export default function Test2() {
         width: "100%",
         height: "100vh",
         overflow: "hidden",
+        pointerEvents: "none",
       }}
     >
-      <canvas ref={canvasRef} />
+      <canvas
+        ref={canvasRef}
+        style={{ overflow: "hidden", pointerEvents: "none" }}
+      />
     </div>
   );
 }
