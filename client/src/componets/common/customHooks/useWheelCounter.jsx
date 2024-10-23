@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 
-export default function useWheelCounter() {
+export default function useWheelCounter(props) {
+  const step = props?.step || 1;
+  const resolution = props?.resolution || 1; // This value controls how many wheel units are needed to change the counter
+  const scale = props?.scale || 1;
+  console.log("🚀 ~ useWheelCounter ~ scale:", scale);
   const [count, setCount] = useState(0);
+  console.log("🚀 ~ useWheelCounter ~ count:", count);
   const [wheelDelta, setWheelDelta] = useState(0);
-
-  // This value controls how many wheel units are needed to change the counter
-  const SCROLL_RESOLUTION = 1; // Adjust this value to set the sensitivity
 
   useEffect(() => {
     const handleWheel = (event) => {
-      event.preventDefault();
+      //   event.preventDefault();
       // Accumulate wheel delta
       setWheelDelta((prevDelta) => prevDelta + event.deltaY);
     };
@@ -23,14 +25,14 @@ export default function useWheelCounter() {
 
   useEffect(() => {
     // When the accumulated delta reaches the threshold, adjust the count
-    if (wheelDelta >= SCROLL_RESOLUTION) {
-      setCount((prevCount) => prevCount + 1);
+    if (wheelDelta >= resolution) {
+      setCount((prevCount) => prevCount + step);
       setWheelDelta(0); // Reset the accumulated delta
-    } else if (wheelDelta <= -SCROLL_RESOLUTION) {
-      setCount((prevCount) => prevCount - 1);
+    } else if (wheelDelta <= -resolution) {
+      setCount((prevCount) => prevCount - step);
       setWheelDelta(0); // Reset the accumulated delta
     }
-  }, [wheelDelta]);
+  }, [resolution, scale, step, wheelDelta]);
 
-  return count;
+  return count / scale;
 }
