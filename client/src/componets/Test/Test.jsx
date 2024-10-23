@@ -4,8 +4,12 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import MuralBocachico from "../../assets/MuralBocachico.glb";
 import { theme } from "../../utils/theme";
+import { Box, Dialog } from "@mui/material";
 
 export default function Test() {
+  //LOCAL
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   const canvasRef = useRef();
   const markerRef = useRef(); // For the marker div
   const [markerPosition, setMarkerPosition] = useState({ top: 0, left: 0 });
@@ -51,6 +55,7 @@ export default function Test() {
             const vector = new THREE.Vector3();
             vector.setFromMatrixPosition(firstChild.matrixWorld);
             vector.project(camera);
+            // console.log("🚀 ~ updateMarkerPosition ~ vector:", vector);
 
             const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
             const y = -(vector.y * 0.5 - 0.5) * window.innerHeight;
@@ -114,6 +119,11 @@ export default function Test() {
 
   return (
     <div>
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <Box width="400px" height="400px">
+          ESC para salir
+        </Box>
+      </Dialog>
       <canvas ref={canvasRef} />
       <div
         ref={markerRef}
@@ -131,8 +141,10 @@ export default function Test() {
           width: "70px",
           height: "70px",
           borderRadius: "50%",
-          pointerEvents: "none", // So it doesn’t block mouse events to the 3D scene
+          cursor: "pointer",
+          // pointerEvents: "none", // So it doesn’t block mouse events to the 3D scene
         }}
+        onClick={() => setDialogOpen(true)}
       >
         <p>Marker</p>
       </div>
