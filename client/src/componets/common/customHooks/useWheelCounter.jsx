@@ -4,14 +4,13 @@ export default function useWheelCounter(props) {
   const step = props?.step || 1;
   const resolution = props?.resolution || 1; // This value controls how many wheel units are needed to change the counter
   const scale = props?.scale || 1;
-  console.log("🚀 ~ useWheelCounter ~ scale:", scale);
   const [count, setCount] = useState(0);
-  console.log("🚀 ~ useWheelCounter ~ count:", count);
   const [wheelDelta, setWheelDelta] = useState(0);
 
   useEffect(() => {
     const handleWheel = (event) => {
       //   event.preventDefault();
+      event.stopPropagation();
       // Accumulate wheel delta
       setWheelDelta((prevDelta) => prevDelta + event.deltaY);
     };

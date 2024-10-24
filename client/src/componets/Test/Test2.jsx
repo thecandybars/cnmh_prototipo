@@ -72,9 +72,8 @@ export default function Test2() {
           console.warn("No camera found in the GLB file, using default camera");
         }
 
-        // Setup animation mixer if there are animations
+        // Setup animation mixer IF there are animations
         if (gltf.animations && gltf.animations.length > 0) {
-          console.log("Found animations:", gltf.animations);
           mixerRef.current = new THREE.AnimationMixer(gltf.scene);
 
           // Store animations and get the maximum duration
@@ -85,13 +84,9 @@ export default function Test2() {
             animationsRef.current.push(action);
             maxDuration = Math.max(maxDuration, clip.duration);
           });
-
-          // Set the duration for the slider
           // setDuration(maxDuration);
         }
-
-        // Start the render loop
-        animate();
+        animate(); // Start the render loop
       },
       (progress) => {
         console.log(
@@ -169,13 +164,13 @@ export default function Test2() {
         position: "relative",
         width: "100%",
         height: "100vh",
-        overflow: "hidden",
-        pointerEvents: "none",
+        // overflow: "hidden",
+        // pointerEvents: "none",
       }}
     >
       <canvas
         ref={canvasRef}
-        style={{ overflow: "hidden", pointerEvents: "none" }}
+        // style={{ overflow: "hidden", pointerEvents: "none" }}
       />
     </div>
   );

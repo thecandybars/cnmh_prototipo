@@ -2,18 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import MuralBocachico from "../../assets/MuralBocachicoCamaraSinluz.glb";
-import { theme } from "../../utils/theme";
+import MuralBocachico from "../../assets/MuralBocachicoCamaraSinluzPuntos.glb";
+// import MuralBocachico from "../../assets/MuralBocachicoCamaraSinluz.glb";
 import { Box, Dialog } from "@mui/material";
+import MarkersFrom3dModel from "./MarkersFrom3dModel";
 
 export default function Test() {
   //LOCAL
   const [dialogOpen, setDialogOpen] = useState(false);
-
   const canvasRef = useRef();
-  const markerRef = useRef(); // For the marker div
-  const [markerPosition, setMarkerPosition] = useState({ top: 0, left: 0 });
-  const prevMarkerPosition = useRef(markerPosition); // Track previous marker position to avoid unnecessary updates
+  const modelRef = useRef();
+  const cameraRef = useRef();
+  const [markers, setMarkers] = useState(null);
+  const [cameraPosition, setCameraPosition] = useState(null);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -29,6 +30,7 @@ export default function Test() {
       1000
     );
     camera.position.set(0, 0, 10);
+    cameraRef.current = camera;
 
     // Renderer
     const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current });
@@ -40,50 +42,22 @@ export default function Test() {
       MuralBocachico,
       (gltf) => {
         console.log("🚀 ~ useEffect ~ gltf:", gltf);
+        modelRef.current = gltf;
         gltf.scene.position.set(0, 0, 0);
-        // Rotate the model 90 degrees on the Y-axis (in radians)
         gltf.scene.rotation.y = Math.PI / 2;
+
         scene.add(gltf.scene);
 
-        // Access the first child of the loaded scene
-        const firstChild = gltf.scene.children[0];
-
-        if (firstChild) {
-          // Function to update marker position
-          const updateMarkerPosition = () => {
-            // Project 3D position to 2D screen space
-            const vector = new THREE.Vector3();
-            vector.setFromMatrixPosition(firstChild.matrixWorld);
-            vector.project(camera);
-            // console.log("🚀 ~ updateMarkerPosition ~ vector:", vector);
-
-            const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
-            const y = -(vector.y * 0.5 - 0.5) * window.innerHeight;
-
-            // Update marker position (CSS top and left)
-            // Only update marker position if it has changed
-            if (
-              prevMarkerPosition.current.top !== y ||
-              prevMarkerPosition.current.left !== x
-            ) {
-              prevMarkerPosition.current = { top: y, left: x }; // Update previous position
-              setMarkerPosition({ top: y, left: x });
-            }
-          };
-
-          // Update marker position initially and on render
-          updateMarkerPosition();
-
-          // Render Loop
-          const renderScene = () => {
-            requestAnimationFrame(renderScene);
-            controls.update();
-            renderer.render(scene, camera);
-            updateMarkerPosition(); // Update the marker position on each render
-          };
-
-          renderScene();
-        }
+        // Render Loop
+        const renderScene = () => {
+          requestAnimationFrame(renderScene);
+          controls.update();
+          renderer.render(scene, camera);
+          if (camera.position.x !== cameraPosition) {
+            setCameraPosition(camera.position.x);
+          }
+        };
+        renderScene();
       },
       undefined,
       (error) => {
@@ -117,6 +91,9 @@ export default function Test() {
   }, []);
   console.log("RENDERING:::");
 
+  useEffect(() => {
+    setMarkers(MarkersFrom3dModel({ modelRef, cameraRef }));
+  }, [cameraPosition]);
   return (
     <div>
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
@@ -125,29 +102,7 @@ export default function Test() {
         </Box>
       </Dialog>
       <canvas ref={canvasRef} />
-      <div
-        ref={markerRef}
-        style={{
-          position: "absolute",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          top: `${markerPosition.top}px`,
-          left: `${markerPosition.left}px`,
-          transform: "translate(-50%, -50%)", // Center the div over the marker
-          backgroundColor: theme.palette.secondary.main,
-          color: "white",
-          padding: "20px",
-          width: "70px",
-          height: "70px",
-          borderRadius: "50%",
-          cursor: "pointer",
-          // pointerEvents: "none", // So it doesn’t block mouse events to the 3D scene
-        }}
-        onClick={() => setDialogOpen(true)}
-      >
-        <p>Marker</p>
-      </div>
+      {markers}
     </div>
   );
 }
