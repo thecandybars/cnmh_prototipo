@@ -6,16 +6,14 @@ function MarkersFrom3dModel({ modelRef, cameraRef }) {
   const points = modelRef?.current?.scene.children.filter(
     (child) => child.name.slice(0, 5) === "Punto"
   );
-  const renderMarkers2 = points
+  const renderMarkers = points
     ?.map((point) => {
       // Project 3D position to 2D screen space
       const vector = new THREE.Vector3();
       vector.setFromMatrixPosition(point.matrixWorld);
       vector.project(cameraRef.current);
-
       const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
       const y = -(vector.y * 0.5 - 0.5) * window.innerHeight;
-
       return {
         title: point.name,
         top: y,
@@ -23,35 +21,23 @@ function MarkersFrom3dModel({ modelRef, cameraRef }) {
         zIndex: vector.z,
       };
     })
-    .sort((a, b) => a.zIndex > b.zIndex)
     .map((marker) => (
       <Marker
         key={marker.title}
         title={marker.title}
         top={marker.top}
         left={marker.left}
+        style={{ zIndex: Math.ceil(marker.zIndex * 100) }} // distancia de la camara
       />
     ));
-
-  const renderMarkers = points?.map((point) => {
-    // Project 3D position to 2D screen space
-    const vector = new THREE.Vector3();
-    vector.setFromMatrixPosition(point.matrixWorld);
-    vector.project(cameraRef.current);
-
-    const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
-    const y = -(vector.y * 0.5 - 0.5) * window.innerHeight;
-
-    return <Marker key={point.name} title={point.name} top={y} left={x} />;
-  });
-  return renderMarkers2;
+  return renderMarkers;
 }
 
 MarkersFrom3dModel.propTypes = {};
 
 export default MarkersFrom3dModel;
 
-export function Marker({ title, top, left }) {
+export function Marker({ title, top, left, style }) {
   return (
     <div
       style={{
@@ -67,9 +53,11 @@ export function Marker({ title, top, left }) {
         padding: "20px",
         width: "70px",
         height: "70px",
+        border: "1px solid black",
         borderRadius: "50%",
         cursor: "pointer",
         // pointerEvents: "none",
+        ...style,
       }}
       onClick={(e) => console.log(e)}
     >
@@ -82,4 +70,5 @@ Marker.propTypes = {
   title: PropTypes.string,
   top: PropTypes.number,
   left: PropTypes.number,
+  style: PropTypes.object,
 };
