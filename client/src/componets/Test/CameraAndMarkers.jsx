@@ -5,7 +5,7 @@ import MuralBocachico from "../../assets/MuralBocachicoCamaraSinluz.glb";
 import useWheelCounter from "../common/customHooks/useWheelCounter";
 import MarkersFrom3dModel from "./MarkersFrom3dModel";
 
-export default function Test2() {
+export default function CameraAndMarkers() {
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
   const rendererRef = useRef(null);
@@ -26,7 +26,6 @@ export default function Test2() {
 
     // Scene setup
     sceneRef.current = new THREE.Scene();
-    console.log("🚀 ~ useEffect ~ sceneRef.current:", sceneRef.current);
 
     // Renderer setup
     rendererRef.current = new THREE.WebGLRenderer({
