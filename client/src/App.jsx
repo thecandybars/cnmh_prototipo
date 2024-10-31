@@ -7,6 +7,9 @@ import CasaMemoriaTumaco from "./componets/Lugares/CasaMemoriaTumaco";
 import Test from "./componets/Test/Test";
 import Guardianes from "./componets/Guardianes/Guardianes";
 import Test2 from "./componets/Test/Test2";
+import Test3 from "./componets/Test/Test3";
+import Test4 from "./componets/Test/Test4";
+import Scrolly from "./componets/Test/Scrolly";
 
 const NotFoundPage = () => (
   <div>
@@ -27,6 +30,9 @@ const App = () => {
           <Route path="/casa" element={<CasaMemoriaTumaco />} />
           <Route path="/test" element={<Test />} />
           <Route path="/test2" element={<Test2 />} />
+          <Route path="/test3" element={<Test3 />} />
+          <Route path="/test4" element={<Test4 />} />
+          <Route path="/scrolly" element={<Scrolly />} />
           <Route path="/guardianes" element={<Guardianes />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

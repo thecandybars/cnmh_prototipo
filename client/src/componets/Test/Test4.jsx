@@ -8,49 +8,44 @@ function ModelWithScrollControl({ url }) {
   const { scene, animations, cameras } = useGLTF(url);
   const mixer = useRef(null);
   const { set, camera } = useThree(); // Access set and camera from useThree
-  const animationClock = useRef(0); // Track the current animation time
+
+  // Store the current animation time
+  const animationClock = useRef(0);
 
   useEffect(() => {
     // Set the GLB camera as the active camera if it exists
     if (cameras && cameras.length > 0) {
       set({ camera: cameras[0] }); // Set the first GLB camera as active
     }
-
-    // Initialize the mixer and play the camera animation if available
+    // Initialize the mixer and play the animation if available
     if (animations.length) {
       mixer.current = new THREE.AnimationMixer(scene);
       const action = mixer.current.clipAction(animations[0]);
-
-      action.paused = true; // Pause the animation initially
-      action.play(); // Set it ready to play but stay paused
+      action.play();
     }
   }, [animations, scene, cameras, set]);
 
-  // Control the camera animation progress with the scroll wheel
+  // Control the animation progress with the scroll wheel
   useEffect(() => {
     const handleScroll = (event) => {
       animationClock.current += event.deltaY * 0.001; // Adjust scroll sensitivity
-
-      // Clamp the animation time within the clip duration
-      if (mixer.current && animations[0]) {
-        const duration = animations[0].duration;
-        animationClock.current = Math.max(
-          0,
-          Math.min(duration, animationClock.current)
-        );
-
-        mixer.current.setTime(animationClock.current); // Set mixer time to control the camera animation
+      if (mixer.current) {
+        mixer.current.setTime(animationClock.current);
       }
     };
-
     window.addEventListener("wheel", handleScroll);
     return () => window.removeEventListener("wheel", handleScroll);
-  }, [animations]);
+  }, []);
+
+  // Update the mixer on each frame
+  useFrame((_, delta) => {
+    mixer.current?.update(delta);
+  });
 
   return (
     <>
       <primitive object={scene} />
-      <OrbitControls enableZoom={false} camera={camera} />
+      {/* <OrbitControls enableZoom={false} camera={camera} /> */}
     </>
   );
 }
@@ -64,9 +59,9 @@ function Test4() {
         height: "100vh",
       }}
     >
-      <Canvas>
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[5, 5, 5]} />
+      <Canvas camera={{ position: [0, 0, 10] }}>
+        <ambientLight intensity={1} />
+        {/* <directionalLight position={[5, 5, 5]} /> */}
         <ModelWithScrollControl url={MuralBocachico} />
       </Canvas>
     </div>
