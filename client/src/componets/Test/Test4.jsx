@@ -3,11 +3,13 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import MuralBocachico from "../../assets/MuralBocachicoCamaraSinluz.glb";
+import useWheelCounter from "../common/customHooks/useWheelCounter";
 
 function ModelWithScrollControl({ url }) {
   const { scene, animations, cameras } = useGLTF(url);
   const mixer = useRef(null);
   const { set, camera } = useThree(); // Access set and camera from useThree
+  const frame = useWheelCounter({ scale: 30 });
 
   // Store the current animation time
   const animationClock = useRef(0);
