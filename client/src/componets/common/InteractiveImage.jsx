@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useState } from "react";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography, Zoom } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 export default function InteractiveImage({ src, hotspots = [], zoom }) {
@@ -65,7 +65,10 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
           </TransformComponent>
         )}
       </TransformWrapper>
-      {showInfo.visible && (
+      <Zoom
+        in={showInfo.visible}
+        style={{ transitionDelay: showInfo.visible ? "800ms" : "0ms" }}
+      >
         <Stack
           sx={{
             position: "absolute",
@@ -90,7 +93,7 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
             Cerrar
           </Button>
         </Stack>
-      )}
+      </Zoom>
     </div>
   );
 }
