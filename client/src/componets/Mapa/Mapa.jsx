@@ -246,8 +246,8 @@ export default function Mapa() {
 
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
-      <Breadcrumbs />
-      <TituloMacroregion title={actualRegion?.fullName} />
+      {/* <Breadcrumbs /> */}
+      {/* <TituloMacroregion title={actualRegion?.fullName} /> */}
       <FooterLogoCNMH />
       <Lugar selectedMarker={selectedMarker} />
       <MapToolsDrawer />
@@ -326,7 +326,7 @@ export default function Mapa() {
         {renderModel3D_1}
         {renderAnimatedText}
 
-        <OverlayDataLayers />
+        {/* <OverlayDataLayers /> */}
         <MarkersMacroregion />
       </Map>
     </Box>

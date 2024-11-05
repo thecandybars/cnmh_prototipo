@@ -1,15 +1,17 @@
 import { Box } from "@mui/material";
-import logo from "/curvaLogo.svg";
+import logo from "/cnmhLogo.svg";
 
 export default function FooterLogoCNMH() {
   return (
     <Box
       sx={{
         position: "absolute",
-        width: "30%",
-        bottom: -5,
-        right: 0,
+        width: "250px",
+        padding: "8px 16px",
+        bottom: 0,
+        left: 0,
         zIndex: 10,
+        bgcolor: "rgba(255,255,255)",
       }}
     >
       <img src={logo} />

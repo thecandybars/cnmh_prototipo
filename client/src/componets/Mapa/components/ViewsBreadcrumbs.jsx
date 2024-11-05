@@ -1,7 +1,6 @@
-import { Box, Breadcrumbs, Link } from "@mui/material";
+import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
 import { NavigateNextIcon } from "../../common/icons";
-import { theme } from "../../../utils/theme";
-// import PropTypes from "prop-types";
+import PlaceIcon from "@mui/icons-material/Place";
 import useAppStore from "../../../store/useAppStore";
 import viewports from "../../common/viewports";
 
@@ -36,14 +35,17 @@ export default function ViewsBreadcrumbs() {
 
   return (
     <Box
-      sx={{
-        padding: 1,
-        px: 3,
-        borderRadius: "0 30px 30px 0",
-        cursor: "pointer",
-        backgroundColor: theme.palette.title.main,
-      }}
+      display="flex"
+      alignItems={"center"}
+      gap={1}
+      bgcolor="rgba(109, 109, 109, 0.7)"
+      px={2}
+      py={1}
     >
+      <PlaceIcon />
+      <Typography variant="body" color="primary">
+        Usted está en
+      </Typography>
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" color="primary" />}
       >
@@ -54,7 +56,12 @@ export default function ViewsBreadcrumbs() {
             cursor: actualView === 0 ? "default" : "pointer",
           }}
         >
-          Vista general
+          <Typography
+            variant="body"
+            color={actualView === 0 ? "secondary.main" : "primary.main"}
+          >
+            Vista general
+          </Typography>
         </Link>
         {actualView > 0 && (
           <Link
@@ -64,7 +71,12 @@ export default function ViewsBreadcrumbs() {
               cursor: actualView === 1 ? "default" : "pointer",
             }}
           >
-            {`Región ${actualRegion?.fullName}`}
+            <Typography
+              variant="body"
+              color={actualView === 1 ? "secondary.main" : "primary.main"}
+            >
+              {`Región ${actualRegion?.fullName}`}
+            </Typography>
           </Link>
         )}
         {actualView > 1 && (
@@ -74,8 +86,13 @@ export default function ViewsBreadcrumbs() {
               cursor: "default",
             }}
           >
-            {selectedMarker.nombreCorto ||
-              selectedMarker.nombre.slice(0, 35) + " ..."}
+            {" "}
+            <Typography
+              variant="body"
+              color={actualView === 2 ? "secondary.main" : "primary.main"}
+            >
+              {selectedMarker.nombreCorto || selectedMarker.nombre}
+            </Typography>
           </Link>
         )}
       </Breadcrumbs>
