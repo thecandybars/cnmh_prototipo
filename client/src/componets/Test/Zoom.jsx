@@ -44,19 +44,6 @@ const Zoom = () => {
   );
 };
 
-InteractiveImage.propTypes = {
-  src: PropTypes.string.isRequired,
-  hotspots: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      top: PropTypes.string.isRequired,
-      left: PropTypes.string.isRequired,
-      content: PropTypes.string.isRequired,
-    })
-  ),
-  zoom: PropTypes.number.isRequired,
-};
-
 const InteractiveImage = ({ src, hotspots = [], zoom }) => {
   const [showInfo, setShowInfo] = useState({ visible: false, content: "" });
   const [resetZoom, setResetZoom] = useState(null);
@@ -146,6 +133,19 @@ const InteractiveImage = ({ src, hotspots = [], zoom }) => {
       )}
     </div>
   );
+};
+
+InteractiveImage.propTypes = {
+  src: PropTypes.string.isRequired,
+  hotspots: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      top: PropTypes.string.isRequired,
+      left: PropTypes.string.isRequired,
+      content: PropTypes.string.isRequired,
+    })
+  ),
+  zoom: PropTypes.number.isRequired,
 };
 
 export default Zoom;
