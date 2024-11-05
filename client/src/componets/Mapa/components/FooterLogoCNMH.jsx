@@ -11,7 +11,7 @@ export default function FooterLogoCNMH() {
         bottom: 0,
         left: 0,
         zIndex: 10,
-        bgcolor: "rgba(255,255,255)",
+        bgcolor: "primary.main",
       }}
     >
       <img src={logo} />
