@@ -19,7 +19,7 @@ const Mural = () => {
       top: "40%",
       left: "20%",
       tooltip: {
-        top: "50%",
+        top: "30%",
         left: "50%",
         content:
           "Lorem ipsum dolor sit amet consectetur adipiscing elit accumsan habitasse at netus fermentum felis lacus ad donec, nec tristique ultrices habitant natoque curae aliquet maecenas iaculis etiam commodo magna dapibus platea nascetur. Rutrum iaculis felis nam aliquet congue primis risus nunc dapibus, dis netus potenti feugiat purus mauris interdum pulvinar aptent scelerisque, est egestas varius fringilla in libero tellus viverra.",

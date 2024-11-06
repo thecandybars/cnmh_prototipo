@@ -5,7 +5,8 @@ import { Box, Button, Fade, Stack, Typography, Zoom } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 export default function InteractiveImage({ src, hotspots = [], zoom }) {
-  const [showInfo, setShowInfo] = useState({ visible: false, content: "" });
+  const [showInfo, setShowInfo] = useState({ visible: false, tooltip: null });
+  console.log("🚀 ~ InteractiveImage ~ showInfo:", showInfo);
   const [resetZoom, setResetZoom] = useState(null);
 
   const renderHotspots = (zoomToElement) => {
@@ -14,7 +15,7 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
         key={hotspot.id}
         onClick={() => {
           zoomToElement(hotspot.id, zoom, 1000);
-          setShowInfo({ visible: true, content: hotspot.content });
+          setShowInfo({ visible: true, tooltip: { ...hotspot.tooltip } });
         }}
         id={hotspot.id}
         style={{ hidden: showInfo.visible }}
@@ -68,50 +69,45 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
           </TransformComponent>
         )}
       </TransformWrapper>
-      <Zoom
-        in={showInfo.visible}
-        style={{
-          transitionDelay: showInfo.visible ? "800ms" : "0ms",
-        }}
-      >
-        <Stack
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            backgroundColor: "black",
-            padding: "10px",
-            width: "40%",
-            borderRadius: "8px",
-            zIndex: 1000,
-            color: "white",
-            // transform: "translate(-40px, -40px)",
+      {showInfo.tooltip && (
+        <Zoom
+          in={showInfo.visible}
+          style={{
+            transitionDelay: showInfo.visible ? "800ms" : "0ms",
           }}
         >
-          <Typography variant="body"> {showInfo.content}</Typography>
-          <Button
-            onClick={() => {
-              setShowInfo({ visible: false, content: "" });
-              resetZoom();
+          <Stack
+            sx={{
+              position: "absolute",
+              top: showInfo.tooltip.top || "50%",
+              left: showInfo.tooltip.left || "50%",
+              backgroundColor: "black",
+              padding: "10px",
+              width: "40%",
+              borderRadius: "8px",
+              zIndex: 1000,
+              color: "white",
+              // transform: "translate(-40px, -40px)",
             }}
           >
-            Cerrar
-          </Button>
-        </Stack>
-      </Zoom>
+            <Typography variant="body"> {showInfo.tooltip.content}</Typography>
+            <Button
+              onClick={() => {
+                setShowInfo({ visible: false, tooltip: null });
+                resetZoom();
+              }}
+            >
+              Cerrar
+            </Button>
+          </Stack>
+        </Zoom>
+      )}
     </div>
   );
 }
 
 InteractiveImage.propTypes = {
-  src: PropTypes.string.isRequired,
-  hotspots: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      top: PropTypes.string.isRequired,
-      left: PropTypes.string.isRequired,
-      content: PropTypes.string.isRequired,
-    })
-  ),
-  zoom: PropTypes.number.isRequired,
+  src: PropTypes.string,
+  hotspots: PropTypes.array,
+  zoom: PropTypes.number,
 };
