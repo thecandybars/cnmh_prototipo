@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useState } from "react";
-import { Box, Button, Stack, Typography, Zoom } from "@mui/material";
+import { Box, Button, Fade, Stack, Typography, Zoom } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 export default function InteractiveImage({ src, hotspots = [], zoom }) {
@@ -9,36 +9,33 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
   const [resetZoom, setResetZoom] = useState(null);
 
   const renderHotspots = (zoomToElement) => {
-    return hotspots.map(
-      (hotspot) =>
-        !showInfo.visible && (
-          <Box
-            key={hotspot.id}
-            onClick={() => {
-              zoomToElement(hotspot.id, zoom, 1000);
-              setShowInfo({ visible: true, content: hotspot.content });
-            }}
-            id={hotspot.id}
-            style={{ hidden: showInfo.visible }}
-            sx={{
-              position: "absolute",
-              top: hotspot.top,
-              left: hotspot.left,
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
-              cursor: "pointer",
-              transform: "translate(-50%, -50%)",
-              backgroundColor: "secondary.main",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <AddCircleOutlineIcon color="primary" size="large" />
-          </Box>
-        )
-    );
+    return hotspots.map((hotspot) => (
+      <Box
+        key={hotspot.id}
+        onClick={() => {
+          zoomToElement(hotspot.id, zoom, 1000);
+          setShowInfo({ visible: true, content: hotspot.content });
+        }}
+        id={hotspot.id}
+        style={{ hidden: showInfo.visible }}
+        sx={{
+          position: "absolute",
+          top: hotspot.top,
+          left: hotspot.left,
+          width: "40px",
+          height: "40px",
+          borderRadius: "50%",
+          cursor: "pointer",
+          transform: "translate(-50%, -50%)",
+          backgroundColor: "secondary.main",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <AddCircleOutlineIcon color="primary" size="large" />
+      </Box>
+    ));
   };
 
   return (
@@ -50,6 +47,10 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
         centerOnInit
         onZoomStart={(e) => console.log(e)}
         onPanningStart={(e) => console.log(e)}
+        wheel={{ disabled: true }}
+        panning={{ disabled: true }}
+        pinch={{ disabled: true }}
+        doubleClick={{ disabled: true }}
       >
         {({ zoomToElement, resetTransform }) => (
           <TransformComponent>
@@ -59,7 +60,9 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
                 alt="Zoomable"
                 style={{ width: "100%", height: "auto" }}
               />
-              {renderHotspots(zoomToElement)}
+              <Fade in={!showInfo.visible} timeout={800}>
+                <div> {renderHotspots(zoomToElement)}</div>
+              </Fade>
               {setResetZoom(resetTransform(1500))}
             </div>
           </TransformComponent>
@@ -67,7 +70,9 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
       </TransformWrapper>
       <Zoom
         in={showInfo.visible}
-        style={{ transitionDelay: showInfo.visible ? "800ms" : "0ms" }}
+        style={{
+          transitionDelay: showInfo.visible ? "800ms" : "0ms",
+        }}
       >
         <Stack
           sx={{
