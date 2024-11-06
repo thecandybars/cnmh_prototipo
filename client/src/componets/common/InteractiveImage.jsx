@@ -1,13 +1,19 @@
 import PropTypes from "prop-types";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useState } from "react";
-import { Box, Button, Fade, Stack, Typography, Zoom } from "@mui/material";
+import {
+  Box,
+  Button,
+  Fade,
+  Stack,
+  Tooltip,
+  Typography,
+  Zoom,
+} from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 export default function InteractiveImage({ src, hotspots = [], zoom }) {
   const [showInfo, setShowInfo] = useState({ visible: false, tooltip: null });
-  console.log("🚀 ~ InteractiveImage ~ showInfo:", showInfo);
-  const [resetZoom, setResetZoom] = useState(null);
 
   const renderHotspots = (zoomToElement) => {
     return hotspots.map((hotspot) => (
@@ -15,10 +21,13 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
         key={hotspot.id}
         onClick={() => {
           zoomToElement(hotspot.id, zoom, 1000);
-          setShowInfo({ visible: true, tooltip: { ...hotspot.tooltip } });
+          setShowInfo({
+            visible: true,
+            tooltip: { ...hotspot.tooltip },
+            titulo: hotspot.titulo,
+          });
         }}
         id={hotspot.id}
-        style={{ hidden: showInfo.visible }}
         sx={{
           position: "absolute",
           top: hotspot.top,
@@ -34,7 +43,9 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
           alignItems: "center",
         }}
       >
-        <AddCircleOutlineIcon color="primary" size="large" />
+        <Tooltip title={!showInfo.visible && hotspot.titulo}>
+          <AddCircleOutlineIcon color="primary" size="large" />
+        </Tooltip>
       </Box>
     ));
   };
@@ -53,21 +64,23 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
         pinch={{ disabled: true }}
         doubleClick={{ disabled: true }}
       >
-        {({ zoomToElement, resetTransform }) => (
-          <TransformComponent>
-            <div style={{ position: "relative", display: "inline-block" }}>
-              <img
-                src={src}
-                alt="Zoomable"
-                style={{ width: "100%", height: "auto" }}
-              />
-              <Fade in={!showInfo.visible} timeout={800}>
-                <div> {renderHotspots(zoomToElement)}</div>
-              </Fade>
-              {setResetZoom(resetTransform(1500))}
-            </div>
-          </TransformComponent>
-        )}
+        {({ zoomToElement, resetTransform }) => {
+          resetTransform(1500);
+          return (
+            <TransformComponent>
+              <div style={{ position: "relative", display: "inline-block" }}>
+                <img
+                  src={src}
+                  alt="Zoomable"
+                  style={{ width: "100%", height: "auto" }}
+                />
+                <Fade in={!showInfo.visible} timeout={800}>
+                  <div> {renderHotspots(zoomToElement)}</div>
+                </Fade>
+              </div>
+            </TransformComponent>
+          );
+        }}
       </TransformWrapper>
       {showInfo.tooltip && (
         <Zoom
@@ -77,6 +90,7 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
           }}
         >
           <Stack
+            gap={1}
             sx={{
               position: "absolute",
               top: showInfo.tooltip.top || "50%",
@@ -87,14 +101,13 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
               borderRadius: "8px",
               zIndex: 1000,
               color: "white",
-              // transform: "translate(-40px, -40px)",
             }}
           >
+            <Typography variant="h4"> {showInfo.titulo}</Typography>
             <Typography variant="body"> {showInfo.tooltip.content}</Typography>
             <Button
               onClick={() => {
-                setShowInfo({ visible: false, tooltip: null });
-                resetZoom();
+                setShowInfo({ visible: false, tooltip: null, titulo: "" });
               }}
             >
               Cerrar
