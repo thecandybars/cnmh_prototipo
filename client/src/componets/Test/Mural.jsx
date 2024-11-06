@@ -5,6 +5,7 @@ const Mural = () => {
   const hotspots = [
     {
       id: "pescao",
+      titulo: "Titulo para Bocachico",
       top: "70%",
       left: "60%",
       tooltip: {
@@ -16,6 +17,7 @@ const Mural = () => {
     },
     {
       id: "camion",
+      titulo: "Titulo para camión",
       top: "40%",
       left: "20%",
       tooltip: {
@@ -26,7 +28,8 @@ const Mural = () => {
       },
     },
     {
-      id: "grupo",
+      id: "isla",
+      titulo: "Titulo para Isla",
       top: "45%",
       left: "51%",
       tooltip: {
