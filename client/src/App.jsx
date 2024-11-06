@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import MainNav from "./componets/MainNav";
 import Mapa from "./componets/Mapa";
 import Photo360 from "./componets/Lugares/Photo360/Photo360";
 import PhotoGallery from "./componets/Lugares/PhotoGallery/PhotoGallery";
@@ -22,7 +21,7 @@ const App = () => {
   return (
     <Router>
       <div>
-        {location.pathname !== "/casa" && <MainNav />}
+        {/* {location.pathname !== "/casa" && <MainNav />} */}
         <Routes>
           <Route path="/" element={<Mapa />} />
           <Route path="/foto360" element={<Photo360 />} />
