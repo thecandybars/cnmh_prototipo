@@ -8,21 +8,22 @@ import { Box } from "@mui/material";
 import "./styles/styles.css";
 import Macroregiones from "./MapLayers/Macroregiones";
 import MapToolsDrawer from "./components/MapToolsDrawer";
-import TituloMacroregion from "./components/TituloMacroregion";
+// import TituloMacroregion from "./components/TituloMacroregion";
 import FooterLogoCNMH from "./components/FooterLogoCNMH";
 import MarkersAndClusters from "./MarkerRegiones/MarkersAndClusters";
 import macroregionesData from "../../geojson/macroregiones.json";
 import Model3D from "../ThreeD/Model3D";
 import modelURL from "../../assets/PajarosBlancosOCT21V3.glb";
-import Breadcrumbs from "./components/Breadcrumbs";
+// import Breadcrumbs from "./components/Breadcrumbs";
 import Lugar from "../Lugares/Lugar";
-import OverlayDataLayers from "./MapLayers/OverlayDataLayers";
+// import OverlayDataLayers from "./MapLayers/OverlayDataLayers";
 import useAppStore from "../../store/useAppStore";
 import viewports from "../common/viewports";
 import useTextAndCameraAnimation from "../common/customHooks/useTextAndCameraAnimation";
 import Welcome from "./Welcome";
 import { getAllRegions } from "../../services/regions";
 import MarkersMacroregion from "./MarkerRegiones/MarkersMacroregion";
+import MainNav from "../MainNav";
 
 const TOKEN = getEnv("mapboxToken");
 
@@ -246,6 +247,7 @@ export default function Mapa() {
 
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
+      <MainNav />
       {/* <Breadcrumbs /> */}
       {/* <TituloMacroregion title={actualRegion?.fullName} /> */}
       <FooterLogoCNMH />

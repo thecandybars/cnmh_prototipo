@@ -51,7 +51,7 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
   };
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", width: "auto" }}>
       <TransformWrapper
         initialScale={1}
         minScale={0.5}
@@ -72,7 +72,7 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
                 <img
                   src={src}
                   alt="Zoomable"
-                  style={{ width: "100%", height: "auto" }}
+                  style={{ width: "100vw", height: "100%" }}
                 />
                 <Fade in={!showInfo.visible} timeout={800}>
                   <div> {renderHotspots(zoomToElement)}</div>
