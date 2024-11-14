@@ -40,7 +40,7 @@ const {
   TipologiasLugares,
   TipologiasGenerales,
   Exhibiciones,
-  ExhibicionesMultimediaContents,
+  TipologiasEspecificas,
   Medios,
   Sliders,
   Slides, // INTERMEDIATE TABLE Sliders-Media
@@ -49,6 +49,7 @@ const {
 Municipios.belongsTo(Departamentos);
 Departamentos.belongsTo(Regions);
 Lugares.belongsTo(TipologiasLugares);
+Lugares.belongsTo(TipologiasEspecificas);
 Lugares.belongsTo(TiposLugares, { foreignKey: "TipoLugarId" });
 Lugares.belongsTo(Municipios);
 Lugares.belongsTo(TipologiasGenerales);
