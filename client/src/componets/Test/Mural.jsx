@@ -1,42 +1,79 @@
 import InteractiveImage from "../common/InteractiveImage";
 import mural from "/MuralBocachico.jpg";
+// import mural from "/MuralPargos2x.jpg";
 
 const Mural = () => {
   const hotspots = [
     {
-      id: "pescao",
-      titulo: "Titulo para Bocachico",
-      top: "70%",
-      left: "60%",
+      id: "pargos",
+      titulo: "Las tres islas",
+      top: "55%",
+      left: "75%",
       tooltip: {
-        top: "50%",
-        left: "50%",
+        top: "30%",
+        left: "10%",
         content:
-          "Bibendum eleifend id mattis auctor in duis ad aliquet, praesent facilisi maecenas mollis arcu congue fames penatibus tellus, porttitor commodo tincidunt rutrum interdum habitasse ornare. Duis porta euismod sagittis montes facilisis pellentesque aliquam dis habitant, a interdum congue maecenas fames malesuada metus sed, quam magna donec tincidunt dignissim leo ullamcorper nec.",
+          "Cada uno de estos pargos representan las tres islas que componen el territorio de Tumaco.",
       },
     },
     {
-      id: "camion",
-      titulo: "Titulo para camión",
-      top: "40%",
-      left: "20%",
+      id: "indigenas",
+      titulo: "El pueblo Tumac",
+      top: "45%",
+      left: "50%",
+      tooltip: {
+        top: "55%",
+        left: "50%",
+        content:
+          "Este es el pueblo Tumac, los primeros pobladores del territorio. ",
+      },
+    },
+    {
+      id: "pueblo",
+      titulo: "El pueblo Awá",
+      top: "60%",
+      left: "48%",
       tooltip: {
         top: "30%",
         left: "50%",
         content:
-          "Lorem ipsum dolor sit amet consectetur adipiscing elit accumsan habitasse at netus fermentum felis lacus ad donec, nec tristique ultrices habitant natoque curae aliquet maecenas iaculis etiam commodo magna dapibus platea nascetur. Rutrum iaculis felis nam aliquet congue primis risus nunc dapibus, dis netus potenti feugiat purus mauris interdum pulvinar aptent scelerisque, est egestas varius fringilla in libero tellus viverra.",
+          "Este el pueblo Awá, segundos pobladores del territorio. 'Awá' quiere decir gente de la montaña. Para el pueblo Awá el territorio es un espacio de vida que permite mantener el equilibrio con los espíritus y la naturaleza generando un verdadero respeto y armonía espiritual.",
       },
     },
     {
-      id: "isla",
-      titulo: "Titulo para Isla",
-      top: "45%",
-      left: "51%",
+      id: "bandera",
+      titulo: "Organización de la Unidad Indígena del Pueblo Awá",
+      top: "60%",
+      left: "30%",
       tooltip: {
-        top: "50%",
-        left: "50%",
+        top: "30%",
+        left: "20%",
         content:
-          "Ridiculus tristique vulputate neque eleifend justo tempus integer, mauris per vel purus nisi suscipit, fusce pharetra malesuada rhoncus natoque interdum. Posuere cras ullamcorper laoreet consequat neque curae enim semper hac lobortis dictumst donec vestibulum aliquam proin dapibus, libero nulla et rutrum ultrices cum nam vitae duis quis porttitor ac morbi convallis",
+          "Esta es la bandera de la Organización de la Unidad Indígena del Pueblo Awá, UNIPA. El pueblo Awá está asentado en 32 resguardos en el departamento de Nariño. Son alrededor de 6.000 familias ubicadas en 160 comunidades, para un total de 23.000 personas.",
+      },
+    },
+    {
+      id: "piedra",
+      titulo: "El Arco del Morro",
+      top: "40%",
+      left: "34%",
+      tooltip: {
+        top: "30%",
+        left: "15%",
+        content:
+          "Este es el Arco del Morro, maravilla natural representativa de Tumaco.  Es un puente de piedra natural tallado por el agua que se constituyó como uno de los puntos de entrada a la bahía de Tumaco.",
+      },
+    },
+    {
+      id: "ola",
+      titulo: "Titulo para ola",
+      top: "45%",
+      left: "60%",
+      tooltip: {
+        top: "70%",
+        left: "20%",
+        content:
+          "Esta ola representa el Milagro Eucarístico ocurrido en 1906 en Tumaco, cuando una ola enorme que amenazaba con arrasar el territorio en un tsunami fue detenida por la intercesión de Dios y el párroco de la ciudad, fray Gerardo Lizcano.",
       },
     },
   ];
