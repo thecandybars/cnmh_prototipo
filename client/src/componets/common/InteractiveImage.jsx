@@ -72,7 +72,11 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
                 <img
                   src={src}
                   alt="Zoomable"
-                  style={{ width: "100vw", height: "100%" }}
+                  style={{
+                    width: "100%",
+                    height: "100vh",
+                    // objectFit: "contain",
+                  }}
                 />
                 <Fade in={!showInfo.visible} timeout={800}>
                   <div> {renderHotspots(zoomToElement)}</div>
