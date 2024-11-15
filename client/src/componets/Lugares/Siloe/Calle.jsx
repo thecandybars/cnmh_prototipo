@@ -47,7 +47,7 @@ import ScrollyVideo from "scrolly-video/dist/ScrollyVideo.esm.jsx";
 import { Box, Dialog, Fade, Typography } from "@mui/material";
 import video from "/siloe.mp4";
 
-function Scrolly() {
+export default function SiloeCalle() {
   const [scrollyPosition, setScrollyPosition] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
   const [showHiddenText, setShowHiddenText] = useState(false);
@@ -204,7 +204,3 @@ function Scrolly() {
     </div>
   );
 }
-
-Scrolly.propTypes = {};
-
-export default Scrolly;

@@ -5,25 +5,33 @@ import {
   Box,
   Button,
   Fade,
+  Slide,
   Stack,
   Tooltip,
   Typography,
   Zoom,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { CancelIcon } from "./icons";
 
-export default function InteractiveImage({ src, hotspots = [], zoom }) {
-  const [showInfo, setShowInfo] = useState({ visible: false, tooltip: null });
+export default function InteractiveImage({
+  src,
+  hotspots = [],
+  mainInfo = null,
+}) {
+  const [showText, setShowText] = useState({ visible: false, textBox: null });
+  const [showMainInfo, setShowMainInfo] = useState(true);
 
   const renderHotspots = (zoomToElement) => {
     return hotspots.map((hotspot) => (
       <Box
         key={hotspot.id}
         onClick={() => {
-          zoomToElement(hotspot.id, zoom, 1000);
-          setShowInfo({
+          zoomToElement(hotspot.id, hotspot.zoom || 3.5, 1000);
+          setShowText({
             visible: true,
-            tooltip: { ...hotspot.tooltip },
+            textBox: { ...hotspot.textBox },
             titulo: hotspot.titulo,
           });
         }}
@@ -43,7 +51,7 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
           alignItems: "center",
         }}
       >
-        <Tooltip title={!showInfo.visible && hotspot.titulo}>
+        <Tooltip title={!showText.visible && hotspot.titulo}>
           <AddCircleOutlineIcon color="primary" size="large" />
         </Tooltip>
       </Box>
@@ -52,6 +60,54 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
 
   return (
     <div style={{ position: "relative", width: "auto" }}>
+      <Fade in={!showText.visible} timeout={800}>
+        <Box
+          display="flex"
+          sx={{
+            position: "absolute",
+            alignItems: "flex-end",
+            gap: 1,
+            bottom: 20,
+            left: 20,
+            zIndex: 100,
+          }}
+        >
+          <Box
+            onClick={() => setShowMainInfo(!showMainInfo)}
+            sx={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              cursor: "pointer",
+              backgroundColor: "black",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {showMainInfo ? (
+              <CancelIcon size="large" color="primary" />
+            ) : (
+              <InfoOutlinedIcon size="large" color="primary" />
+            )}
+          </Box>
+          <Slide in={showMainInfo} timeout={200} direction="up">
+            <Stack
+              gap={1}
+              sx={{
+                bgcolor: "rgba(0,0,0,0.8)",
+                p: 1,
+                width: "60%",
+              }}
+            >
+              <Typography variant="h6">{mainInfo && mainInfo.title}</Typography>
+              <Typography variant="body">
+                {mainInfo && mainInfo.content}
+              </Typography>
+            </Stack>
+          </Slide>
+        </Box>
+      </Fade>
       <TransformWrapper
         initialScale={1}
         minScale={0.5}
@@ -78,7 +134,7 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
                     // objectFit: "contain",
                   }}
                 />
-                <Fade in={!showInfo.visible} timeout={800}>
+                <Fade in={!showText.visible} timeout={800}>
                   <div> {renderHotspots(zoomToElement)}</div>
                 </Fade>
               </div>
@@ -86,19 +142,19 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
           );
         }}
       </TransformWrapper>
-      {showInfo.tooltip && (
+      {showText.textBox && (
         <Zoom
-          in={showInfo.visible}
+          in={showText.visible}
           style={{
-            transitionDelay: showInfo.visible ? "800ms" : "0ms",
+            transitionDelay: showText.visible ? "800ms" : "0ms",
           }}
         >
           <Stack
             gap={1}
             sx={{
               position: "absolute",
-              top: showInfo.tooltip.top || "50%",
-              left: showInfo.tooltip.left || "50%",
+              top: showText.textBox.top || "50%",
+              left: showText.textBox.left || "50%",
               backgroundColor: "black",
               padding: "10px",
               width: "40%",
@@ -107,11 +163,11 @@ export default function InteractiveImage({ src, hotspots = [], zoom }) {
               color: "white",
             }}
           >
-            <Typography variant="h4"> {showInfo.titulo}</Typography>
-            <Typography variant="body"> {showInfo.tooltip.content}</Typography>
+            <Typography variant="h4"> {showText.titulo}</Typography>
+            <Typography variant="body"> {showText.textBox.content}</Typography>
             <Button
               onClick={() => {
-                setShowInfo({ visible: false, tooltip: null, titulo: "" });
+                setShowText({ visible: false, textBox: null, titulo: "" });
               }}
             >
               Cerrar
@@ -127,4 +183,5 @@ InteractiveImage.propTypes = {
   src: PropTypes.string,
   hotspots: PropTypes.array,
   zoom: PropTypes.number,
+  mainInfo: PropTypes.object,
 };
