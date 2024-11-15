@@ -10,6 +10,7 @@ import Test3 from "./componets/Test/Test3";
 // import Test4 from "./componets/Test/Test4";
 import Scrolly from "./componets/Test/Scrolly";
 import Mural from "./componets/Test/Mural";
+import Iframe from "./componets/Test/Iframe";
 
 const NotFoundPage = () => (
   <div>
@@ -35,6 +36,7 @@ const App = () => {
           <Route path="/siloe" element={<Scrolly />} />
           <Route path="/guardianes" element={<Guardianes />} />
           <Route path="/mural" element={<Mural />} />
+          <Route path="/iframe" element={<Iframe />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
