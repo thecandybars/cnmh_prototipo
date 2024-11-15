@@ -8,8 +8,8 @@ import Guardianes from "./componets/Guardianes/Guardianes";
 // import Test2 from "./componets/Test/Test2";
 import Test3 from "./componets/Test/Test3";
 // import Test4 from "./componets/Test/Test4";
-import Scrolly from "./componets/Test/Scrolly";
-import Mural from "./componets/Test/Mural";
+import Scrolly from "./componets/Lugares/Siloe/Calle";
+import Mural from "./componets/Lugares/Tumaco/MuralPargos";
 import Iframe from "./componets/Test/Iframe";
 
 const NotFoundPage = () => (

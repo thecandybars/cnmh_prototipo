@@ -1,15 +1,15 @@
-import InteractiveImage from "../common/InteractiveImage";
+import InteractiveImage from "../../common/InteractiveImage";
 import mural from "/MuralBocachico.jpg";
 // import mural from "/MuralPargos2x.jpg";
 
-const Mural = () => {
+export default function MuralPargos() {
   const hotspots = [
     {
       id: "pargos",
       titulo: "Las tres islas",
       top: "55%",
       left: "75%",
-      tooltip: {
+      textBox: {
         top: "30%",
         left: "10%",
         content:
@@ -21,7 +21,8 @@ const Mural = () => {
       titulo: "El pueblo Tumac",
       top: "45%",
       left: "50%",
-      tooltip: {
+      zoom: 4,
+      textBox: {
         top: "55%",
         left: "50%",
         content:
@@ -33,7 +34,8 @@ const Mural = () => {
       titulo: "El pueblo Awá",
       top: "60%",
       left: "48%",
-      tooltip: {
+      zoom: 5,
+      textBox: {
         top: "30%",
         left: "50%",
         content:
@@ -43,9 +45,10 @@ const Mural = () => {
     {
       id: "bandera",
       titulo: "Organización de la Unidad Indígena del Pueblo Awá",
-      top: "60%",
-      left: "30%",
-      tooltip: {
+      top: "57%",
+      left: "32%",
+      zoom: 5,
+      textBox: {
         top: "30%",
         left: "20%",
         content:
@@ -57,7 +60,8 @@ const Mural = () => {
       titulo: "El Arco del Morro",
       top: "40%",
       left: "34%",
-      tooltip: {
+      zoom: 5,
+      textBox: {
         top: "30%",
         left: "15%",
         content:
@@ -66,10 +70,11 @@ const Mural = () => {
     },
     {
       id: "ola",
-      titulo: "Titulo para ola",
+      titulo: "El Milagro Eucarístico",
       top: "45%",
       left: "60%",
-      tooltip: {
+      zoom: 3,
+      textBox: {
         top: "70%",
         left: "20%",
         content:
@@ -88,9 +93,15 @@ const Mural = () => {
         alignItems: "center",
       }}
     >
-      <InteractiveImage src={mural} hotspots={hotspots} zoom={3.5} />
+      <InteractiveImage
+        src={mural}
+        hotspots={hotspots}
+        mainInfo={{
+          title: "Titulo Main",
+          content:
+            "El mural relata la historia de la creación de Tumaco, sus pueblos y habitantes así como la representación de sus festividades, eventos y elementos más representativos. Este mural es la puerta de entrada al territorio.",
+        }}
+      />
     </div>
   );
-};
-
-export default Mural;
+}
