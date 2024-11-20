@@ -8,7 +8,10 @@ import Guardianes from "./componets/Guardianes/Guardianes";
 // import Test2 from "./componets/Test/Test2";
 import Test3 from "./componets/Test/Test3";
 // import Test4 from "./componets/Test/Test4";
-import Scrolly from "./componets/Lugares/Siloe/Calle";
+import Calle from "./componets/Lugares/Siloe/Calle";
+import Siloe from "./componets/Lugares/Siloe/Index";
+import Beirut from "./componets/Lugares/Siloe/Beirut";
+import Bodrum from "./componets/Lugares/Siloe/Bodrum";
 import MuralPargos from "./componets/Lugares/Tumaco/MuralPargos";
 import Iframe from "./componets/Test/Iframe";
 import MuralOficios from "./componets/Lugares/Tumaco/MuralOficios";
@@ -32,7 +35,10 @@ const App = () => {
           <Route path="/casa" element={<CasaMemoriaTumaco />} />
           <Route path="/test" element={<Test />} />
           <Route path="/test3" element={<Test3 />} />
-          <Route path="/siloe" element={<Scrolly />} />
+          <Route path="/siloe" element={<Siloe />} />
+          <Route path="/siloe/calle" element={<Calle />} />
+          <Route path="/siloe/beirut" element={<Beirut />} />
+          <Route path="/siloe/bodrum" element={<Bodrum />} />
           <Route path="/guardianes" element={<Guardianes />} />
           <Route path="/tumaco/mural_pargos" element={<MuralPargos />} />
           <Route path="/tumaco/mural_oficios" element={<MuralOficios />} />
