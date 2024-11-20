@@ -19,7 +19,7 @@ export default function Test2() {
   // State for animation control
   // const [duration, setDuration] = useState(0);
 
-  const frame = useWheelCounter({ scale: 30 });
+  const { frame } = useWheelCounter({ scale: 30 });
 
   useEffect(() => {
     if (!canvasRef.current) return;

@@ -6,6 +6,7 @@ export default function useWheelCounter(props) {
   const scale = props?.scale || 1;
   const [count, setCount] = useState(0);
   const [wheelDelta, setWheelDelta] = useState(0);
+  const [direction, setDirection] = useState(null);
 
   useEffect(() => {
     const handleWheel = (event) => {
@@ -25,13 +26,15 @@ export default function useWheelCounter(props) {
   useEffect(() => {
     // When the accumulated delta reaches the threshold, adjust the count
     if (wheelDelta >= resolution) {
+      setDirection("up");
       setCount((prevCount) => prevCount + step);
       setWheelDelta(0); // Reset the accumulated delta
     } else if (wheelDelta <= -resolution) {
+      setDirection("down");
       setCount((prevCount) => prevCount - step);
       setWheelDelta(0); // Reset the accumulated delta
     }
   }, [resolution, scale, step, wheelDelta]);
 
-  return count / scale;
+  return { frame: count / scale, direction };
 }
