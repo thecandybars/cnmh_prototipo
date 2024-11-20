@@ -1,5 +1,5 @@
 import InteractiveImage from "../../common/InteractiveImage";
-import mural from "/MuralBocachico.jpg";
+import mural from "/MuralPargos.jpg";
 // import mural from "/MuralPargos2x.jpg";
 
 export default function MuralPargos() {
@@ -97,7 +97,7 @@ export default function MuralPargos() {
         src={mural}
         hotspots={hotspots}
         mainInfo={{
-          title: "Titulo Main",
+          title: "Mural de la historia de Tumaco",
           content:
             "El mural relata la historia de la creación de Tumaco, sus pueblos y habitantes así como la representación de sus festividades, eventos y elementos más representativos. Este mural es la puerta de entrada al territorio.",
         }}
