@@ -9,8 +9,9 @@ import Guardianes from "./componets/Guardianes/Guardianes";
 import Test3 from "./componets/Test/Test3";
 // import Test4 from "./componets/Test/Test4";
 import Scrolly from "./componets/Lugares/Siloe/Calle";
-import Mural from "./componets/Lugares/Tumaco/MuralPargos";
+import MuralPargos from "./componets/Lugares/Tumaco/MuralPargos";
 import Iframe from "./componets/Test/Iframe";
+import MuralOficios from "./componets/Lugares/Tumaco/MuralOficios";
 
 const NotFoundPage = () => (
   <div>
@@ -30,12 +31,11 @@ const App = () => {
           <Route path="/galeria" element={<PhotoGallery />} />
           <Route path="/casa" element={<CasaMemoriaTumaco />} />
           <Route path="/test" element={<Test />} />
-          {/* <Route path="/test2" element={<Test2 />} /> */}
           <Route path="/test3" element={<Test3 />} />
-          {/* <Route path="/test4" element={<Test4 />} /> */}
           <Route path="/siloe" element={<Scrolly />} />
           <Route path="/guardianes" element={<Guardianes />} />
-          <Route path="/mural" element={<Mural />} />
+          <Route path="/tumaco/mural_pargos" element={<MuralPargos />} />
+          <Route path="/tumaco/mural_oficios" element={<MuralOficios />} />
           <Route path="/iframe" element={<Iframe />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
