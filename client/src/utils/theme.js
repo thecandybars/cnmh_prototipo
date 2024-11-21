@@ -82,12 +82,12 @@ const muiTheme = createTheme({
       textTransform: "none",
     },
     h1: {
-      fontFamily: "Monday Vacation",
+      fontFamily: "Nunito Sans",
       fontWeight: 500,
       fontSize: "7rem",
     },
     h2: {
-      fontFamily: "Monday Vacation",
+      fontFamily: "Nunito Sans",
       fontWeight: 500,
       fontSize: "1.5rem",
     },

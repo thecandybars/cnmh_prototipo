@@ -1,7 +1,25 @@
-import { useNavigate } from "react-router-dom";
+import { Box, Button, Stack, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
 export default function Index() {
-  const navigate = useNavigate();
-  navigate("/siloe/calle");
-  return <div></div>;
+  return (
+    <Box
+      display="flex"
+      justifyContent={"center"}
+      alignItems={"center"}
+      height="100vh"
+    >
+      <Stack>
+        <Typography variant="h1">Siloé</Typography>
+        <Button
+          color="secondary"
+          component={Link}
+          to="/siloe/calle"
+          variant="contained"
+        >
+          Iniciar
+        </Button>
+      </Stack>
+    </Box>
+  );
 }
