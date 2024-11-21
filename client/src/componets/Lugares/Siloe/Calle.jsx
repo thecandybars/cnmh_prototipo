@@ -1,49 +1,5 @@
-// import { Typography } from "@mui/material";
-// import video from "/siloe.mp4";
-// import useVideoScroll from "../common/useVideoScroll";
-
-// function Scrolly() {
-//   const altura = 800;
-
-//   const content = [
-//     {
-//       id: 0,
-//       content: (
-//         <div style={{ position: "relative", top: "-100vh" }}>Hola</div>
-//         // <div style={{ position: "relative", bottom: "100vh" }}>Hola</div>
-//       ),
-//     },
-//     {
-//       id: 1,
-//       content: (
-//         <div style={{ position: "relative", top: "700vh" }}>Chau</div>
-//         // <div style={{ position: "relative", bottom: "-700vh" }}>Chau</div>
-//       ),
-//     },
-//   ];
-
-//   const [ScrollVideo, scrollPosition] = useVideoScroll({
-//     src: video,
-//     altura: altura,
-//     content,
-//   });
-//   console.log("🚀 ~ Scrolly ~ scrollPosition:", scrollPosition);
-//   return (
-//     <div>
-//       <Typography variant="h3" m={4}>
-//         Video Scroll de Siloé
-//       </Typography>
-//       {ScrollVideo}
-//     </div>
-//   );
-// }
-
-// Scrolly.propTypes = {};
-
-// export default Scrolly;
-
 import video from "/siloe.mp4";
-import VideoScroll from "../../common/VideoScroll";
+import VideoScroll from "../../common/buttons/VideoScroll/VideoScroll";
 
 export default function SiloeCalle() {
   const navigation = [

@@ -1,5 +1,5 @@
 import video from "/bodrum.mp4";
-import VideoScroll from "../../common/VideoScroll";
+import VideoScroll from "../../common/buttons/VideoScroll/VideoScroll";
 
 export default function SiloeBodrum() {
   const navigation = [
