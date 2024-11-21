@@ -1,7 +1,14 @@
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import ScrollyVideo from "scrolly-video/dist/ScrollyVideo.esm.jsx";
-import { Box, CircularProgress, Dialog, Typography, Zoom } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Dialog,
+  Slider,
+  Typography,
+  Zoom,
+} from "@mui/material";
 import useViewport from "../../customHooks/useViewport";
 import useWheelCounter from "../../customHooks/useWheelCounter";
 import DirectionButton from "./DirectionButton";
@@ -13,14 +20,47 @@ const Transition = forwardRef(function Transition(props, ref) {
 function VideoScroll({ src, speed, hotspots = [] }) {
   const [loading, setLoading] = useState(true);
   const [scrollyPosition, setScrollyPosition] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(0.2); // Default volume
+  const audioRef = useRef(null); // Ref to manage the audio instance
   const { navigation } = hotspots;
 
   const { direction } = useWheelCounter({ scale: 30 });
   const { vh, vw } = useViewport();
 
+  //  AUDIO PLAYER
+  // Init
   useEffect(() => {
-    window.scrollTo(0, 0);
+    audioRef.current = new Audio("/sonic.mp3");
+    audioRef.current.volume = volume;
+    audioRef.current.loop = true;
+
+    return () => {
+      // Cleanup on component unmount
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
   }, []);
+  // Play/pause
+  const handlePlayPause = () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+  // Volumen
+  const handleVolumeChange = (event, newValue) => {
+    setVolume(newValue);
+    if (audioRef.current) {
+      audioRef.current.volume = newValue;
+    }
+  };
 
   const renderNavigation = navigation.map((item) => {
     const content = (
@@ -30,9 +70,8 @@ function VideoScroll({ src, speed, hotspots = [] }) {
           justifyContent: "center",
           alignItems: "flex-end",
           position: "fixed",
-          //   transform: `translate(${-vw / 2}px, ${-vh / 2}px)`, // Zoom no funciona con transform
           top: vh / 2,
-          left: vw / 2 - 100, // calcular -100 !!! Es la mitad del ancho de la caja
+          left: vw / 2 - 100,
         }}
       >
         {item.links.map((link) => (
@@ -80,9 +119,34 @@ function VideoScroll({ src, speed, hotspots = [] }) {
       )}
       <ScrollyVideo
         src={src || "https://scrollyvideo.js.org/goldengate.mp4"}
-        onChange={(e) => setScrollyPosition(e)}
+        onChange={(e) => {
+          setScrollyPosition(e);
+          handlePlayPause();
+        }}
         onReady={() => setLoading(false)}
       />
+      {/* CONTROLES AUDIO */}
+      <Box sx={{ position: "fixed", bottom: 20, left: 20 }}>
+        {/* Play/Pause */}
+        {/* <button onClick={handlePlayPause}>
+          {isPlaying ? "Pause Audio" : "Play Audio"}
+        </button> */}
+
+        {/* Volume */}
+        <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+          <Typography variant="body2" sx={{ mr: 2 }}>
+            Volume
+          </Typography>
+          <Slider
+            value={volume}
+            onChange={handleVolumeChange}
+            min={0}
+            max={1}
+            step={0.01}
+            sx={{ width: 200 }}
+          />
+        </Box>
+      </Box>
       {!loading && renderNavigation}
     </div>
   );
