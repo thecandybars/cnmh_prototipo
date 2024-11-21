@@ -10,7 +10,9 @@ export default function DirectionButton({ link }) {
     0,
     location.pathname.lastIndexOf("/")
   );
+  console.log("🚀 ~ DirectionButton ~ baseLocation:", baseLocation);
   const baseURL = getEnv("client") + baseLocation;
+  console.log("🚀 ~ DirectionButton ~ baseURL:", baseURL);
 
   const styles = {
     button:
@@ -58,7 +60,8 @@ export default function DirectionButton({ link }) {
           ...styles.button,
         }}
         component={Link}
-        to={`${baseURL}${link.href}`}
+        to={sanitizeURL(baseURL, link.href)}
+        // to={`${baseURL}${link.href}`}
       >
         <ArrowIcon sx={{ ...styles.icon }} />
         {/* <Link to={`${baseURL}${link.href}`}> */}
@@ -77,4 +80,10 @@ DirectionButton.propTypes = {
     href: PropTypes.string.isRequired,
     direction: PropTypes.oneOf(["forward", "left", "right"]).isRequired,
   }).isRequired,
+};
+
+const sanitizeURL = (base, path) => {
+  const baseNormalized = base.endsWith("/") ? base.slice(0, -1) : base;
+  const pathNormalized = path.startsWith("/") ? path : `/${path}`;
+  return `${baseNormalized}${pathNormalized}`;
 };
