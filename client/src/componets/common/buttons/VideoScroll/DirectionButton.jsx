@@ -8,7 +8,7 @@ export default function DirectionButton({ link }) {
   const location = useLocation();
   console.log("🚀 ~ DirectionButton ~ location.pathname:", location.pathname);
   const pathSegments = location.pathname.split("/").filter(Boolean); // Remove empty segments
-  const baseLocation = `/${pathSegments[0] || ""}`; // Get the first segment
+  const baseLocation = `/${pathSegments[0] || ""}`; // Toma solo el primer segmento. Para hacerlo mas robusto, deberia tomarlos todos menos el ultimo
   console.log("🚀 ~ DirectionButton ~ baseLocation:", baseLocation);
   const baseURL = getEnv("client") + baseLocation;
   console.log("🚀 ~ DirectionButton ~ baseURL:", baseURL);
