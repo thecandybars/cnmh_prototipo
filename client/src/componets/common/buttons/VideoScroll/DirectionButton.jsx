@@ -7,10 +7,8 @@ import ArrowIcon from "@mui/icons-material/KeyboardArrowUp";
 export default function DirectionButton({ link }) {
   const location = useLocation();
   console.log("🚀 ~ DirectionButton ~ location.pathname:", location.pathname);
-  const baseLocation = removeLastSlash(location.pathname).slice(
-    0,
-    location.pathname.lastIndexOf("/")
-  );
+  const pathSegments = location.pathname.split("/").filter(Boolean); // Remove empty segments
+  const baseLocation = `/${pathSegments[0] || ""}`; // Get the first segment
   console.log("🚀 ~ DirectionButton ~ baseLocation:", baseLocation);
   const baseURL = getEnv("client") + baseLocation;
   console.log("🚀 ~ DirectionButton ~ baseURL:", baseURL);
@@ -89,9 +87,9 @@ const sanitizeURL = (base, path) => {
   return `${baseNormalized}${pathNormalized}`;
 };
 
-const removeLastSlash = (url) => {
-  if (url.endsWith("/")) {
-    return url.slice(0, -1);
-  }
-  return url;
-};
+// const removeLastSlash = (url) => {
+//   if (url.endsWith("/")) {
+//     return url.slice(0, -1);
+//   }
+//   return url;
+// };
