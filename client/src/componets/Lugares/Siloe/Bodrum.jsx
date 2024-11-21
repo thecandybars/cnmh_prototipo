@@ -25,7 +25,7 @@ export default function SiloeBodrum() {
 
   return (
     <div>
-      <VideoScroll src={video} speed={800} hotspots={{ navigation }} />
+      <VideoScroll src={video} speed={1400} hotspots={{ navigation }} />
     </div>
   );
 }
