@@ -47,6 +47,7 @@ export default function SiloeCalle() {
       map={{
         pointA: [-76.558811, 3.423751],
         pointB: [-76.559311, 3.423558],
+        zoom: 17.5,
       }}
       // sounds={[
       //   {

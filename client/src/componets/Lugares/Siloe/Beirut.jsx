@@ -62,6 +62,7 @@ export default function SiloeBeirut() {
       map={{
         pointA: [-76.559311, 3.423558],
         pointB: [-76.559429, 3.424122],
+        zoom: 17.5,
       }}
     />
   );

@@ -14,6 +14,7 @@ import useViewport from "../../customHooks/useViewport";
 import useWheelCounter from "../../customHooks/useWheelCounter";
 import DirectionButton from "./DirectionButton";
 import MapaConRuta from "./MapaConRuta";
+import { theme } from "../../../../utils/theme";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Zoom ref={ref} timeout={1200} {...props} />;
@@ -117,8 +118,8 @@ function VideoScroll({
         position: "fixed",
         bottom: 0,
         left: 0,
-        borderRadius: "200px",
-        boder: "10px solid red",
+        borderRadius: "10px",
+        border: `8px solid ${theme.palette.secondary.main}`,
       }}
     >
       <MapaConRuta
@@ -127,7 +128,7 @@ function VideoScroll({
         progress={scrollyPosition}
         width="200px"
         height="200px"
-        zoom={17}
+        zoom={map.zoom || 17}
       />
     </Box>
   );

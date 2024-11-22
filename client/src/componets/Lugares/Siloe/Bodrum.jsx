@@ -52,6 +52,7 @@ export default function SiloeBodrum() {
       map={{
         pointA: [-76.559311, 3.423558],
         pointB: [-76.559246, 3.423013],
+        zoom: 17.5,
       }}
     />
   );
