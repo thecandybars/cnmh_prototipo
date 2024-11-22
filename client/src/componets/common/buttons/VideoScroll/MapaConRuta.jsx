@@ -100,8 +100,8 @@ MapaConRuta.propTypes = {
   pointA: PropTypes.array.isRequired,
   pointB: PropTypes.array.isRequired,
   progress: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
+  width: PropTypes.any.isRequired,
+  height: PropTypes.any.isRequired,
   zoom: PropTypes.number.isRequired,
 };
 

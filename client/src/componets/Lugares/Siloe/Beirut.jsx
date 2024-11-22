@@ -1,7 +1,14 @@
 import video from "/beirut.mp4";
 import VideoScroll from "../../common/buttons/VideoScroll/VideoScroll";
+import audioBackground from "/lugares/siloe/audio/calle2.mp3";
+import { useEffect } from "react";
+
+const RESET_SCROLL = true;
 
 export default function SiloeBeirut() {
+  useEffect(() => {
+    RESET_SCROLL && window.scrollTo(0, 0);
+  }, []);
   const navigation = [
     {
       id: 0,
@@ -46,5 +53,16 @@ export default function SiloeBeirut() {
     },
   ];
 
-  return <VideoScroll src={video} speed={800} hotspots={{ navigation }} />;
+  return (
+    <VideoScroll
+      src={video}
+      speed={800}
+      navigationHotspots={navigation}
+      audioBackground={{ src: audioBackground, volume: 0.3 }}
+      map={{
+        pointA: [-76.559311, 3.423558],
+        pointB: [-76.559429, 3.424122],
+      }}
+    />
+  );
 }

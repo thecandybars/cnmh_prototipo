@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import ScrollyVideo from "scrolly-video/dist/ScrollyVideo.esm.jsx";
 import {
   Box,
+  Button,
   CircularProgress,
   Dialog,
   Slider,
@@ -18,13 +19,18 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Zoom ref={ref} timeout={1200} {...props} />;
 });
 
-function VideoScroll({ src, speed, hotspots = [] }) {
+function VideoScroll({
+  src,
+  speed,
+  navigationHotspots = [],
+  map,
+  audioBackground,
+}) {
   const [loading, setLoading] = useState(true);
   const [scrollyPosition, setScrollyPosition] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.2); // Default volume
   const audioRef = useRef(null); // Ref to manage the audio instance
-  const { navigation } = hotspots;
 
   const { direction } = useWheelCounter({ scale: 30 });
   const { vh, vw } = useViewport();
@@ -32,9 +38,10 @@ function VideoScroll({ src, speed, hotspots = [] }) {
   //  AUDIO PLAYER
   // Init
   useEffect(() => {
-    audioRef.current = new Audio("/sonic.mp3");
+    audioRef.current = new Audio(audioBackground.src);
     audioRef.current.volume = volume;
     audioRef.current.loop = true;
+    handlePlayPause();
 
     return () => {
       // Cleanup on component unmount
@@ -63,7 +70,7 @@ function VideoScroll({ src, speed, hotspots = [] }) {
     }
   };
 
-  const renderNavigation = navigation.map((item) => {
+  const renderNavigationHotspots = navigationHotspots.map((item) => {
     const content = (
       <Box
         sx={{
@@ -102,6 +109,29 @@ function VideoScroll({ src, speed, hotspots = [] }) {
     );
   });
 
+  // MAPA
+  const renderMapa = map?.pointA && map?.pointB && (
+    <Box
+      margin={1}
+      sx={{
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        borderRadius: "200px",
+        boder: "10px solid red",
+      }}
+    >
+      <MapaConRuta
+        pointA={map.pointA}
+        pointB={map.pointB}
+        progress={scrollyPosition}
+        width="200px"
+        height="200px"
+        zoom={17}
+      />
+    </Box>
+  );
+
   return (
     <div className={"scrolly-container"} style={{ height: `${speed}vh` }}>
       {loading && (
@@ -123,55 +153,45 @@ function VideoScroll({ src, speed, hotspots = [] }) {
         src={src || "https://scrollyvideo.js.org/goldengate.mp4"}
         onChange={(e) => {
           setScrollyPosition(e);
-          handlePlayPause();
         }}
         onReady={() => setLoading(false)}
       />
 
       {/* CONTROLES AUDIO */}
-      <Box sx={{ position: "fixed", bottom: 20, left: 20 }}>
+      <Box sx={{ position: "fixed", bottom: 20, right: 20 }}>
         {/* Play/Pause */}
-        {/* <button onClick={handlePlayPause}>
-          {isPlaying ? "Pause Audio" : "Play Audio"}
-        </button> */}
+        <Button
+          onClick={handlePlayPause}
+          variant="contained"
+          color="secondary"
+          sx={{ width: 60, height: "auto", aspectRatio: 1 }}
+        >
+          {isPlaying ? "Pause" : "Play"}
+        </Button>
 
         {/* Volume */}
-        <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-          <Typography variant="body2" sx={{ mr: 2 }}>
-            Volume
-          </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            mt: 2,
+          }}
+        >
           <Slider
+            color="secondary"
             value={volume}
             onChange={handleVolumeChange}
             min={0}
             max={1}
             step={0.01}
-            sx={{ width: 200 }}
+            width={100}
           />
         </Box>
       </Box>
 
-      {/* NAVEGACIÓN */}
-      <Box
-        margin={1}
-        sx={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          borderRadius: "200px",
-          boder: "10px solid red",
-        }}
-      >
-        <MapaConRuta
-          pointA={[-76.558811, 3.423751]}
-          pointB={[-76.559311, 3.423558]}
-          progress={scrollyPosition}
-          width="200px"
-          height="200px"
-          zoom={17}
-        />
-      </Box>
-      {!loading && renderNavigation}
+      {/* NAVEGACIÓN: MAPA CON RUTA */}
+      {renderMapa}
+      {!loading && renderNavigationHotspots}
     </div>
   );
 }
@@ -179,7 +199,9 @@ function VideoScroll({ src, speed, hotspots = [] }) {
 VideoScroll.propTypes = {
   src: PropTypes.string,
   speed: PropTypes.number,
-  hotspots: PropTypes.object,
+  navigationHotspots: PropTypes.array,
+  audioBackground: PropTypes.object,
+  map: PropTypes.object,
 };
 
 export default VideoScroll;
