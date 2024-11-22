@@ -21,11 +21,20 @@ export default function SiloeBodrum() {
         },
       ],
     },
+    {
+      id: 1,
+      timeIn: 0.99,
+      timeOut: 1,
+      isBlocking: true,
+      links: [
+        {
+          direction: "right",
+          title: "Beirut",
+          href: "/beirut",
+        },
+      ],
+    },
   ];
 
-  return (
-    <div>
-      <VideoScroll src={video} speed={1400} hotspots={{ navigation }} />
-    </div>
-  );
+  return <VideoScroll src={video} speed={1400} hotspots={{ navigation }} />;
 }

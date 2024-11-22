@@ -7,6 +7,7 @@ export default function SiloeBeirut() {
       id: 0,
       timeIn: 0.4,
       timeOut: 0.5,
+      isBlocking: false,
       links: [
         {
           direction: "left",
@@ -25,11 +26,25 @@ export default function SiloeBeirut() {
         },
       ],
     },
+    {
+      id: 1,
+      timeIn: 0.99,
+      timeOut: 1,
+      isBlocking: true,
+      links: [
+        {
+          direction: "left",
+          title: "Beirut",
+          href: "/beirut",
+        },
+        {
+          direction: "right",
+          title: "Bodrum",
+          href: "/bodrum",
+        },
+      ],
+    },
   ];
 
-  return (
-    <div>
-      <VideoScroll src={video} speed={800} hotspots={{ navigation }} />
-    </div>
-  );
+  return <VideoScroll src={video} speed={800} hotspots={{ navigation }} />;
 }

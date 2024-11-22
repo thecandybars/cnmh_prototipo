@@ -1,7 +1,13 @@
 import video from "/siloe.mp4";
 import VideoScroll from "../../common/buttons/VideoScroll/VideoScroll";
+import { useEffect } from "react";
+
+const RESET_SCROLL = true;
 
 export default function SiloeCalle() {
+  useEffect(() => {
+    RESET_SCROLL && window.scrollTo(0, 0);
+  }, []);
   const navigation = [
     {
       id: 0,
@@ -18,8 +24,8 @@ export default function SiloeCalle() {
     },
     {
       id: 1,
-      timeIn: 0.4,
-      timeOut: 0.5,
+      timeIn: 0.99,
+      timeOut: 1,
       isBlocking: true,
       links: [
         {
@@ -31,17 +37,5 @@ export default function SiloeCalle() {
     },
   ];
 
-  return (
-    <div>
-      <VideoScroll src={video} speed={800} hotspots={{ navigation }} />
-
-      {/* <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <Box width={400} height={400} p={2}>
-          Esta es una ventana de dialogo. Los dialogos bloquean la interacción
-          con el resto del contenido e impiden hacer scroll.
-          <b> ESC o click afuera para cerrar</b>
-        </Box>
-      </Dialog> */}
-    </div>
-  );
+  return <VideoScroll src={video} speed={800} hotspots={{ navigation }} />;
 }
