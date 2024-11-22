@@ -3,6 +3,7 @@ import Map, { Marker, Source, Layer } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import PropTypes from "prop-types";
 import getEnv from "../../../../utils/getEnv";
+import { theme } from "../../../../utils/theme";
 
 // Token de acceso para Mapbox
 const MAPBOX_TOKEN = getEnv("mapboxToken");
@@ -51,7 +52,7 @@ const MapaConRuta = ({ pointA, pointB, progress, width, height, zoom }) => {
             "line-cap": "round",
           }}
           paint={{
-            "line-color": "#007cbf",
+            "line-color": "#8e8a79",
             "line-width": 4,
           }}
         />
@@ -61,10 +62,10 @@ const MapaConRuta = ({ pointA, pointB, progress, width, height, zoom }) => {
       <Marker longitude={pointA[0]} latitude={pointA[1]}>
         <div
           style={{
-            backgroundColor: "red",
+            backgroundColor: theme.palette.secondary.main,
             borderRadius: "50%",
-            width: 10,
-            height: 10,
+            width: 15,
+            height: 15,
           }}
         ></div>
       </Marker>
@@ -73,10 +74,10 @@ const MapaConRuta = ({ pointA, pointB, progress, width, height, zoom }) => {
       <Marker longitude={pointB[0]} latitude={pointB[1]}>
         <div
           style={{
-            backgroundColor: "green",
+            backgroundColor: theme.palette.secondary.main,
             borderRadius: "50%",
-            width: 10,
-            height: 10,
+            width: 15,
+            height: 15,
           }}
         ></div>
       </Marker>
@@ -85,10 +86,10 @@ const MapaConRuta = ({ pointA, pointB, progress, width, height, zoom }) => {
       <Marker longitude={currentPosition[0]} latitude={currentPosition[1]}>
         <div
           style={{
-            backgroundColor: "blue",
+            backgroundColor: "black",
             borderRadius: "50%",
-            width: 10,
-            height: 10,
+            width: 8,
+            height: 8,
           }}
         ></div>
       </Marker>
