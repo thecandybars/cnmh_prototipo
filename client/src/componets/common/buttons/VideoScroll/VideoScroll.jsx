@@ -72,6 +72,7 @@ function VideoScroll({ src, speed, hotspots = [] }) {
           position: "fixed",
           top: vh / 2,
           left: vw / 2 - 100,
+          gap: 1,
         }}
       >
         {item.links.map((link) => (
