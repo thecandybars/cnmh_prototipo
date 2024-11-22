@@ -1,4 +1,5 @@
 import video from "/siloe.mp4";
+import audioBackground from "/lugares/siloe/audio/calle.mp3";
 import VideoScroll from "../../common/buttons/VideoScroll/VideoScroll";
 import { useEffect } from "react";
 
@@ -37,5 +38,24 @@ export default function SiloeCalle() {
     },
   ];
 
-  return <VideoScroll src={video} speed={800} hotspots={{ navigation }} />;
+  return (
+    <VideoScroll
+      src={video}
+      speed={800}
+      navigationHotspots={navigation}
+      audioBackground={{ src: audioBackground, volume: 0.3 }}
+      map={{
+        pointA: [-76.558811, 3.423751],
+        pointB: [-76.559311, 3.423558],
+      }}
+      // sounds={[
+      //   {
+      //     id: "paletas",
+      //     src: "/lugares/siloe/audio/paletas.mp3",
+      //     in: 0.3,
+      //     out: 0.4,
+      //   },
+      // ]}
+    />
+  );
 }
