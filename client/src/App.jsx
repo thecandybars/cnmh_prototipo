@@ -15,6 +15,7 @@ import Bodrum from "./componets/Lugares/Siloe/Bodrum";
 import MuralPargos from "./componets/Lugares/Tumaco/MuralPargos";
 import Iframe from "./componets/Test/Iframe";
 import MuralOficios from "./componets/Lugares/Tumaco/MuralOficios";
+import TestMapaConRuta from "./componets/Test/Test2";
 
 const NotFoundPage = () => (
   <div>
@@ -34,6 +35,7 @@ const App = () => {
           <Route path="/galeria" element={<PhotoGallery />} />
           <Route path="/casa" element={<CasaMemoriaTumaco />} />
           <Route path="/test" element={<Test />} />
+          <Route path="/test2" element={<TestMapaConRuta />} />
           <Route path="/test3" element={<Test3 />} />
           <Route path="/siloe" element={<Siloe />} />
           <Route path="/siloe/calle" element={<Calle />} />

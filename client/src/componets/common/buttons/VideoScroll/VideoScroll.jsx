@@ -12,6 +12,7 @@ import {
 import useViewport from "../../customHooks/useViewport";
 import useWheelCounter from "../../customHooks/useWheelCounter";
 import DirectionButton from "./DirectionButton";
+import MapaConRuta from "./MapaConRuta";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Zoom ref={ref} timeout={1200} {...props} />;
@@ -126,6 +127,7 @@ function VideoScroll({ src, speed, hotspots = [] }) {
         }}
         onReady={() => setLoading(false)}
       />
+
       {/* CONTROLES AUDIO */}
       <Box sx={{ position: "fixed", bottom: 20, left: 20 }}>
         {/* Play/Pause */}
@@ -147,6 +149,27 @@ function VideoScroll({ src, speed, hotspots = [] }) {
             sx={{ width: 200 }}
           />
         </Box>
+      </Box>
+
+      {/* NAVEGACIÓN */}
+      <Box
+        margin={1}
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          borderRadius: "200px",
+          boder: "10px solid red",
+        }}
+      >
+        <MapaConRuta
+          pointA={[-76.558811, 3.423751]}
+          pointB={[-76.559311, 3.423558]}
+          progress={scrollyPosition}
+          width="200px"
+          height="200px"
+          zoom={17}
+        />
       </Box>
       {!loading && renderNavigation}
     </div>
