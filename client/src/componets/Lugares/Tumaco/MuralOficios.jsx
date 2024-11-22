@@ -5,10 +5,15 @@ import mural from "/MuralAfro_comp.jpg";
 export default function MuralOficios() {
   const hotspots = [
     {
-      id: "pacuranderargos",
+      id: "curandera",
       titulo: "La curandera",
       top: "22%",
       left: "15%",
+      zoom: {
+        top: "0%",
+        left: "0%",
+        level: 3.5,
+      },
       textBox: {
         top: "8%",
         left: "10%",
@@ -21,7 +26,11 @@ export default function MuralOficios() {
       titulo: "El médico tradicional",
       top: "35%",
       left: "83%",
-      zoom: 4,
+      zoom: {
+        top: "20%",
+        left: "90%",
+        level: 1.5,
+      },
       textBox: {
         top: "15%",
         left: "15%",

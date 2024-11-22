@@ -248,12 +248,8 @@
 // };
 
 import PropTypes from "prop-types";
-import {
-  TransformWrapper,
-  TransformComponent,
-  // KeepScale,
-} from "react-zoom-pan-pinch";
-import { useState } from "react";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -267,6 +263,7 @@ import {
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { CancelIcon } from "./icons";
+import useViewport from "./customHooks/useViewport";
 
 export default function InteractiveImage({
   src,
@@ -275,21 +272,78 @@ export default function InteractiveImage({
 }) {
   const [showText, setShowText] = useState({ visible: false, textBox: null });
   const [showMainInfo, setShowMainInfo] = useState(true);
+  const [image, setImage] = useState({
+    w: "100%",
+    h: "100vh",
+    objectFit: "contain",
+  });
+  const [initialImageWidth, setInitialImageWidth] = useState(null);
+  console.log("🚀 ~ initialImageWidth:", initialImageWidth);
+  const { vw } = useViewport();
+
+  const imageRef = useRef(null);
+
+  useEffect(() => {
+    const calculateInitialWidth = () => {
+      if (imageRef.current) {
+        const width = imageRef.current.clientWidth;
+        setImage((prev) => ({ ...prev, w: width }));
+        setInitialImageWidth(width);
+      }
+    };
+
+    if (imageRef.current?.complete) {
+      calculateInitialWidth();
+    } else {
+      imageRef.current?.addEventListener("load", calculateInitialWidth);
+    }
+
+    window.addEventListener("resize", calculateInitialWidth);
+
+    return () => {
+      window.removeEventListener("resize", calculateInitialWidth);
+      imageRef.current?.removeEventListener("load", calculateInitialWidth);
+    };
+  }, []);
+
+  const renderZoomDestinations = hotspots.map((hotspot) => {
+    console.log("🚀 ~ renderZoomDestinations ~ hotspot:", hotspot);
+    return (
+      <div
+        key={hotspot.id}
+        id={hotspot.id}
+        style={{
+          position: "absolute",
+          top: hotspot.zoom.top,
+          left: hotspot.zoom.left,
+          width: "10px",
+          height: "10px",
+          borderRadius: "50%",
+          // transform: "translate(-50%, -50%)",
+          backgroundColor: "green",
+          zIndex: 1000,
+        }}
+      >
+        {hotspot.id}
+      </div>
+    );
+  });
 
   // RENDER HOTSPOTS
   const renderHotspots = (zoomToElement) => {
     return hotspots.map((hotspot) => (
       <Box
-        key={hotspot.id}
+        key={"HOTSPOT_" + hotspot.id}
         onClick={() => {
-          zoomToElement(hotspot.id, hotspot.zoom || 3.5, 1000);
+          zoomToElement(hotspot.id, hotspot.zoom.level || 3.5, 1000);
           setShowText({
             visible: true,
             textBox: { ...hotspot.textBox },
             titulo: hotspot.titulo,
           });
+          setImage({ w: 1 * vw, h: "100%", objectFit: "cover" });
         }}
-        id={hotspot.id}
+        id={"HOTSPOT_" + hotspot.id}
         sx={{
           position: "absolute",
           top: hotspot.top,
@@ -392,6 +446,11 @@ export default function InteractiveImage({
         <Button
           onClick={() => {
             setShowText({ visible: false, textBox: null, titulo: "" });
+            setImage({
+              w: initialImageWidth,
+              h: "100vh",
+              objectFit: "contain",
+            });
           }}
         >
           Cerrar
@@ -406,10 +465,10 @@ export default function InteractiveImage({
         initialScale={1}
         minScale={0.2}
         maxScale={10}
-        centerOnInit
-        centerZoomedOut={true}
-        onZoomStart={(e) => console.log(e)}
-        onPanningStart={(e) => console.log(e)}
+        // centerOnInit
+        // centerZoomedOut={true}
+        // onZoomStart={(e) => console.log(e)}
+        // onPanningStart={(e) => console.log(e)}
         // wheel={{ disabled: true }}
         // panning={{ disabled: true }}
         pinch={{ disabled: true }}
@@ -426,19 +485,23 @@ export default function InteractiveImage({
                 }}
               >
                 <img
+                  ref={imageRef}
                   src={src}
                   alt="Zoomable"
                   style={{
-                    width: "100%",
-                    // height: "100%",
+                    // width: "100%",
+                    // height: "100vh",
+                    width: image.w,
                     height: "100vh",
-                    // objectFit: "contain",
+                    objectFit: "cover",
+                    transition: "width 1s, height 1s",
                   }}
                 />
                 <Fade in={!showText.visible} timeout={800}>
                   <div> {renderHotspots(zoomToElement)}</div>
                 </Fade>
               </div>
+              {renderZoomDestinations}
             </TransformComponent>
           );
         }}
