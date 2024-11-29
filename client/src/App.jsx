@@ -8,14 +8,17 @@ import Guardianes from "./componets/Guardianes/Guardianes";
 // import Test2 from "./componets/Test/Test2";
 import Test3 from "./componets/Test/Test3";
 // import Test4 from "./componets/Test/Test4";
-import Calle from "./componets/Lugares/Siloe/Calle";
 import Siloe from "./componets/Lugares/Siloe/Index";
-import Beirut from "./componets/Lugares/Siloe/Beirut";
-import Bodrum from "./componets/Lugares/Siloe/Bodrum";
 import MuralPargos from "./componets/Lugares/Tumaco/MuralPargos";
 import Iframe from "./componets/Test/Iframe";
 import MuralOficios from "./componets/Lugares/Tumaco/MuralOficios";
 import TestMapaConRuta from "./componets/Test/Test2";
+import EscalerasMiradorEstrella from "./componets/Lugares/Siloe/EscalerasMiradorEstrella";
+import Calle from "./componets/Lugares/Siloe/Calle";
+import EscalerasMiradorAmoSiloe from "./componets/Lugares/Siloe/EscalerasMiradorAmoSiloe";
+import HaciaDoñaAna from "./componets/Lugares/Siloe/HaciaDoñaAna";
+import TiendaDoñaAna from "./componets/Lugares/Siloe/TiendaDoñaAna";
+import EscalerasMiradorEsterlla from "./componets/Lugares/Siloe/EscalerasMiradorEstrella";
 
 const NotFoundPage = () => (
   <div>
@@ -38,9 +41,17 @@ const App = () => {
           <Route path="/test2" element={<TestMapaConRuta />} />
           <Route path="/test3" element={<Test3 />} />
           <Route path="/siloe" element={<Siloe />} />
-          <Route path="/siloe/calle" element={<Calle />} />
-          <Route path="/siloe/beirut" element={<Beirut />} />
-          <Route path="/siloe/bodrum" element={<Bodrum />} />
+          <Route
+            path="/siloe/escaleras-mirador-estrella"
+            element={<EscalerasMiradorEstrella />}
+          />
+          <Route
+            path="/siloe/escaleras-mirador-amo-siloe"
+            element={<EscalerasMiradorAmoSiloe />}
+          />
+          <Route path="/siloe/hacia-dona-ana" element={<HaciaDoñaAna />} />
+          {/* <Route path="/siloe/tienda-dona-ana" element={<TiendaDoñaAna />} /> */}
+          {/* <Route path="/siloe/calle" element={<Calle />} /> */}
           <Route path="/guardianes" element={<Guardianes />} />
           <Route path="/tumaco/mural_pargos" element={<MuralPargos />} />
           <Route path="/tumaco/mural_oficios" element={<MuralOficios />} />
