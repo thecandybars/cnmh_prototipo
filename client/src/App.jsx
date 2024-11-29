@@ -45,10 +45,10 @@ const App = () => {
             path="/siloe/escaleras-mirador-estrella"
             element={<EscalerasMiradorEstrella />}
           />
-          <Route
+          {/* <Route
             path="/siloe/escaleras-mirador-amo-siloe"
             element={<EscalerasMiradorAmoSiloe />}
-          />
+          /> */}
           <Route path="/siloe/hacia-dona-ana" element={<HaciaDoñaAna />} />
           {/* <Route path="/siloe/tienda-dona-ana" element={<TiendaDoñaAna />} /> */}
           {/* <Route path="/siloe/calle" element={<Calle />} /> */}
