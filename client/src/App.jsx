@@ -14,11 +14,11 @@ import Iframe from "./componets/Test/Iframe";
 import MuralOficios from "./componets/Lugares/Tumaco/MuralOficios";
 import TestMapaConRuta from "./componets/Test/Test2";
 import EscalerasMiradorEstrella from "./componets/Lugares/Siloe/EscalerasMiradorEstrella";
-import Calle from "./componets/Lugares/Siloe/Calle";
-import EscalerasMiradorAmoSiloe from "./componets/Lugares/Siloe/EscalerasMiradorAmoSiloe";
+// import Calle from "./componets/Lugares/Siloe/Calle";
+// import EscalerasMiradorAmoSiloe from "./componets/Lugares/Siloe/EscalerasMiradorAmoSiloe";
 import HaciaDoñaAna from "./componets/Lugares/Siloe/HaciaDoñaAna";
-import TiendaDoñaAna from "./componets/Lugares/Siloe/TiendaDoñaAna";
-import EscalerasMiradorEsterlla from "./componets/Lugares/Siloe/EscalerasMiradorEstrella";
+// import TiendaDoñaAna from "./componets/Lugares/Siloe/TiendaDoñaAna";
+// import EscalerasMiradorEsterlla from "./componets/Lugares/Siloe/EscalerasMiradorEstrella";
 
 const NotFoundPage = () => (
   <div>
