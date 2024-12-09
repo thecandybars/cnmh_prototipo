@@ -1,6 +1,6 @@
 import VideoScroll from "../../common/buttons/VideoScroll/VideoScroll";
 import { useEffect } from "react";
-import video from "/lugares/siloe/video/b1_comp.mp4";
+import video from "/lugares/siloe/video/horqueta hasta la Mina.mp4";
 
 const RESET_SCROLL = true;
 
