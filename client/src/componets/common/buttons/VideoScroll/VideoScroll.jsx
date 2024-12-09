@@ -39,19 +39,21 @@ function VideoScroll({
   //  AUDIO PLAYER
   // Init
   useEffect(() => {
-    audioRef.current = new Audio(audioBackground.src);
-    audioRef.current.volume = volume;
-    audioRef.current.loop = true;
-    handlePlayPause();
+    if (!audioBackground?.src) return;
+
+    const audio = new Audio(audioBackground.src);
+    audio.volume = volume;
+    audio.loop = true;
+    audioRef.current = audio;
+
+    if (isPlaying) audio.play();
 
     return () => {
-      // Cleanup on component unmount
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
+      audio.pause();
+      audioRef.current = null;
     };
-  }, []);
+  }, [audioBackground?.src, isPlaying, volume]);
+
   // Play/pause
   const handlePlayPause = () => {
     if (!audioRef.current) return;
@@ -134,7 +136,14 @@ function VideoScroll({
   );
 
   return (
-    <div className={"scrolly-container"} style={{ height: `${speed}vh` }}>
+    <div
+      className="scrolly-container"
+      style={{
+        width: "100%",
+        height: `${Math.min(Math.max(speed, 10), 300)}vh`,
+      }}
+    >
+      {/* Conditional Loading */}
       {loading && (
         <Box
           sx={{
@@ -150,34 +159,28 @@ function VideoScroll({
           </Typography>
         </Box>
       )}
-      <ScrollyVideo
-        src={src || "https://scrollyvideo.js.org/goldengate.mp4"}
-        onChange={(e) => {
-          setScrollyPosition(e);
-        }}
-        onReady={() => setLoading(false)}
-      />
 
-      {/* CONTROLES AUDIO */}
+      {/* Video Content */}
+      {src && (
+        <ScrollyVideo
+          src={src}
+          onChange={(e) => setScrollyPosition(e)}
+          onReady={() => setLoading(false)}
+          cover={true}
+        />
+      )}
+
+      {/* Audio Controls */}
       <Box sx={{ position: "fixed", bottom: 20, right: 20 }}>
-        {/* Play/Pause */}
         <Button
           onClick={handlePlayPause}
           variant="contained"
           color="secondary"
-          sx={{ width: 60, height: "auto", aspectRatio: 1 }}
+          sx={{ width: 60, height: 60 }}
         >
           {isPlaying ? "Pause" : "Play"}
         </Button>
-
-        {/* Volume */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            mt: 2,
-          }}
-        >
+        <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
           <Slider
             color="secondary"
             value={volume}
@@ -185,12 +188,11 @@ function VideoScroll({
             min={0}
             max={1}
             step={0.01}
-            width={100}
           />
         </Box>
       </Box>
 
-      {/* NAVEGACIÓN: MAPA CON RUTA */}
+      {/* Map and Hotspots */}
       {renderMapa}
       {!loading && renderNavigationHotspots}
     </div>

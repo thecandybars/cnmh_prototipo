@@ -67,7 +67,7 @@ const MapaConRuta = ({ pointA, pointB, progress, width, height, zoom }) => {
             width: 15,
             height: 15,
           }}
-        ></div>
+        />
       </Marker>
 
       {/* Marcador final (Punto B) */}
@@ -79,7 +79,7 @@ const MapaConRuta = ({ pointA, pointB, progress, width, height, zoom }) => {
             width: 15,
             height: 15,
           }}
-        ></div>
+        />
       </Marker>
 
       {/* Marcador que muestra el progreso */}
@@ -91,7 +91,7 @@ const MapaConRuta = ({ pointA, pointB, progress, width, height, zoom }) => {
             width: 8,
             height: 8,
           }}
-        ></div>
+        />
       </Marker>
     </Map>
   );

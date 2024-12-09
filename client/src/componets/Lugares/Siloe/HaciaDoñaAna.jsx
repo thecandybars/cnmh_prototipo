@@ -4,7 +4,7 @@ import { useEffect } from "react";
 // import video from "/lugares/siloe/video/A8_Entrar Galería donde Miriam.mp4";
 // import video from "/lugares/siloe/video/b1_comp.mp4";
 // import video from "/lugares/siloe/video/2024-11-15_Camino_Mirador-abajo_hacia_tienda_dona_Ana.mp4";
-import video from "/lugares/siloe/video/tienda_ana.mp4";
+import video from "/lugares/siloe/video/tienda_dona_Ana.mp4";
 
 const RESET_SCROLL = true;
 
@@ -14,11 +14,16 @@ export default function HaciaDoñaAna() {
   }, []);
   const navigation = [
     {
-      id: 1,
+      id: 0,
       timeIn: 0.991,
       timeOut: 1,
       isBlocking: true,
       links: [
+        {
+          direction: "left",
+          title: "Amo a Siloé",
+          href: "/escaleras-mirador-amo-siloe",
+        },
         {
           direction: "forward",
           title: "Mirador",
