@@ -18,12 +18,8 @@ import MuralHistoria from "./componets/Lugares/Tumaco/MuralHistoria";
 import Iframe from "./componets/Test/Iframe";
 import MuralOficios from "./componets/Lugares/Tumaco/MuralOficios";
 import TestMapaConRuta from "./componets/Test/Test2";
-import EscalerasMiradorEstrella from "./componets/Lugares/Siloe/EscalerasMiradorEstrella";
-// import Calle from "./componets/Lugares/Siloe/Calle";
-import EscalerasMiradorAmoSiloe from "./componets/Lugares/Siloe/EscalerasMiradorAmoSiloe";
-import HaciaDoñaAna from "./componets/Lugares/Siloe/HaciaDoñaAna";
-// import TiendaDoñaAna from "./componets/Lugares/Siloe/TiendaDoñaAna";
-// import EscalerasMiradorEsterlla from "./componets/Lugares/Siloe/EscalerasMiradorEstrella";
+import A01 from "./componets/Lugares/Siloe/components/A01";
+import A02 from "./componets/Lugares/Siloe/components/A02";
 
 const NotFoundPage = () => (
   <div>
@@ -45,15 +41,9 @@ const App = () => {
         <Route path="/test3" element={<Test3 />} />
         {/* SILOE */}
         <Route path="/siloe" element={<Siloe />}></Route>
-        <Route path="/siloe/hacia-dona-ana" element={<HaciaDoñaAna />} />
-        <Route
-          path="/siloe/escaleras-mirador-estrella"
-          element={<EscalerasMiradorEstrella />}
-        />
-        <Route
-          path="/siloe/escaleras-mirador-amo-siloe"
-          element={<EscalerasMiradorAmoSiloe />}
-        />
+        <Route path="/siloe/A01" element={<A01 />} />
+        <Route path="/siloe/A02" element={<A02 />} />
+
         {/* TUMACO */}
         <Route path="/tumaco/mural_pargos" element={<MuralHistoria />} />
         <Route path="/tumaco/mural_oficios" element={<MuralOficios />} />

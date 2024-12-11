@@ -14,7 +14,7 @@ export default function Index() {
         <Button
           color="secondary"
           component={Link}
-          to="/siloe/hacia-dona-ana"
+          to="/siloe/A01"
           variant="contained"
         >
           Iniciar
