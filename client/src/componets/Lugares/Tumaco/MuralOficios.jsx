@@ -7,11 +7,18 @@ export default function MuralOficios() {
     {
       id: "pacuranderargos",
       titulo: "La curandera",
-      top: "22%",
-      left: "15%",
+      button: {
+        top: "22%",
+        left: "15%",
+      },
+      zoom: {
+        amount: 2,
+        top: 0,
+        left: 0,
+      },
       textBox: {
-        top: "8%",
-        left: "10%",
+        top: "10%",
+        left: "50%",
         content:
           "Esta mujer es una curandera, que tiene una amplia sabiduria en el uso de las plantas medicinales, lo que le permite curar las dolencias y enfermedades de la comunidad a través de su conocimiento ancestral.",
       },
@@ -19,9 +26,15 @@ export default function MuralOficios() {
     {
       id: "medico",
       titulo: "El médico tradicional",
-      top: "35%",
-      left: "83%",
-      zoom: 4,
+      button: {
+        top: "35%",
+        left: "83%",
+      },
+      zoom: {
+        amount: 2,
+        top: "30%",
+        left: "200%",
+      },
       textBox: {
         top: "15%",
         left: "15%",
@@ -32,9 +45,15 @@ export default function MuralOficios() {
     {
       id: "partera",
       titulo: "La partera",
-      top: "65%",
-      left: "50%",
-      zoom: 3,
+      button: {
+        top: "65%",
+        left: "50%",
+      },
+      zoom: {
+        amount: 3,
+        top: 100,
+        left: 10,
+      },
       textBox: {
         top: "5%",
         left: "15%",
@@ -45,9 +64,15 @@ export default function MuralOficios() {
     {
       id: "ombligada",
       titulo: "La ombligada",
-      top: "93%",
-      left: "92%",
-      zoom: 8,
+      button: {
+        top: "93%",
+        left: "92%",
+      },
+      zoom: {
+        amount: 8,
+        top: 10,
+        left: 10,
+      },
       textBox: {
         top: "20%",
         left: "10%",

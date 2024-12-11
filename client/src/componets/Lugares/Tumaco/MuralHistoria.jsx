@@ -2,13 +2,20 @@ import InteractiveImage from "../../common/InteractiveImage";
 import mural from "/MuralPargos.jpg";
 // import mural from "/MuralPargos2x.jpg";
 
-export default function MuralPargos() {
+export default function MuralHistoria() {
   const hotspots = [
     {
       id: "pargos",
       titulo: "Las tres islas",
-      top: "55%",
-      left: "75%",
+      button: {
+        top: "55%",
+        left: "75%",
+      },
+      zoom: {
+        amount: 3.5,
+        top: "55%",
+        left: "75%",
+      },
       textBox: {
         top: "30%",
         left: "10%",
@@ -19,9 +26,15 @@ export default function MuralPargos() {
     {
       id: "indigenas",
       titulo: "El pueblo Tumac",
-      top: "45%",
-      left: "50%",
-      zoom: 4,
+      button: {
+        top: "45%",
+        left: "50%",
+      },
+      zoom: {
+        amount: 4,
+        top: "45%",
+        left: "50%",
+      },
       textBox: {
         top: "55%",
         left: "50%",
@@ -32,9 +45,15 @@ export default function MuralPargos() {
     {
       id: "pueblo",
       titulo: "El pueblo Awá",
-      top: "60%",
-      left: "48%",
-      zoom: 5,
+      button: {
+        top: "60%",
+        left: "48%",
+      },
+      zoom: {
+        amount: 5,
+        top: "60%",
+        left: "48%",
+      },
       textBox: {
         top: "30%",
         left: "50%",
@@ -45,9 +64,15 @@ export default function MuralPargos() {
     {
       id: "bandera",
       titulo: "Organización de la Unidad Indígena del Pueblo Awá",
-      top: "57%",
-      left: "32%",
-      zoom: 5,
+      button: {
+        top: "57%",
+        left: "32%",
+      },
+      zoom: {
+        amount: 5,
+        top: "57%",
+        left: "32%",
+      },
       textBox: {
         top: "30%",
         left: "20%",
@@ -58,9 +83,15 @@ export default function MuralPargos() {
     {
       id: "piedra",
       titulo: "El Arco del Morro",
-      top: "40%",
-      left: "34%",
-      zoom: 5,
+      button: {
+        top: "40%",
+        left: "34%",
+      },
+      zoom: {
+        amount: 5,
+        top: "40%",
+        left: "34%",
+      },
       textBox: {
         top: "30%",
         left: "15%",
@@ -71,9 +102,15 @@ export default function MuralPargos() {
     {
       id: "ola",
       titulo: "El Milagro Eucarístico",
-      top: "45%",
-      left: "60%",
-      zoom: 3,
+      button: {
+        top: "45%",
+        left: "60%",
+      },
+      zoom: {
+        amount: 3,
+        top: "45%",
+        left: "60%",
+      },
       textBox: {
         top: "70%",
         left: "20%",
