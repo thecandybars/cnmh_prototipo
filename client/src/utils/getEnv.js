@@ -16,7 +16,7 @@ export default function getEnv(val) {
       : val === "ipfs"
       ? "VITE_IPFS"
       : val === "mediaLugares"
-      ? "VITE_MEDIA_LUGARES"
+      ? "VITE_VIDEOS_LUGARES"
       : null;
   if (viteKey === null) throw new Error("No ENV found");
   const viteEnv = import.meta.env[viteKey];

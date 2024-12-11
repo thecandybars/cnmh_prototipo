@@ -36,10 +36,12 @@ server.use("/api/ipfs", express.static("ipfs"));
 
 // Streaming de video basado en carpetas
 server.get("/video/*", (req, res) => {
-  const videoPath = path.resolve("video", req.params[0]);
+  // const videoPath = "/" + req.params[0];
+  const videoPath = path.join(__dirname, "..", req.params[0]);
 
   // File exists?
-  if (!fs.existsSync("/api/media" + videoPath)) {
+  if (!fs.existsSync(videoPath)) {
+    console.log("🚀 ~ server.get ~ videoPath not found!!!:", videoPath);
     return res.status(404).send("Video not found!");
   }
 
