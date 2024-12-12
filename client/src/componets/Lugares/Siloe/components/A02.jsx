@@ -25,8 +25,8 @@ export default function A02() {
 
   return (
     <VideoScroll
-      src={"/lugares/siloe/video/A02.mp4"}
-      // src={getEnv("videosLugares") + "/siloe/videoscroll/A02.mp4"}
+      // src={"/lugares/siloe/video/A02.mp4"}
+      src={getEnv("videosLugares") + "/siloe/videoscroll/A02.mp4"}
       speed={800}
       navigationHotspots={navigation}
       map={{
