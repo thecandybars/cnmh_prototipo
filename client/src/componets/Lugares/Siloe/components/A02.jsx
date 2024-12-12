@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import VideoScroll from "../../../common/buttons/VideoScroll/VideoScroll";
-import getEnv from "../../../../utils/getEnv";
+// import getEnv from "../../../../utils/getEnv";
 
 const RESET_SCROLL = true;
 export default function A02() {
@@ -25,8 +25,8 @@ export default function A02() {
 
   return (
     <VideoScroll
-      // src={"/lugares/siloe/video/A02.mp4"}
-      src={getEnv("videosLugares") + "/siloe/videoscroll/A02.mp4"}
+      src={"/lugares/siloe/video/A02_720.mp4"}
+      // src={getEnv("videosLugares") + "/siloe/videoscroll/A02.mp4"}
       speed={800}
       navigationHotspots={navigation}
       map={{

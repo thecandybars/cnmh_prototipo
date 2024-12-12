@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import VideoScroll from "../../../common/buttons/VideoScroll/VideoScroll";
-import getEnv from "../../../../utils/getEnv";
+// import getEnv from "../../../../utils/getEnv";
 
 const RESET_SCROLL = true;
 export default function A01() {
-  const src = `${getEnv(
-    "pinataGateway"
-  )}/bafybeiappmn2r37djy6qwiidyytxje4jcwzmdoncenjxgq3qsrcub4kyq4`;
-  console.log("🚀 ~ A01 ~ src:", src);
+  // const src = `${getEnv(
+  //   "pinataGateway"
+  // )}/bafybeiappmn2r37djy6qwiidyytxje4jcwzmdoncenjxgq3qsrcub4kyq4`;
   useEffect(() => {
     RESET_SCROLL && window.scrollTo(0, 0);
   }, []);
@@ -29,8 +28,8 @@ export default function A01() {
 
   return (
     <VideoScroll
-      // src={src}
-      src={getEnv("videosLugares") + "/siloe/videoscroll/A01.mp4"}
+      src="/lugares/siloe/video/A02.mp4"
+      // src={getEnv("videosLugares") + "/siloe/videoscroll/A01.mp4"}
       speed={800}
       navigationHotspots={navigation}
       map={{
