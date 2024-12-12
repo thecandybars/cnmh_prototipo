@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Visualizador de Nube de Puntos</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/inter-ui/3.19.3/inter.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        margin: 0;
+        overflow: hidden;
+        background: #0a0a0a;
+        color: #ffffff;
+        cursor: grab;
+      }
+
+      body:active {
+        cursor: grabbing;
+      }
+
+      canvas {
+        display: block;
+      }
+
+      .popup {
+        display: none;
+        position: absolute;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 32px;
+        border-radius: 20px;
+        box-shadow: 0 4px 40px rgba(0, 0, 0, 0.5);
+        min-width: 480px;
+        max-width: 600px;
+        animation: fadeIn 0.3s ease-out;
+        z-index: 1000;
+      }
+
+      .points-reference {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 20px;
+        width: 300px;
+        z-index: 1000;
+      }
+
+      .points-reference h2 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 16px;
+        letter-spacing: -0.5px;
+      }
+
+      .reference-point {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        margin-bottom: 8px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .reference-point:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateX(-4px);
+      }
+
+      .reference-point:last-child {
+        margin-bottom: 0;
+      }
+
+      .reference-number {
+        width: 32px;
+        height: 32px;
+        background: #d4a017;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        margin-right: 12px;
+        flex-shrink: 0;
+      }
+
+      .reference-info {
+        flex-grow: 1;
+      }
+
+      .reference-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: #ffffff;
+        margin-bottom: 4px;
+      }
+
+      .reference-type {
+        font-size: 12px;
+        color: #a1a1aa;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .popup-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+
+      .poi-number {
+        font-size: 48px;
+        font-weight: 700;
+        color: #d4a017;
+        margin-right: 16px;
+        line-height: 1;
+      }
+
+      .popup h3 {
+        font-size: 28px;
+        font-weight: 600;
+        color: #ffffff;
+        letter-spacing: -0.5px;
+        line-height: 1.2;
+      }
+
+      .popup-content {
+        margin-bottom: 32px;
+      }
+
+      .popup-text {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #a1a1aa;
+        margin-bottom: 24px;
+      }
+
+      .popup-image {
+        width: 100%;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: block;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .popup-buttons {
+        display: flex;
+        gap: 12px;
+      }
+
+      .button {
+        padding: 14px 28px;
+        border: none;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .button-primary {
+        background: #d4a017;
+        color: #000000;
+      }
+
+      .button-primary:hover {
+        background: #c09016;
+        transform: translateY(-1px);
+      }
+
+      .button-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+      }
+
+      .button-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-1px);
+      }
+
+      .audio-container {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 24px;
+      }
+
+      .waveform {
+        width: 100%;
+        height: 120px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        margin-bottom: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .waveform-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .waveform-progress {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .audio-controls {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .play-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #d4a017;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+
+      .play-button:hover {
+        background: #c09016;
+        transform: scale(1.05);
+      }
+
+      .time-display {
+        font-size: 14px;
+        color: #a1a1aa;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .progress-bar {
+        flex-grow: 1;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        position: relative;
+        cursor: pointer;
+      }
+
+      .progress-bar-fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background: #d4a017;
+        border-radius: 2px;
+        width: 0%;
+        transition: width 0.1s linear;
+      }
+
+      .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #0a0a0a;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .loading-text {
+        font-size: 20px;
+        color: #d4a017;
+        font-weight: 500;
+        margin-bottom: 16px;
+      }
+
+      .loading-progress {
+        width: 200px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+      }
+
+      .loading-progress-fill {
+        height: 100%;
+        background: #d4a017;
+        border-radius: 2px;
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading-screen" class="loading-screen">
+      <div class="loading-text">Cargando modelo...</div>
+      <div class="loading-progress">
+        <div class="loading-progress-fill" id="loading-progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="points-reference" id="points-reference">
+      <h2>Puntos de Interes</h2>
+      <!-- Los puntos de referencia se agregarán dinámicamente aquí -->
+    </div>
+
+    <div id="popup" class="popup">
+      <div class="popup-header">
+        <div id="poi-number" class="poi-number">1</div>
+        <h3 id="popup-title">Punto de Interes</h3>
+      </div>
+      <div id="popup-content" class="popup-content">
+        <!-- Contenido dinamico -->
+      </div>
+      <div class="popup-buttons">
+        <button class="button button-primary" onclick="returnToOverview()">
+          Vista General
+        </button>
+        <button class="button button-secondary" onclick="closePopup()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/PLYLoader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+  </body>
+</html>
+<script>
+  // Configuración inicial y funciones de utilidad
+  let pointCloud, controls, camera, scene, renderer;
+  let overviewPosition, overviewTarget;
+  const interestPoints = [];
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+  let currentAudio = null;
+  let currentVisualizer = null;
+  window.audioContext = null;
+
+  // Tipos de puntos de interés
+  const POI_TYPES = {
+    TEXT: "text",
+    IMAGE: "image",
+    AUDIO: "audio",
+  };
+
+  // Inicializar escena y renderizador
+  function initScene() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a0a0a);
+
+    camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+
+    renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      powerPreference: "high-performance",
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.rotateSpeed = 0.5;
+    controls.zoomSpeed = 0.8;
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(1, 1, 1);
+    scene.add(ambientLight, directionalLight);
+  }
+
+  // Datos de los puntos de interés
+  const poiData = [
+    {
+      type: POI_TYPES.TEXT,
+      number: 1,
+      title: "Inicio del recorrido",
+      description:
+        "Bienvenido al recorrido virtual. Desde este punto iniciaremos nuestro viaje a traves del modelo.",
+    },
+    {
+      type: POI_TYPES.IMAGE,
+      number: 2,
+      title: "Punto visual",
+      description:
+        "En esta ubicacion podemos observar detalles importantes del modelo.",
+      image: "foto1.jpg",
+    },
+    {
+      type: POI_TYPES.AUDIO,
+      number: 3,
+      title: "Experiencia sonora",
+      description: "Escucha la explicacion detallada de este sector.",
+      audio: "audio1.mp3",
+    },
+    {
+      type: POI_TYPES.IMAGE,
+      number: 4,
+      title: "Segunda vista",
+      description: "Otra perspectiva importante del modelo.",
+      image: "foto2.jpg",
+    },
+    {
+      type: POI_TYPES.AUDIO,
+      number: 5,
+      title: "Audio final",
+      description: "Conclusiones y detalles finales del recorrido.",
+      audio: "audio2.mp3",
+    },
+  ];
+
+  function createPointsReference() {
+    const referenceContainer = document.getElementById("points-reference");
+    referenceContainer.innerHTML = "<h2>Puntos de Interes</h2>";
+
+    poiData.forEach((data, index) => {
+      const pointElement = document.createElement("div");
+      pointElement.className = "reference-point";
+      pointElement.innerHTML = `
+                <div class="reference-number">${data.number}</div>
+                <div class="reference-info">
+                    <div class="reference-title">${data.title}</div>
+                    <div class="reference-type">${
+                      data.type.charAt(0).toUpperCase() + data.type.slice(1)
+                    }</div>
+                </div>
+            `;
+      pointElement.onclick = () => {
+        if (interestPoints[index]) {
+          navigateToPoint(interestPoints[index]);
+        }
+      };
+      referenceContainer.appendChild(pointElement);
+    });
+  }
+
+  function navigateToPoint(point) {
+    const pointData = point.userData;
+
+    document.getElementById("poi-number").textContent = pointData.number;
+    document.getElementById("popup-title").textContent = pointData.title;
+    document.getElementById("popup-content").innerHTML =
+      pointData.createContent();
+
+    document.getElementById("popup").style.display = "block";
+    document.getElementById("popup").style.left = "50%";
+    document.getElementById("popup").style.top = "50%";
+    document.getElementById("popup").style.transform = "translate(-50%, -50%)";
+
+    const targetPosition = point.position
+      .clone()
+      .add(new THREE.Vector3(0, 0, 2));
+    moveCamera(targetPosition, point.position);
+  }
+
+  function moveCamera(targetPos, targetLook) {
+    const duration = 1500;
+
+    new TWEEN.Tween(camera.position)
+      .to(targetPos, duration)
+      .easing(TWEEN.Easing.Cubic.InOut)
+      .start();
+
+    new TWEEN.Tween(controls.target)
+      .to(targetLook, duration)
+      .easing(TWEEN.Easing.Cubic.InOut)
+      .onUpdate(() => controls.update())
+      .start();
+  }
+
+  window.returnToOverview = function () {
+    moveCamera(overviewPosition, overviewTarget);
+    closePopup();
+  };
+
+  function addNoiseAnimation(geometry) {
+    const positions = geometry.attributes.position.array;
+    const originalPositions = positions.slice();
+    const count = positions.length / 3;
+    const sampleRate = 2; // Animamos más puntos
+    const animatedPoints = Math.floor(count / sampleRate);
+
+    // Crear índices para puntos animados
+    const animatedIndices = new Array(animatedPoints)
+      .fill(0)
+      .map((_, i) => i * sampleRate * 3);
+
+    let phase = 0;
+    const noiseScale = 0.01; // Aumentado significativamente
+    const noiseSpeed = 0.01; // Velocidad aumentada
+
+    function animateNoise() {
+      phase += noiseSpeed;
+
+      for (let i = 0; i < animatedIndices.length; i++) {
+        const idx = animatedIndices[i];
+
+        // Movimiento más complejo y visible
+        positions[idx] =
+          originalPositions[idx] + Math.sin(phase + i * 0.1) * noiseScale;
+        positions[idx + 1] =
+          originalPositions[idx + 1] + Math.cos(phase + i * 0.15) * noiseScale;
+        positions[idx + 2] =
+          originalPositions[idx + 2] +
+          Math.sin(phase + i * 0.2) * noiseScale * 0.5;
+      }
+
+      geometry.attributes.position.needsUpdate = true;
+    }
+
+    return animateNoise;
+  }
+
+  function createPointGeometry() {
+    return new THREE.SphereGeometry(0.8, 16, 16);
+  }
+
+  function createNumberTexture(number) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext("2d");
+
+    ctx.beginPath();
+    ctx.arc(64, 64, 50, 0, Math.PI * 2);
+    ctx.fillStyle = "#D4A017";
+    ctx.fill();
+
+    ctx.fillStyle = "#000000";
+    ctx.font = "bold 60px Inter";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(number.toString(), 64, 64);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+  }
+
+  class AudioVisualizer {
+    constructor(audioContext, audioElement, canvas, progressCanvas) {
+      this.audioContext = audioContext;
+      this.audioElement = audioElement;
+      this.canvas = canvas;
+      this.progressCanvas = progressCanvas;
+      this.ctx = canvas.getContext("2d");
+      this.progressCtx = progressCanvas.getContext("2d");
+      this.setupCanvas();
+      this.setupAudioNodes();
+    }
+
+    setupCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = this.canvas.getBoundingClientRect();
+      this.canvas.width = rect.width * dpr;
+      this.canvas.height = rect.height * dpr;
+      this.progressCanvas.width = this.canvas.width;
+      this.progressCanvas.height = this.canvas.height;
+      this.ctx.scale(dpr, dpr);
+      this.progressCtx.scale(dpr, dpr);
+    }
+
+    setupAudioNodes() {
+      this.audioSource = this.audioContext.createMediaElementSource(
+        this.audioElement
+      );
+      this.analyzer = this.audioContext.createAnalyser();
+      this.analyzer.fftSize = 1024;
+      this.dataArray = new Uint8Array(this.analyzer.frequencyBinCount);
+      this.audioSource.connect(this.analyzer);
+      this.analyzer.connect(this.audioContext.destination);
+    }
+
+    drawWaveform() {
+      if (!this.isPlaying) return;
+
+      const width = this.canvas.width;
+      const height = this.canvas.height;
+      const bufferLength = this.analyzer.frequencyBinCount;
+      const barWidth = width / bufferLength;
+
+      this.ctx.clearRect(0, 0, width, height);
+      this.analyzer.getByteFrequencyData(this.dataArray);
+
+      this.ctx.beginPath();
+      this.ctx.strokeStyle = "#D4A017";
+      this.ctx.lineWidth = 2;
+
+      for (let i = 0; i < bufferLength; i++) {
+        const barHeight = (this.dataArray[i] / 255) * height;
+        const x = i * barWidth;
+        const y = height - barHeight;
+
+        if (i === 0) {
+          this.ctx.moveTo(x, y);
+        } else {
+          this.ctx.lineTo(x, y);
+        }
+      }
+
+      this.ctx.stroke();
+
+      const progress =
+        this.audioElement.currentTime / this.audioElement.duration;
+      this.progressCtx.clearRect(0, 0, width, height);
+      this.progressCtx.fillStyle = "rgba(212, 160, 23, 0.3)";
+      this.progressCtx.fillRect(0, 0, width * progress, height);
+
+      requestAnimationFrame(() => this.drawWaveform());
+    }
+
+    start() {
+      this.isPlaying = true;
+      this.drawWaveform();
+    }
+
+    stop() {
+      this.isPlaying = false;
+    }
+  }
+
+  function createTextContent(data) {
+    return `<p class="popup-text">${data.description}</p>`;
+  }
+
+  function createImageContent(data) {
+    return `
+            <img src="${data.image}" alt="${data.title}" class="popup-image">
+            <p class="popup-text">${data.description}</p>
+        `;
+  }
+
+  function createAudioContent(data) {
+    return `
+            <div class="audio-container">
+                <div class="waveform">
+                    <canvas class="waveform-canvas" id="waveform-visualizer"></canvas>
+                    <canvas class="waveform-progress" id="waveform-progress"></canvas>
+                </div>
+                <div class="audio-controls">
+                    <button class="play-button" onclick="toggleAudio('${data.audio}')">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="#000000">
+                            <path d="M4 3v10l8-5z"/>
+                        </svg>
+                    </button>
+                    <div class="progress-bar" id="progress-bar" onclick="seekAudio(event)">
+                        <div class="progress-bar-fill" id="progress"></div>
+                    </div>
+                    <span class="time-display" id="time-display">0:00 / 0:00</span>
+                </div>
+            </div>
+            <p class="popup-text">${data.description}</p>
+        `;
+  }
+
+  window.toggleAudio = async function (audioFile) {
+    if (!window.audioContext) {
+      window.audioContext = new (window.AudioContext ||
+        window.webkitAudioContext)();
+    }
+
+    if (currentAudio && currentAudio.audio.src.includes(audioFile)) {
+      if (currentAudio.audio.paused) {
+        await currentAudio.audio.play();
+        currentVisualizer.start();
+        updatePlayButton(false);
+      } else {
+        currentAudio.audio.pause();
+        currentVisualizer.stop();
+        updatePlayButton(true);
+      }
+    } else {
+      if (currentAudio) {
+        currentAudio.audio.pause();
+        currentAudio.audio.currentTime = 0;
+        if (currentVisualizer) currentVisualizer.stop();
+      }
+
+      const audio = new Audio(audioFile);
+      const progressBar = document.getElementById("progress");
+      const timeDisplay = document.getElementById("time-display");
+
+      await audio.play();
+
+      const visualizerCanvas = document.getElementById("waveform-visualizer");
+      const progressCanvas = document.getElementById("waveform-progress");
+      currentVisualizer = new AudioVisualizer(
+        window.audioContext,
+        audio,
+        visualizerCanvas,
+        progressCanvas
+      );
+      currentVisualizer.start();
+
+      currentAudio = {
+        audio: audio,
+        progressBar: progressBar,
+        timeDisplay: timeDisplay,
+      };
+
+      audio.addEventListener("timeupdate", updateAudioProgress);
+      audio.addEventListener("loadedmetadata", () => {
+        timeDisplay.textContent = `0:00 / ${formatTime(audio.duration)}`;
+      });
+      audio.addEventListener("ended", () => {
+        updatePlayButton(true);
+        currentVisualizer.stop();
+      });
+
+      updatePlayButton(false);
+    }
+  };
+
+  window.seekAudio = function (event) {
+    if (!currentAudio) return;
+
+    const progressBar = document.getElementById("progress-bar");
+    const rect = progressBar.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const percentage = x / rect.width;
+
+    currentAudio.audio.currentTime = percentage * currentAudio.audio.duration;
+  };
+
+  function updatePlayButton(isPlaying) {
+    const playButton = document.querySelector(".play-button svg");
+    if (isPlaying) {
+      playButton.innerHTML = '<path d="M4 3v10l8-5z"/>';
+    } else {
+      playButton.innerHTML =
+        '<rect x="4" y="3" width="3" height="10"/><rect x="9" y="3" width="3" height="10"/>';
+    }
+  }
+
+  function updateAudioProgress() {
+    const { audio, progressBar, timeDisplay } = currentAudio;
+    const progress = (audio.currentTime / audio.duration) * 100;
+    progressBar.style.width = `${progress}%`;
+    timeDisplay.textContent = `${formatTime(audio.currentTime)} / ${formatTime(
+      audio.duration
+    )}`;
+  }
+
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+  }
+
+  window.closePopup = function () {
+    if (currentAudio) {
+      currentAudio.audio.pause();
+      currentAudio.audio.currentTime = 0;
+      if (currentVisualizer) {
+        currentVisualizer.stop();
+      }
+      currentAudio = null;
+    }
+    document.getElementById("popup").style.display = "none";
+  };
+
+  function createInterestPoints(geometry) {
+    const vertices = geometry.attributes.position.array;
+
+    poiData.forEach((data, index) => {
+      const randomIndex = Math.floor(Math.random() * (vertices.length / 3)) * 3;
+      const position = new THREE.Vector3(
+        vertices[randomIndex],
+        vertices[randomIndex + 1],
+        vertices[randomIndex + 2]
+      );
+
+      const pointGeometry = createPointGeometry();
+      const material = new THREE.MeshPhongMaterial({
+        color: 0xd4a017,
+        emissive: 0x8b7355,
+        shininess: 100,
+        transparent: true,
+        opacity: 0.9,
+      });
+
+      const point = new THREE.Mesh(pointGeometry, material);
+      point.position.copy(position);
+      point.scale.set(1, 1, 1);
+      point.userData = {
+        ...data,
+        isInterestPoint: true,
+        createContent: () => {
+          switch (data.type) {
+            case POI_TYPES.TEXT:
+              return createTextContent(data);
+            case POI_TYPES.IMAGE:
+              return createImageContent(data);
+            case POI_TYPES.AUDIO:
+              return createAudioContent(data);
+          }
+        },
+      };
+
+      // Anillos orbitales
+      const ringGeometry = new THREE.TorusGeometry(1.2, 0.05, 8, 50);
+      const ringMaterial = new THREE.MeshBasicMaterial({
+        color: 0xd4a017,
+        transparent: true,
+        opacity: 0.5,
+      });
+
+      [0, Math.PI / 2, Math.PI].forEach((rotation) => {
+        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+        ring.rotation.x = rotation;
+        point.add(ring);
+      });
+
+      // Número flotante
+      const numberMaterial = new THREE.SpriteMaterial({
+        map: createNumberTexture(data.number),
+        transparent: true,
+        opacity: 0.95,
+      });
+      const numberSprite = new THREE.Sprite(numberMaterial);
+      numberSprite.scale.set(1.2, 1.2, 1);
+      numberSprite.position.y = 1.5;
+      point.add(numberSprite);
+
+      // Animaciones
+      point.userData.animate = function () {
+        point.children.forEach((child, i) => {
+          if (child instanceof THREE.Mesh) {
+            child.rotation.z += 0.002 * (i + 1);
+          }
+        });
+      };
+
+      new TWEEN.Tween(point.position)
+        .to({ y: point.position.y + 0.3 }, 2000)
+        .repeat(Infinity)
+        .yoyo(true)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .start();
+
+      interestPoints.push(point);
+      scene.add(point);
+    });
+  }
+
+  function onMouseClick(event) {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(interestPoints, true);
+
+    if (intersects.length > 0) {
+      let point = intersects[0].object;
+      while (point.parent && !point.userData.isInterestPoint) {
+        point = point.parent;
+      }
+
+      if (point.userData.isInterestPoint) {
+        navigateToPoint(point);
+      }
+    }
+  }
+
+  function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  function animate(timestamp) {
+    requestAnimationFrame(animate);
+    TWEEN.update();
+    controls.update();
+
+    if (pointCloud && pointCloud.userData.animate) {
+      pointCloud.userData.animate();
+    }
+
+    interestPoints.forEach((point) => {
+      if (point.userData.animate) {
+        point.userData.animate();
+      }
+
+      const sprite = point.children.find(
+        (child) => child instanceof THREE.Sprite
+      );
+      if (sprite) {
+        sprite.lookAt(camera.position);
+      }
+    });
+
+    renderer.render(scene, camera);
+  }
+
+  // Cargar el modelo
+  const loader = new THREE.PLYLoader();
+  const loadingProgressFill = document.getElementById("loading-progress-fill");
+
+  // Inicializar y comenzar
+  initScene();
+
+  loader.load(
+    "https://maroon-adequate-trout-940.mypinata.cloud/ipfs/QmbLPdpZRCQ2wbLqHbPmKz9sJqyUHjCvFGsPNfYL2H5UNP",
+    function (geometry) {
+      const material = new THREE.PointsMaterial({
+        size: 0.015,
+        vertexColors: true,
+        sizeAttenuation: true,
+      });
+
+      pointCloud = new THREE.Points(geometry, material);
+      scene.add(pointCloud);
+
+      pointCloud.userData.animate = addNoiseAnimation(geometry);
+
+      const box = new THREE.Box3().setFromObject(pointCloud);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z);
+
+      camera.position.set(center.x, center.y, center.z + maxDim * 1.2);
+      controls.target.copy(center);
+
+      overviewPosition = camera.position.clone();
+      overviewTarget = controls.target.clone();
+
+      createInterestPoints(geometry);
+      createPointsReference();
+      document.getElementById("loading-screen").style.display = "none";
+    },
+    function (xhr) {
+      if (xhr.lengthComputable) {
+        const percentComplete = (xhr.loaded / xhr.total) * 100;
+        loadingProgressFill.style.width = percentComplete + "%";
+      }
+    },
+    function (error) {
+      console.error("Error cargando el modelo:", error);
+    }
+  );
+
+  // Event Listeners
+  window.addEventListener("click", onMouseClick, { passive: true });
+  window.addEventListener("resize", onWindowResize, { passive: true });
+  window.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "Escape") {
+        closePopup();
+      }
+    },
+    { passive: true }
+  );
+
+  document.getElementById("popup").addEventListener(
+    "click",
+    (event) => {
+      event.stopPropagation();
+    },
+    { passive: true }
+  );
+
+  // Iniciar animación
+  animate();
+</script>

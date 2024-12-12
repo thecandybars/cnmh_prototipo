@@ -10,9 +10,7 @@ import PhotoGallery from "./componets/Lugares/PhotoGallery/PhotoGallery";
 import CasaMemoriaTumaco from "./componets/Lugares/CasaMemoriaTumaco";
 import Test from "./componets/Test/Test";
 import Guardianes from "./componets/Guardianes/Guardianes";
-// import Test2 from "./componets/Test/Test2";
 import Test3 from "./componets/Test/Test3";
-// import Test4 from "./componets/Test/Test4";
 import Siloe from "./componets/Lugares/Siloe/Index";
 import MuralHistoria from "./componets/Lugares/Tumaco/MuralHistoria";
 import Iframe from "./componets/Test/Iframe";
@@ -39,8 +37,10 @@ const App = () => {
         <Route path="/test" element={<Test />} />
         <Route path="/test2" element={<TestMapaConRuta />} />
         <Route path="/test3" element={<Test3 />} />
+        {/* BOJAYA */}
+        {/* Este LM esta ubicado en la carpeta /public/lugares/bojaya y se accede directamente con la ruta /lugares/bojaya */}
         {/* SILOE */}
-        <Route path="/siloe" element={<Siloe />}></Route>
+        <Route path="/siloe" element={<Siloe />} />
         <Route path="/siloe/A01" element={<A01 />} />
         <Route path="/siloe/A02" element={<A02 />} />
 
