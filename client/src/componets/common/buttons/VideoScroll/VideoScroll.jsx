@@ -16,17 +16,13 @@ import DirectionButton from "./DirectionButton";
 import MapaConRuta from "./MapaConRuta";
 import { theme } from "../../../../utils/theme";
 
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Zoom ref={ref} timeout={1200} {...props} />;
-});
+export default function VideoScroll(props) {
+  // Esta funcion existe solo para resetear el scroll antes de cargar la pagina de VideoScroll y evitar re-renderizados
+  window.scrollTo(0, 0);
+  return <Page {...props} />;
+}
 
-function VideoScroll({
-  src,
-  speed,
-  navigationHotspots = [],
-  map,
-  audioBackground,
-}) {
+function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
   const [loading, setLoading] = useState(true);
   const [scrollyPosition, setScrollyPosition] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -53,7 +49,6 @@ function VideoScroll({
       audioRef.current = null;
     };
   }, [audioBackground?.src, isPlaying, volume]);
-
   // Play/pause
   const handlePlayPause = () => {
     if (!audioRef.current) return;
@@ -72,48 +67,75 @@ function VideoScroll({
       audioRef.current.volume = newValue;
     }
   };
-
-  const renderNavigationHotspots = navigationHotspots.map((item) => {
-    const content = (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-end",
-          position: "fixed",
-          top: vh / 2,
-          left: vw / 2 - 100,
-          gap: 1,
-        }}
+  // Render Audio Controls
+  const renderAudioControls = (
+    <Box sx={{ position: "fixed", bottom: 20, right: 20 }}>
+      <Button
+        onClick={handlePlayPause}
+        variant="contained"
+        color="secondary"
+        sx={{ width: 60, height: 60 }}
       >
-        {item.links.map((link) => (
-          <DirectionButton key={link.direction} link={link} />
-        ))}
+        {isPlaying ? "Pause" : "Play"}
+      </Button>
+      <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+        <Slider
+          color="secondary"
+          value={volume}
+          onChange={handleVolumeChange}
+          min={0}
+          max={1}
+          step={0.01}
+        />
       </Box>
-    );
-    return (
-      <div key={item.id}>
-        {item.isBlocking ? (
-          <Dialog
-            open={scrollyPosition > item.timeIn && direction === "up"}
-            TransitionComponent={Transition}
-          >
-            {content}
-          </Dialog>
-        ) : (
-          <Zoom
-            in={scrollyPosition > item.timeIn && scrollyPosition < item.timeOut}
-            timeout={1200}
-          >
-            {content}
-          </Zoom>
-        )}
-      </div>
-    );
-  });
+    </Box>
+  );
+
+  const renderNavigationHotspots =
+    !loading &&
+    navigationHotspots.map((item) => {
+      const content = (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-end",
+            position: "fixed",
+            top: vh / 2,
+            left: vw / 2 - 100,
+            gap: 1,
+          }}
+        >
+          {item.links.map((link) => (
+            <DirectionButton key={link.direction} link={link} />
+          ))}
+        </Box>
+      );
+      return (
+        <div key={item.id}>
+          {item.isBlocking ? (
+            <Dialog
+              open={scrollyPosition > item.timeIn && direction === "up"}
+              TransitionComponent={Transition}
+            >
+              {content}
+            </Dialog>
+          ) : (
+            <Zoom
+              in={
+                scrollyPosition > item.timeIn && scrollyPosition < item.timeOut
+              }
+              timeout={1200}
+            >
+              {content}
+            </Zoom>
+          )}
+        </div>
+      );
+    });
 
   // MAPA
-  const renderMapa = map?.pointA && map?.pointB && (
+  const renderMapa = map?.points?.length > 1 && (
     <Box
       margin={1}
       sx={{
@@ -125,11 +147,11 @@ function VideoScroll({
       }}
     >
       <MapaConRuta
-        pointA={map.pointA}
-        pointB={map.pointB}
+        // points={map.points}
+        points={map.points.map((point) => [point[1], point[0]])}
         progress={scrollyPosition}
-        width="200px"
-        height="200px"
+        width={200}
+        height={200}
         zoom={map.zoom || 17}
       />
     </Box>
@@ -171,40 +193,23 @@ function VideoScroll({
       )}
 
       {/* Audio Controls */}
-      <Box sx={{ position: "fixed", bottom: 20, right: 20 }}>
-        <Button
-          onClick={handlePlayPause}
-          variant="contained"
-          color="secondary"
-          sx={{ width: 60, height: 60 }}
-        >
-          {isPlaying ? "Pause" : "Play"}
-        </Button>
-        <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-          <Slider
-            color="secondary"
-            value={volume}
-            onChange={handleVolumeChange}
-            min={0}
-            max={1}
-            step={0.01}
-          />
-        </Box>
-      </Box>
+      {false && renderAudioControls}
 
       {/* Map and Hotspots */}
       {renderMapa}
-      {!loading && renderNavigationHotspots}
+      {renderNavigationHotspots}
     </div>
   );
 }
 
-VideoScroll.propTypes = {
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Zoom ref={ref} timeout={1200} {...props} />;
+});
+
+Page.propTypes = {
   src: PropTypes.string,
   speed: PropTypes.number,
   navigationHotspots: PropTypes.array,
   audioBackground: PropTypes.object,
   map: PropTypes.object,
 };
-
-export default VideoScroll;

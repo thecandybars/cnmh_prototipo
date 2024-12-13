@@ -16,8 +16,8 @@ import MuralHistoria from "./componets/Lugares/Tumaco/MuralHistoria";
 import Iframe from "./componets/Test/Iframe";
 import MuralOficios from "./componets/Lugares/Tumaco/MuralOficios";
 import TestMapaConRuta from "./componets/Test/Test2";
-import A01 from "./componets/Lugares/Siloe/components/A01";
-import A02 from "./componets/Lugares/Siloe/components/A02";
+import VideoScroll from "./componets/common/buttons/VideoScroll/VideoScroll";
+import { siloeVideoscrollData } from "./componets/Lugares/Siloe/components/siloeVideoscrollData";
 
 const NotFoundPage = () => (
   <div>
@@ -41,8 +41,14 @@ const App = () => {
         {/* Este LM esta ubicado en la carpeta /public/lugares/bojaya y se accede directamente con la ruta /lugares/bojaya */}
         {/* SILOE */}
         <Route path="/siloe" element={<Siloe />} />
-        <Route path="/siloe/A01" element={<A01 />} />
-        <Route path="/siloe/A02" element={<A02 />} />
+        {/* Las rutas con VideoScroll se crean a partir de siloeVideoscrollData. EJ : /siloe/A01 */}
+        {Object.keys(siloeVideoscrollData).map((key) => (
+          <Route
+            key={key}
+            path={"/siloe/" + key}
+            element={<VideoScroll {...siloeVideoscrollData[key]} />}
+          />
+        ))}
 
         {/* TUMACO */}
         <Route path="/tumaco/mural_pargos" element={<MuralHistoria />} />

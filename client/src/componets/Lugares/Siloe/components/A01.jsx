@@ -4,9 +4,19 @@ import VideoScroll from "../../../common/buttons/VideoScroll/VideoScroll";
 
 const RESET_SCROLL = true;
 export default function A01() {
+  // IPFS SOURCE
   // const src = `${getEnv(
   //   "pinataGateway"
   // )}/bafybeiappmn2r37djy6qwiidyytxje4jcwzmdoncenjxgq3qsrcub4kyq4`;
+
+  // STREAM VIDEO SERVER SOURCE
+  // const src={getEnv("videosLugares") + "/siloe/videoscroll/A01.mp4"}
+
+  const points = [
+    [-76.558811, 3.423751],
+    [-76.559311, 3.423558],
+    [-76.5594, 3.423999],
+  ];
   useEffect(() => {
     RESET_SCROLL && window.scrollTo(0, 0);
   }, []);
@@ -29,12 +39,10 @@ export default function A01() {
   return (
     <VideoScroll
       src="/lugares/siloe/video/A01_720.mp4"
-      // src={getEnv("videosLugares") + "/siloe/videoscroll/A01.mp4"}
       speed={800}
       navigationHotspots={navigation}
       map={{
-        pointA: [-76.558811, 3.423751],
-        pointB: [-76.559311, 3.423558],
+        points,
         zoom: 17.5,
       }}
     />

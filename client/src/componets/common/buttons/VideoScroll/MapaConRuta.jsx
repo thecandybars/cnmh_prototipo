@@ -1,48 +1,142 @@
-import { useRef } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import Map, { Marker, Source, Layer } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import PropTypes from "prop-types";
 import getEnv from "../../../../utils/getEnv";
 import { theme } from "../../../../utils/theme";
+import { WebMercatorViewport } from "viewport-mercator-project";
 
-// Token de acceso para Mapbox
 const MAPBOX_TOKEN = getEnv("mapboxToken");
 
-const MapaConRuta = ({ pointA, pointB, progress, width, height, zoom }) => {
+function haversineDistance([lng1, lat1], [lng2, lat2]) {
+  const R = 6371000; // meters
+  const toRad = (val) => (val * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+function computeRouteDistances(points) {
+  const distances = [];
+  const cumulativeDistances = [0];
+  for (let i = 1; i < points.length; i++) {
+    const dist = haversineDistance(points[i - 1], points[i]);
+    distances.push(dist);
+    cumulativeDistances.push(cumulativeDistances[i - 1] + dist);
+  }
+  return { distances, cumulativeDistances };
+}
+
+function getPositionAtDistance(points, cumulativeDistances, distance) {
+  const totalDistance = cumulativeDistances[cumulativeDistances.length - 1];
+  const targetDist = Math.max(0, Math.min(distance, totalDistance));
+
+  if (targetDist === 0) return points[0];
+
+  for (let i = 1; i < cumulativeDistances.length; i++) {
+    if (cumulativeDistances[i] >= targetDist) {
+      const segmentStart = points[i - 1];
+      const segmentEnd = points[i];
+      const segmentDist = cumulativeDistances[i] - cumulativeDistances[i - 1];
+      const segmentProgress =
+        (targetDist - cumulativeDistances[i - 1]) / segmentDist;
+
+      const lng =
+        segmentStart[0] + (segmentEnd[0] - segmentStart[0]) * segmentProgress;
+      const lat =
+        segmentStart[1] + (segmentEnd[1] - segmentStart[1]) * segmentProgress;
+      return [lng, lat];
+    }
+  }
+
+  return points[points.length - 1];
+}
+
+const MapaConRuta = ({ points, progress, width, height }) => {
   const mapRef = useRef(null);
 
-  // Función para calcular la posición actual según el progreso
-  const interpolatePosition = (pointA, pointB, progress) => {
-    const lat = pointA[1] + (pointB[1] - pointA[1]) * progress;
-    const lng = pointA[0] + (pointB[0] - pointA[0]) * progress;
-    return [lng, lat];
-  };
+  const [viewState, setViewState] = useState({
+    longitude: 0,
+    latitude: 0,
+    zoom: 2,
+  });
 
-  // Generar la geometría de la línea entre los puntos A y B
-  const routeGeoJSON = {
-    type: "Feature",
-    geometry: {
-      type: "LineString",
-      coordinates: [pointA, pointB],
-    },
-  };
+  const { routeGeoJSON, cumulativeDistances } = useMemo(() => {
+    if (!points || points.length < 2) {
+      return { routeGeoJSON: null, cumulativeDistances: [] };
+    }
 
-  // Calcular la posición actual del marcador
-  const currentPosition = interpolatePosition(pointA, pointB, progress);
+    const routeGeoJSON = {
+      type: "Feature",
+      geometry: {
+        type: "LineString",
+        coordinates: points,
+      },
+    };
+
+    const { cumulativeDistances } = computeRouteDistances(points);
+    return { routeGeoJSON, cumulativeDistances };
+  }, [points]);
+
+  // Recalculate the bounding box and update the viewState whenever points change
+  useEffect(() => {
+    if (points && points.length >= 2) {
+      const lngs = points.map((p) => p[0]);
+      const lats = points.map((p) => p[1]);
+      const minLng = Math.min(...lngs);
+      const maxLng = Math.max(...lngs);
+      const minLat = Math.min(...lats);
+      const maxLat = Math.max(...lats);
+
+      const viewport = new WebMercatorViewport({
+        width: typeof width === "number" ? width : 800,
+        height: typeof height === "number" ? height : 600,
+      }).fitBounds(
+        [
+          [minLng, minLat],
+          [maxLng, maxLat],
+        ],
+        { padding: 50 }
+      );
+
+      // Update the controlled viewState
+      setViewState({
+        longitude: viewport.longitude,
+        latitude: viewport.latitude,
+        zoom: viewport.zoom,
+      });
+    }
+  }, [points, width, height]);
+
+  if (!routeGeoJSON) {
+    return <div>No route defined</div>;
+  }
+
+  const totalDistance =
+    cumulativeDistances[cumulativeDistances.length - 1] || 0;
+  const currentPosition = getPositionAtDistance(
+    points,
+    cumulativeDistances,
+    progress * totalDistance
+  );
 
   return (
     <Map
       ref={mapRef}
-      initialViewState={{
-        longitude: (pointA[0] + pointB[0]) / 2,
-        latitude: (pointA[1] + pointB[1]) / 2,
-        zoom,
-      }}
+      {...viewState}
       style={{ width, height }}
       mapStyle="mapbox://styles/mapbox/streets-v11"
       mapboxAccessToken={MAPBOX_TOKEN}
+      onMove={(evt) => setViewState(evt.viewState)}
     >
-      {/* Capa para la línea que conecta los puntos */}
       <Source id="route" type="geojson" data={routeGeoJSON}>
         <Layer
           id="route-line"
@@ -58,8 +152,36 @@ const MapaConRuta = ({ pointA, pointB, progress, width, height, zoom }) => {
         />
       </Source>
 
-      {/* Marcador inicial (Punto A) */}
-      <Marker longitude={pointA[0]} latitude={pointA[1]}>
+      {/* Markers for route points */}
+      {/* Intermedios */}
+      {/* {points.map((pt, idx) => (
+        <Marker key={idx} longitude={pt[0]} latitude={pt[1]}>
+          <div
+            style={{
+              backgroundColor: "#8e8a79",
+              borderRadius: "50%",
+              width: 10,
+              height: 10,
+            }}
+          />
+        </Marker>
+      ))} */}
+      {/* Inicial */}
+      <Marker longitude={points[0][0]} latitude={points[0][1]}>
+        <div
+          style={{
+            backgroundColor: theme.palette.secondary.main,
+            borderRadius: "50%",
+            width: 15,
+            height: 15,
+          }}
+        />
+      </Marker>
+      {/* Final */}
+      <Marker
+        longitude={points[points.length - 1][0]}
+        latitude={points[points.length - 1][1]}
+      >
         <div
           style={{
             backgroundColor: theme.palette.secondary.main,
@@ -70,19 +192,6 @@ const MapaConRuta = ({ pointA, pointB, progress, width, height, zoom }) => {
         />
       </Marker>
 
-      {/* Marcador final (Punto B) */}
-      <Marker longitude={pointB[0]} latitude={pointB[1]}>
-        <div
-          style={{
-            backgroundColor: theme.palette.secondary.main,
-            borderRadius: "50%",
-            width: 15,
-            height: 15,
-          }}
-        />
-      </Marker>
-
-      {/* Marcador que muestra el progreso */}
       <Marker longitude={currentPosition[0]} latitude={currentPosition[1]}>
         <div
           style={{
@@ -98,12 +207,233 @@ const MapaConRuta = ({ pointA, pointB, progress, width, height, zoom }) => {
 };
 
 MapaConRuta.propTypes = {
-  pointA: PropTypes.array.isRequired,
-  pointB: PropTypes.array.isRequired,
+  points: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
   progress: PropTypes.number.isRequired,
-  width: PropTypes.any.isRequired,
-  height: PropTypes.any.isRequired,
-  zoom: PropTypes.number.isRequired,
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 export default MapaConRuta;
+
+// import { useRef, useMemo } from "react";
+// import Map, { Marker, Source, Layer } from "react-map-gl";
+// import "mapbox-gl/dist/mapbox-gl.css";
+// import PropTypes from "prop-types";
+// import getEnv from "../../../../utils/getEnv";
+// import { theme } from "../../../../utils/theme";
+// import { WebMercatorViewport } from "viewport-mercator-project";
+
+// // Token de acceso para Mapbox
+// const MAPBOX_TOKEN = getEnv("mapboxToken");
+
+// // Haversine formula to calculate distances between two lng/lat points
+// function haversineDistance([lng1, lat1], [lng2, lat2]) {
+//   const R = 6371000; // meters
+//   const toRad = (val) => (val * Math.PI) / 180;
+//   const dLat = toRad(lat2 - lat1);
+//   const dLng = toRad(lng2 - lng1);
+//   const a =
+//     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+//     Math.cos(toRad(lat1)) *
+//       Math.cos(toRad(lat2)) *
+//       Math.sin(dLng / 2) *
+//       Math.sin(dLng / 2);
+
+//   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+//   return R * c;
+// }
+
+// // Precompute distances along the route
+// function computeRouteDistances(points) {
+//   const distances = [];
+//   const cumulativeDistances = [0];
+//   for (let i = 1; i < points.length; i++) {
+//     const dist = haversineDistance(points[i - 1], points[i]);
+//     distances.push(dist);
+//     cumulativeDistances.push(cumulativeDistances[i - 1] + dist);
+//   }
+//   return { distances, cumulativeDistances };
+// }
+
+// // Interpolate a position at a given distance along the route
+// function getPositionAtDistance(points, cumulativeDistances, distance) {
+//   const totalDistance = cumulativeDistances[cumulativeDistances.length - 1];
+
+//   // Clamp distance to route bounds
+//   const targetDist = Math.max(0, Math.min(distance, totalDistance));
+
+//   if (targetDist === 0) return points[0];
+
+//   for (let i = 1; i < cumulativeDistances.length; i++) {
+//     if (cumulativeDistances[i] >= targetDist) {
+//       const segmentStart = points[i - 1];
+//       const segmentEnd = points[i];
+//       const segmentDist = cumulativeDistances[i] - cumulativeDistances[i - 1];
+//       const segmentProgress =
+//         (targetDist - cumulativeDistances[i - 1]) / segmentDist;
+
+//       // Linear interpolation of lng/lat
+//       const lng =
+//         segmentStart[0] + (segmentEnd[0] - segmentStart[0]) * segmentProgress;
+//       const lat =
+//         segmentStart[1] + (segmentEnd[1] - segmentStart[1]) * segmentProgress;
+//       return [lng, lat];
+//     }
+//   }
+//   // If not found (edge case), return last point
+//   return points[points.length - 1];
+// }
+
+// const MapaConRuta = ({ points, progress, width, height }) => {
+//   const mapRef = useRef(null);
+
+//   const { routeGeoJSON, cumulativeDistances, initialViewState } =
+//     useMemo(() => {
+//       if (!points || points.length < 2) {
+//         return {
+//           routeGeoJSON: null,
+//           cumulativeDistances: [],
+//           initialViewState: { longitude: 0, latitude: 0, zoom: 2 },
+//         };
+//       }
+
+//       // Create GeoJSON for route
+//       const routeGeoJSON = {
+//         type: "Feature",
+//         geometry: {
+//           type: "LineString",
+//           coordinates: points,
+//         },
+//       };
+
+//       // Compute distances
+//       const { cumulativeDistances } = computeRouteDistances(points);
+
+//       // Calculate bounding box
+//       const lngs = points.map((p) => p[0]);
+//       const lats = points.map((p) => p[1]);
+//       const minLng = Math.min(...lngs);
+//       const maxLng = Math.max(...lngs);
+//       const minLat = Math.min(...lats);
+//       const maxLat = Math.max(...lats);
+
+//       // Use WebMercatorViewport to fit the route inside the map
+//       const { longitude, latitude, zoom } = new WebMercatorViewport({
+//         width: typeof width === "number" ? width : 800, // fallback size if width is %
+//         height: typeof height === "number" ? height : 600, // fallback size if height is %
+//       }).fitBounds(
+//         [
+//           [minLng, minLat],
+//           [maxLng, maxLat],
+//         ],
+//         { padding: 50 }
+//       );
+
+//       return {
+//         routeGeoJSON,
+//         cumulativeDistances,
+//         initialViewState: { longitude, latitude, zoom },
+//       };
+//     }, [points, width, height]);
+
+//   console.log("🚀 ~ MapaConRuta ~ initialViewState:", initialViewState);
+
+//   if (!routeGeoJSON) {
+//     return <div>No route defined</div>;
+//   }
+
+//   // Calculate current position
+//   const totalDistance = cumulativeDistances[cumulativeDistances.length - 1];
+//   const currentPosition = getPositionAtDistance(
+//     points,
+//     cumulativeDistances,
+//     progress * totalDistance
+//   );
+
+//   return (
+//     <Map
+//       ref={mapRef}
+//       initialViewState={initialViewState}
+//       style={{ width, height }}
+//       mapStyle="mapbox://styles/mapbox/streets-v11"
+//       mapboxAccessToken={MAPBOX_TOKEN}
+//     >
+//       {/* Route line */}
+//       <Source id="route" type="geojson" data={routeGeoJSON}>
+//         <Layer
+//           id="route-line"
+//           type="line"
+//           layout={{
+//             "line-join": "round",
+//             "line-cap": "round",
+//           }}
+//           paint={{
+//             "line-color": "#8e8a79",
+//             "line-width": 4,
+//           }}
+//         />
+//       </Source>
+
+// {/* Markers for route points */}
+// {/* Intermedios */}
+// {/* {points.map((pt, idx) => (
+//   <Marker key={idx} longitude={pt[0]} latitude={pt[1]}>
+//     <div
+//       style={{
+//         backgroundColor: "#8e8a79",
+//         borderRadius: "50%",
+//         width: 10,
+//         height: 10,
+//       }}
+//     />
+//   </Marker>
+// ))} */}
+// {/* Inicial */}
+// <Marker longitude={points[0][0]} latitude={points[0][1]}>
+//   <div
+//     style={{
+//       backgroundColor: theme.palette.secondary.main,
+//       borderRadius: "50%",
+//       width: 15,
+//       height: 15,
+//     }}
+//   />
+// </Marker>
+// {/* Final */}
+// <Marker
+//   longitude={points[points.length - 1][0]}
+//   latitude={points[points.length - 1][1]}
+// >
+//   <div
+//     style={{
+//       backgroundColor: theme.palette.secondary.main,
+//       borderRadius: "50%",
+//       width: 15,
+//       height: 15,
+//     }}
+//   />
+// </Marker>
+
+//       {/* Marker showing current progress */}
+//       <Marker longitude={currentPosition[0]} latitude={currentPosition[1]}>
+//         <div
+//           style={{
+//             backgroundColor: "black",
+//             borderRadius: "50%",
+//             width: 8,
+//             height: 8,
+//           }}
+//         />
+//       </Marker>
+//     </Map>
+//   );
+// };
+
+// MapaConRuta.propTypes = {
+//   points: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
+//   progress: PropTypes.number.isRequired,
+//   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+//   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+// };
+
+// export default MapaConRuta;
