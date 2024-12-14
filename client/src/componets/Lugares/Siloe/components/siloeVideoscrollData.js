@@ -11,7 +11,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "Cementerio",
+            title: "Continuar",
             href: "/A02",
           },
         ],
@@ -21,9 +21,9 @@ export const siloeVideoscrollData = {
       //https://www.google.com/maps/dir/Museo+POPULAR+DE+SILO%C3%89/Monumento+a+los+Diablitos+de+Silo%C3%A9/@3.4156506,-76.5598752,19.68z/data=!4m14!4m13!1m5!1m1!1s0x8e30a41a97fb7c93:0xd581f9cebc92d5ff!2m2!1d-76.5595526!2d3.4156271!1m5!1m1!1s0x8e30a500264a0f7b:0x33054b5fe7589258!2m2!1d-76.5595672!2d3.4158412!3e2?authuser=1&entry=tts&g_ep=EgoyMDI0MTIwOS4wKgBIAVAD
       points: [
         [3.415639782444439, -76.5595491937936],
-        [3.4158526392420923, -76.55956662815214],
+        [3.4158092385595995, -76.5596076496516],
+        [3.4159210218325806, -76.55956272265072],
       ],
-      zoom: 17.5,
     },
   },
   A02: {
@@ -51,7 +51,6 @@ export const siloeVideoscrollData = {
         [3.4154692, -76.559442],
         [3.4154793, -76.558937],
       ],
-      zoom: 17,
     },
   },
   A03: {
@@ -79,7 +78,6 @@ export const siloeVideoscrollData = {
         [3.415002831279694, -76.55885565459644],
         [3.415018895955968, -76.55854988276963],
       ],
-      zoom: 17,
     },
   },
   A04: {
@@ -107,7 +105,6 @@ export const siloeVideoscrollData = {
         [3.41555814957217, -76.55814322523632],
         [3.4157777, -76.5576269],
       ],
-      zoom: 17,
     },
   },
   A05: {
@@ -140,7 +137,6 @@ export const siloeVideoscrollData = {
         [3.416836811807613, -76.5553502766865],
         [3.416933199677094, -76.55517861531004],
       ],
-      zoom: 17,
     },
   },
   A07: {
@@ -170,7 +166,6 @@ export const siloeVideoscrollData = {
         [3.4169031, -76.5546863],
         [3.4168763, -76.554462],
       ],
-      zoom: 17,
     },
   },
   A08: {
@@ -227,7 +222,6 @@ export const siloeVideoscrollData = {
         [3.4159657, -76.5541933],
         [3.416044, -76.5545],
       ],
-      zoom: 17,
     },
   },
   A10: {
@@ -255,7 +249,6 @@ export const siloeVideoscrollData = {
         [3.4174133, -76.5543538],
         [3.4174791, -76.5541363],
       ],
-      zoom: 17,
     },
   },
   A11: {
@@ -270,7 +263,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "???",
+            title: "B1",
             href: "/B1",
           },
         ],
@@ -285,7 +278,260 @@ export const siloeVideoscrollData = {
         [3.4192786772282293, -76.5541873342125],
         [3.4192981, -76.5541009],
       ],
-      zoom: 17,
+    },
+  },
+  B01: {
+    src: "/lugares/siloe/video/B01.mp4",
+    speed: 800,
+    navigationHotspots: [
+      {
+        id: 1,
+        timeIn: 0.99,
+        timeOut: 1,
+        isBlocking: true,
+        links: [
+          {
+            direction: "forward",
+            title: "B2",
+            href: "/B2",
+          },
+        ],
+      },
+    ],
+    map: {
+      //https://www.google.com/maps/dir/Parque+Recreativo+La+Horqueta/3.418929,-76.5553576/3.4192175,-76.5557616/3.4194441,-76.5558886/3.4199297,-76.5562838/3.4202773,-76.5559768/@3.4201775,-76.5569152,453m/data=!3m1!1e3!4m13!4m12!1m5!1m1!1s0x8e30a41c023b1e9f:0xa9b489265bcf5f1d!2m2!1d-76.5541897!2d3.4192766!1m0!1m0!1m0!1m0!1m0!3e2?authuser=1&entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D
+      points: [
+        [3.4192453751795866, -76.55426174247235],
+        [3.4189401476287005, -76.55513077816491],
+        [3.418929, -76.5553576],
+        [3.4192175, -76.5557616],
+        [3.4194441, -76.5558886],
+        [3.4199297, -76.5562838],
+        [3.4202773, -76.5559768],
+      ],
+    },
+  },
+  B02: {
+    src: "/lugares/siloe/video/B02.mp4",
+    speed: 800,
+    navigationHotspots: [
+      {
+        id: 1,
+        timeIn: 0.99,
+        timeOut: 1,
+        isBlocking: true,
+        links: [
+          {
+            direction: "forward",
+            title: "B3",
+            href: "/B3",
+          },
+        ],
+      },
+    ],
+    map: {
+      // https://www.google.com/maps/dir/3.4204338,-76.5562334/3.4199352,-76.5567635/3.4199919,-76.5568772/3.4200704,-76.5569256/3.4202373,-76.5569407/3.420314,-76.5566665/3.4205995,-76.5567919/Parque+mirador+%22YO+AMO+A+SILO%C3%89%22/@3.4204284,-76.5568747,19z/data=!4m15!4m14!1m0!1m0!1m0!1m0!1m0!1m0!1m0!1m5!1m1!1s0x8e30a5004a02f1cd:0xf9a73675a5689fd0!2m2!1d-76.5569575!2d3.4204548!3e2!5m1!1e4?authuser=1&entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D
+      points: [
+        [3.420409657983336, -76.5562698618868],
+        [3.4201981409126025, -76.55657026928671],
+        [3.4199277202858624, -76.55676607053843],
+        [3.4200696241886113, -76.55692432086516],
+        [3.420219560364924, -76.55694577853659],
+        [3.420326657619369, -76.5566560999724],
+        [3.420615820146588, -76.55678752820984],
+        [3.4205140777858465, -76.55695918958122],
+      ],
+    },
+  },
+  B03: {
+    src: "/lugares/siloe/video/B03.mp4",
+    speed: 800,
+    navigationHotspots: [
+      {
+        id: 1,
+        timeIn: 0.99,
+        timeOut: 1,
+        isBlocking: true,
+        links: [
+          {
+            direction: "forward",
+            title: "B4",
+            href: "/B4",
+          },
+        ],
+      },
+    ],
+    map: {
+      //https://www.google.com/maps/@3.4205056,-76.5569105,21z/data=!5m1!1e4?authuser=1&entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D
+      points: [
+        [3.4204881967002203, -76.55694302178325],
+        [3.4204600836768217, -76.55698526657386],
+      ],
+    },
+  },
+  B04: {
+    src: "/lugares/siloe/video/B04.mp4",
+    speed: 800,
+    navigationHotspots: [
+      {
+        id: 1,
+        timeIn: 0.99,
+        timeOut: 1,
+        isBlocking: true,
+        links: [
+          {
+            direction: "left",
+            title: "B4_V1",
+            href: "/B4_V1",
+          },
+          {
+            direction: "forward",
+            title: "B4_V2",
+            href: "/B4_V2",
+          },
+          {
+            direction: "right",
+            title: "B4_V3",
+            href: "/B4_V3",
+          },
+        ],
+      },
+    ],
+    map: {
+      // FALTA!!
+      points: [
+        [3.4204881967002203, -76.55694302178325],
+        [3.4204600836768217, -76.55698526657386],
+      ],
+    },
+  },
+  B04_V1: {
+    src: "/lugares/siloe/video/B04_V1.mp4",
+    speed: 800,
+    navigationHotspots: [],
+    map: {
+      // https://www.google.com/maps/dir/Parque+mirador+%22YO+AMO+A+SILO%C3%89%22/3.4202917,-76.5572761/3.4202526,-76.5574417/3.4201299,-76.5575503/3.4195362,-76.5579296/3.4195593,-76.5580863/3.4198579,-76.5579207/3.4201246,-76.5578905/3.4199202,-76.5581665/@3.4198802,-76.5580285,19z/data=!4m16!4m15!1m5!1m1!1s0x8e30a5004a02f1cd:0xf9a73675a5689fd0!2m2!1d-76.5569575!2d3.4204548!1m0!1m0!1m0!1m0!1m0!1m0!1m0!1m0!3e2!5m1!1e4?authuser=1&entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D
+      points: [
+        [3.4204478, -76.5569489],
+        [3.4202917, -76.5572761],
+        [3.4202526, -76.5574417],
+        [3.4201299, -76.5575503],
+        [3.4195362, -76.5579296],
+        [3.4195593, -76.5580863],
+        [3.4198579, -76.5579207],
+        [3.4201246, -76.5578905],
+        [3.4199202, -76.5581665],
+      ],
+    },
+  },
+  B04_V2: {
+    src: "/lugares/siloe/video/B04_V2.mp4",
+    speed: 800,
+    navigationHotspots: [
+      {
+        id: 1,
+        timeIn: 0.99,
+        timeOut: 1,
+        isBlocking: true,
+        links: [
+          {
+            direction: "left",
+            title: "B4 V3",
+            href: "/B4_V3",
+          },
+          {
+            direction: "right",
+            title: "B5",
+            href: "/B5",
+          },
+        ],
+      },
+    ],
+    map: {
+      // HAY DOS MAPAS!
+      //  https://www.google.com/maps/dir/Parque+mirador+%22YO+AMO+A+SILO%C3%89%22/3.4202917,-76.5572761/3.4202526,-76.5574417/3.4201299,-76.5575503/3.4195362,-76.5579296/3.4195593,-76.5580863/3.4198579,-76.5579207/3.4201246,-76.5578905/3.4199202,-76.5581665/@3.4198802,-76.5580285,19z/data=!4m16!4m15!1m5!1m1!1s0x8e30a5004a02f1cd:0xf9a73675a5689fd0!2m2!1d-76.5569575!2d3.4204548!1m0!1m0!1m0!1m0!1m0!1m0!1m0!1m0!3e2!5m1!1e4?authuser=1&entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D
+      points: [
+        [3.4211184676474855, -76.5571323414373],
+        [3.421430388081101, -76.55712027149669],
+        [3.4219587012054893, -76.55688655321875],
+        [3.422019679675398, -76.55731620853562],
+        [3.4224451463734793, -76.55781312657474],
+        [3.4228955182232066, -76.55814579136961],
+      ],
+    },
+  },
+  B04_V3: {
+    src: "/lugares/siloe/video/B04_V2.mp4",
+    speed: 800,
+    navigationHotspots: [],
+    map: {
+      // FALTA
+      points: [
+        [3.4211184676474855, -76.5571323414373],
+        [3.421430388081101, -76.55712027149669],
+        [3.4219587012054893, -76.55688655321875],
+        [3.422019679675398, -76.55731620853562],
+        [3.4224451463734793, -76.55781312657474],
+        [3.4228955182232066, -76.55814579136961],
+      ],
+    },
+  },
+  B06: {
+    src: "/lugares/siloe/video/B06.mp4",
+    speed: 800,
+    navigationHotspots: [
+      {
+        id: 1,
+        timeIn: 0.99,
+        timeOut: 1,
+        isBlocking: true,
+        links: [
+          {
+            direction: "forward",
+            title: "B7",
+            href: "/B7",
+          },
+        ],
+      },
+    ],
+    map: {
+      points: [
+        [3.422903188529879, -76.55821574555468],
+        [3.4232889909035946, -76.55807139314396],
+        [3.4234980733810128, -76.55826303779749],
+        [3.4233250776423865, -76.55839832646002],
+      ],
+    },
+  },
+  B07: {
+    src: "/lugares/siloe/video/B07.mp4",
+    speed: 800,
+    navigationHotspots: [
+      {
+        id: 1,
+        timeIn: 0.99,
+        timeOut: 1,
+        isBlocking: true,
+        links: [
+          {
+            direction: "forward",
+            title: "B8",
+            href: "/B8",
+          },
+        ],
+      },
+    ],
+    map: {
+      points: [
+        [3.4233348302956754, -76.55839142979907],
+        [3.4226821841947235, -76.55860210273168],
+        [3.4223142051926767, -76.55863213323332],
+        [3.421961059633387, -76.55892663641406],
+        [3.4219131458545613, -76.55870721076758],
+        [3.4214374505543725, -76.55856852472881],
+        [3.4206398913174842, -76.55896426360421],
+        [3.4195817587536603, -76.55934593807895],
+      ],
     },
   },
 };
