@@ -15,6 +15,7 @@ import useWheelCounter from "../../customHooks/useWheelCounter";
 import DirectionButton from "./DirectionButton";
 import MapaConRuta from "./MapaConRuta";
 import { theme } from "../../../../utils/theme";
+import LazyLoad from "react-lazyload";
 
 export default function VideoScroll(props) {
   // Esta funcion existe solo para resetear el scroll antes de cargar la pagina de VideoScroll y evitar re-renderizados
@@ -118,7 +119,7 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
             gap: 1,
           }}
         >
-          {item.links.map((link) => (
+          {item.links?.map((link) => (
             <DirectionButton key={link.direction} link={link} />
           ))}
         </Box>
@@ -147,7 +148,7 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
     });
 
   // MAPA
-  const renderMapa = map?.points?.length > 1 && (
+  const renderMapa = map?.points?.length > 0 && (
     <Box
       margin={1}
       sx={{
@@ -170,47 +171,49 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
   );
 
   return (
-    <div
-      className="scrolly-container"
-      style={{
-        width: "100%",
-        height: `${Math.min(Math.max(speed, 10), 300)}vh`,
-      }}
-    >
-      {/* Conditional Loading */}
-      {loading && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-          }}
-        >
-          <CircularProgress color="secondary" />
-          <Typography variant="h6" color="secondary" sx={{ ml: 2 }}>
-            Cargando...
-          </Typography>
-        </Box>
-      )}
+    <LazyLoad height={500} once>
+      <div
+        className="scrolly-container"
+        style={{
+          width: "100%",
+          height: `${Math.min(Math.max(speed, 10), 300)}vh`,
+        }}
+      >
+        {/* Conditional Loading */}
+        {loading && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+            }}
+          >
+            <CircularProgress color="secondary" />
+            <Typography variant="h6" color="secondary" sx={{ ml: 2 }}>
+              Cargando...
+            </Typography>
+          </Box>
+        )}
 
-      {/* Video Content */}
-      {src && (
-        <ScrollyVideo
-          src={src}
-          onChange={(e) => setScrollyPosition(e)}
-          onReady={() => setLoading(false)}
-          cover={true}
-        />
-      )}
+        {/* Video Content */}
+        {src && (
+          <ScrollyVideo
+            src={src}
+            onChange={(e) => setScrollyPosition(e)}
+            onReady={() => setLoading(false)}
+            cover={true}
+          />
+        )}
 
-      {/* Audio Controls */}
-      {false && renderAudioControls}
+        {/* Audio Controls */}
+        {false && renderAudioControls}
 
-      {/* Map and Hotspots */}
-      {renderMapa}
-      {renderNavigationHotspots}
-    </div>
+        {/* Map and Hotspots */}
+        {renderMapa}
+        {renderNavigationHotspots}
+      </div>
+    </LazyLoad>
   );
 }
 

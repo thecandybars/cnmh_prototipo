@@ -16,8 +16,8 @@ import MuralHistoria from "./componets/Lugares/Tumaco/MuralHistoria";
 import Iframe from "./componets/Test/Iframe";
 import MuralOficios from "./componets/Lugares/Tumaco/MuralOficios";
 import TestMapaConRuta from "./componets/Test/Test2";
-import VideoScroll from "./componets/common/buttons/VideoScroll/VideoScroll";
 import { siloeVideoscrollData } from "./componets/Lugares/Siloe/components/siloeVideoscrollData";
+import VideoScroll from "./componets/common/buttons/VideoScroll/VideoScroll";
 
 const NotFoundPage = () => (
   <div>
