@@ -208,7 +208,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "Dollarshitty",
+            title: "Dollarcity",
             href: "/A10",
           },
         ],
@@ -264,7 +264,7 @@ export const siloeVideoscrollData = {
           {
             direction: "forward",
             title: "B1",
-            href: "/B1",
+            href: "/B01",
           },
         ],
       },
@@ -293,7 +293,7 @@ export const siloeVideoscrollData = {
           {
             direction: "forward",
             title: "B2",
-            href: "/B2",
+            href: "/B02",
           },
         ],
       },
@@ -324,7 +324,7 @@ export const siloeVideoscrollData = {
           {
             direction: "forward",
             title: "B3",
-            href: "/B3",
+            href: "/B03",
           },
         ],
       },
@@ -354,9 +354,19 @@ export const siloeVideoscrollData = {
         isBlocking: true,
         links: [
           {
+            direction: "left",
+            title: "B4_V1",
+            href: "/B04_V1",
+          },
+          {
             direction: "forward",
-            title: "B4",
-            href: "/B4",
+            title: "B4_V2",
+            href: "/B04_V2",
+          },
+          {
+            direction: "right",
+            title: "B4_V3",
+            href: "/B04_V3",
           },
         ],
       },
@@ -369,42 +379,7 @@ export const siloeVideoscrollData = {
       ],
     },
   },
-  B04: {
-    src: "/lugares/siloe/video/B04.mp4",
-    speed: 800,
-    navigationHotspots: [
-      {
-        id: 1,
-        timeIn: 0.99,
-        timeOut: 1,
-        isBlocking: true,
-        links: [
-          {
-            direction: "left",
-            title: "B4_V1",
-            href: "/B4_V1",
-          },
-          {
-            direction: "forward",
-            title: "B4_V2",
-            href: "/B4_V2",
-          },
-          {
-            direction: "right",
-            title: "B4_V3",
-            href: "/B4_V3",
-          },
-        ],
-      },
-    ],
-    map: {
-      // FALTA!!
-      points: [
-        [3.4204881967002203, -76.55694302178325],
-        [3.4204600836768217, -76.55698526657386],
-      ],
-    },
-  },
+
   B04_V1: {
     src: "/lugares/siloe/video/B04_V1.mp4",
     speed: 800,
@@ -437,12 +412,12 @@ export const siloeVideoscrollData = {
           {
             direction: "left",
             title: "B4 V3",
-            href: "/B4_V3",
+            href: "/B04_V3",
           },
           {
             direction: "right",
-            title: "B5",
-            href: "/B5",
+            title: "B6",
+            href: "/B06",
           },
         ],
       },
@@ -489,7 +464,7 @@ export const siloeVideoscrollData = {
           {
             direction: "forward",
             title: "B7",
-            href: "/B7",
+            href: "/B07",
           },
         ],
       },
@@ -516,7 +491,7 @@ export const siloeVideoscrollData = {
           {
             direction: "forward",
             title: "B8",
-            href: "/B8",
+            href: "/B08",
           },
         ],
       },

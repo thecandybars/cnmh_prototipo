@@ -32,6 +32,18 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
   const { direction } = useWheelCounter({ scale: 30 });
   const { vh, vw } = useViewport();
 
+  // Cleanup video on unmount
+  useEffect(() => {
+    return () => {
+      const videoElements = document.querySelectorAll("video");
+      videoElements.forEach((video) => {
+        video.pause();
+        video.src = ""; // Clear the source to release memory
+        video.load(); // Force garbage collection
+      });
+    };
+  }, []);
+
   //  AUDIO PLAYER
   // Init
   useEffect(() => {
