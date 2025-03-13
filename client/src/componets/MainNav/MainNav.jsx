@@ -8,7 +8,7 @@ export default function MainNav() {
     <div position="absolute">
       <Stack position="absolute" sx={{ top: 0, zIndex: 100 }} width="100%">
         <ViewsBreadcrumbs />
-        <Box
+        {/* <Box
           display="flex"
           justifyContent="space-between"
           bgcolor="rgba(0,0,0,0)"
@@ -19,7 +19,7 @@ export default function MainNav() {
           <Box p={2} bgcolor="secondary.main" color="black">
             <PeopleAltIcon fontSize="large" />
           </Box>
-        </Box>
+        </Box> */}
       </Stack>
     </div>
   );

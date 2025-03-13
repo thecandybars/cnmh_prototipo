@@ -7,5 +7,7 @@ export { default as PhotoIconOutlined } from "@mui/icons-material/PhotoSizeSelec
 export { default as VideoIconOutlined } from "@mui/icons-material/SlideshowOutlined";
 export { default as AudioIconOutlined } from "@mui/icons-material/HeadphonesOutlined";
 export { default as DocumentIconOutlined } from "@mui/icons-material/TextSnippetOutlined";
+export { default as SoundOff } from "@mui/icons-material/VolumeMute";
+export { default as SoundOn } from "@mui/icons-material/VolumeUp";
 // CUSTOM ICONS
 export { default as MarkerMuseoMemoria } from "./customIcons/MarkerMuseoMemoria.jsx";

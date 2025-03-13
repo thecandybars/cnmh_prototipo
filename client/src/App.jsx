@@ -17,7 +17,8 @@ import Iframe from "./componets/Test/Iframe";
 import MuralOficios from "./componets/Lugares/Tumaco/MuralOficios";
 import TestMapaConRuta from "./componets/Test/Test2";
 import { siloeVideoscrollData } from "./componets/Lugares/Siloe/components/siloeVideoscrollData";
-import VideoScroll from "./componets/common/buttons/VideoScroll/VideoScroll";
+import VideoScrollWrapper from "./componets/common/buttons/VideoScroll/VideoScrollWrapper";
+import VideoPlayer from "./componets/common/buttons/VideoScroll/VideoPlayer";
 
 const NotFoundPage = () => (
   <div>
@@ -41,14 +42,22 @@ const App = () => {
         {/* Este LM esta ubicado en la carpeta /public/lugares/bojaya y se accede directamente con la ruta /lugares/bojaya */}
         {/* SILOE */}
         <Route path="/siloe" element={<Siloe />} />
-        {/* Las rutas con VideoScroll se crean a partir de siloeVideoscrollData. EJ : /siloe/A01 */}
-        {Object.keys(siloeVideoscrollData).map((key) => (
-          <Route
-            key={key}
-            path={"/siloe/" + key}
-            element={<VideoScroll {...siloeVideoscrollData[key]} />}
-          />
-        ))}
+        {/* Las rutas con VideoScroll o VideoPlayer se crean a partir de siloeVideoscrollData. EJ : /siloe/A01 */}
+        {Object.keys(siloeVideoscrollData).map((key) => {
+          return (
+            <Route
+              key={key}
+              path={"/siloe/" + key}
+              element={
+                siloeVideoscrollData[key].type === "scroll" ? (
+                  <VideoScrollWrapper {...siloeVideoscrollData[key]} />
+                ) : (
+                  <VideoPlayer {...siloeVideoscrollData[key]} />
+                )
+              }
+            />
+          );
+        })}
 
         {/* TUMACO */}
         <Route path="/tumaco/mural_pargos" element={<MuralHistoria />} />

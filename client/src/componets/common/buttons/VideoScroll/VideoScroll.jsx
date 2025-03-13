@@ -6,7 +6,7 @@ import {
   Button,
   CircularProgress,
   Dialog,
-  Slider,
+  // Slider,
   Typography,
   Zoom,
 } from "@mui/material";
@@ -15,7 +15,7 @@ import useWheelCounter from "../../customHooks/useWheelCounter";
 import DirectionButton from "./DirectionButton";
 import MapaConRuta from "./MapaConRuta";
 import { theme } from "../../../../utils/theme";
-import LazyLoad from "react-lazyload";
+import { SoundOff, SoundOn } from "../../icons";
 
 export default function VideoScroll(props) {
   // Esta funcion existe solo para resetear el scroll antes de cargar la pagina de VideoScroll y evitar re-renderizados
@@ -26,8 +26,9 @@ export default function VideoScroll(props) {
 function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
   const [loading, setLoading] = useState(true);
   const [scrollyPosition, setScrollyPosition] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.2); // Default volume
+  const [isPlaying, setIsPlaying] = useState(true);
+  // const [volume, setVolume] = useState(0.2); // Default volume
+  const VOLUME = 0.2;
   const audioRef = useRef(null); // Ref to manage the audio instance
 
   const { direction } = useWheelCounter({ scale: 30 });
@@ -51,7 +52,8 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
     if (!audioBackground?.src) return;
 
     const audio = new Audio(audioBackground.src);
-    audio.volume = volume;
+    console.log("🚀 ~ useEffect ~ audio:", audio);
+    audio.volume = VOLUME;
     audio.loop = true;
     audioRef.current = audio;
 
@@ -60,8 +62,10 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
     return () => {
       audio.pause();
       audioRef.current = null;
+      audio.load();
     };
-  }, [audioBackground?.src, isPlaying, volume]);
+  }, [audioBackground?.src, isPlaying]);
+  console.log("🚀 ~ useEffect ~ isPlaying:", isPlaying);
   // Play/pause
   const handlePlayPause = () => {
     if (!audioRef.current) return;
@@ -74,24 +78,25 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
     setIsPlaying(!isPlaying);
   };
   // Volumen
-  const handleVolumeChange = (event, newValue) => {
-    setVolume(newValue);
-    if (audioRef.current) {
-      audioRef.current.volume = newValue;
-    }
-  };
+  // const handleVolumeChange = (event, newValue) => {
+  //   setVolume(newValue);
+  //   if (audioRef.current) {
+  //     audioRef.current.volume = newValue;
+  //   }
+  // };
   // Render Audio Controls
   const renderAudioControls = (
     <Box sx={{ position: "fixed", bottom: 20, right: 20 }}>
-      <Button
+      {/* <Button
         onClick={handlePlayPause}
         variant="contained"
         color="secondary"
         sx={{ width: 60, height: 60 }}
       >
-        {isPlaying ? "Pause" : "Play"}
-      </Button>
-      <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+        {isPlaying ? <SoundOff /> : <SoundOn />}
+      </Button> */}
+      <MuteButton isOn={isPlaying} onClick={handlePlayPause} />
+      {/* <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
         <Slider
           color="secondary"
           value={volume}
@@ -100,7 +105,7 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
           max={1}
           step={0.01}
         />
-      </Box>
+      </Box> */}
     </Box>
   );
 
@@ -152,9 +157,6 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
     <Box
       margin={1}
       sx={{
-        position: "fixed",
-        bottom: 0,
-        left: 0,
         borderRadius: "10px",
         border: `8px solid ${theme.palette.secondary.main}`,
       }}
@@ -170,50 +172,57 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
     </Box>
   );
 
+  // RENDER BOTTOM
+  const renderBottom = (
+    <Box display="flex" sx={{ position: "fixed", bottom: 0, left: 0 }}>
+      {renderMapa}
+      <Typography>Hola</Typography>
+    </Box>
+  );
+
   return (
-    <LazyLoad height={500} once>
-      <div
-        className="scrolly-container"
-        style={{
-          width: "100%",
-          height: `${Math.min(Math.max(speed, 10), 300)}vh`,
-        }}
-      >
-        {/* Conditional Loading */}
-        {loading && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100vh",
-            }}
-          >
-            <CircularProgress color="secondary" />
-            <Typography variant="h6" color="secondary" sx={{ ml: 2 }}>
-              Cargando...
-            </Typography>
-          </Box>
-        )}
+    <div
+      className="scrolly-container"
+      style={{
+        width: "100%",
+        height: `${speed}vh`,
+        // height: `${Math.min(Math.max(speed, 10), 300)}vh`,
+      }}
+    >
+      {/* Conditional Loading */}
+      {loading && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <CircularProgress color="secondary" />
+          <Typography variant="h6" color="secondary" sx={{ ml: 2 }}>
+            Cargando...
+          </Typography>
+        </Box>
+      )}
 
-        {/* Video Content */}
-        {src && (
-          <ScrollyVideo
-            src={src}
-            onChange={(e) => setScrollyPosition(e)}
-            onReady={() => setLoading(false)}
-            cover={true}
-          />
-        )}
+      {/* Video Content */}
+      {src && (
+        <ScrollyVideo
+          src={src}
+          onChange={(e) => setScrollyPosition(e)}
+          onReady={() => setLoading(false)}
+          cover={true}
+        />
+      )}
 
-        {/* Audio Controls */}
-        {false && renderAudioControls}
+      {/* Audio Controls */}
+      {renderAudioControls}
 
-        {/* Map and Hotspots */}
-        {renderMapa}
-        {renderNavigationHotspots}
-      </div>
-    </LazyLoad>
+      {/* Map and Hotspots */}
+      {renderBottom}
+      {renderNavigationHotspots}
+    </div>
   );
 }
 
@@ -227,4 +236,33 @@ Page.propTypes = {
   navigationHotspots: PropTypes.array,
   audioBackground: PropTypes.object,
   map: PropTypes.object,
+};
+
+const MuteButton = ({ isOn, onClick }) => {
+  const [icon, setIcon] = useState(isOn ? <SoundOn /> : <SoundOff />);
+  const handleOnClick = () => {
+    onClick();
+    setIcon(isOn ? <SoundOff /> : <SoundOn />);
+  };
+
+  return (
+    <Button
+      variant="contained"
+      color="secondary"
+      onClick={handleOnClick}
+      onMouseEnter={() => setIcon(isOn ? <SoundOff /> : <SoundOn />)}
+      onMouseLeave={() => setIcon(isOn ? <SoundOn /> : <SoundOff />)}
+      sx={{
+        width: 60,
+        height: 60,
+        borderRadius: "50%",
+      }}
+    >
+      {icon}
+    </Button>
+  );
+};
+MuteButton.propTypes = {
+  isOn: PropTypes.bool,
+  onClick: PropTypes.func,
 };

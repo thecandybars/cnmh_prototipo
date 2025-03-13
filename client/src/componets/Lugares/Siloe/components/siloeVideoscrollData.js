@@ -2,6 +2,7 @@ export const siloeVideoscrollData = {
   A01: {
     src: "/lugares/siloe/video/A01.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -13,6 +14,7 @@ export const siloeVideoscrollData = {
             direction: "forward",
             title: "Continuar",
             href: "/A02",
+            // href: "/paradaA01",
           },
         ],
       },
@@ -25,10 +27,20 @@ export const siloeVideoscrollData = {
         [3.4159210218325806, -76.55956272265072],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/A01.mp3",
+    },
   },
+  // paradaA01: {
+  //   src: "/lugares/siloe/video/paradaA1.mp4",
+  //   type: "video",
+  //   title: "Carnaval de los Diablos",
+  //   link: "/A02",
+  // },
   A02: {
     src: "/lugares/siloe/video/A02.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -52,10 +64,14 @@ export const siloeVideoscrollData = {
         [3.4154793, -76.558937],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/A02.mp3",
+    },
   },
   A03: {
     src: "/lugares/siloe/video/A03.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -83,6 +99,7 @@ export const siloeVideoscrollData = {
   A04: {
     src: "/lugares/siloe/video/A04.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -106,10 +123,14 @@ export const siloeVideoscrollData = {
         [3.4157777, -76.5576269],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/A04.mp3",
+    },
   },
   A05: {
     src: "/lugares/siloe/video/A05.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -138,10 +159,14 @@ export const siloeVideoscrollData = {
         [3.416933199677094, -76.55517861531004],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/A05.mp3",
+    },
   },
   A07: {
     src: "/lugares/siloe/video/A07.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -167,10 +192,14 @@ export const siloeVideoscrollData = {
         [3.4168763, -76.554462],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/A07.mp3",
+    },
   },
   A08: {
     src: "/lugares/siloe/video/A08.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -199,6 +228,7 @@ export const siloeVideoscrollData = {
   A09: {
     src: "/lugares/siloe/video/A09.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -227,6 +257,7 @@ export const siloeVideoscrollData = {
   A10: {
     src: "/lugares/siloe/video/A10.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -254,6 +285,7 @@ export const siloeVideoscrollData = {
   A11: {
     src: "/lugares/siloe/video/A11.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -283,6 +315,7 @@ export const siloeVideoscrollData = {
   B01: {
     src: "/lugares/siloe/video/B01.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -314,6 +347,7 @@ export const siloeVideoscrollData = {
   B02: {
     src: "/lugares/siloe/video/B02.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -346,6 +380,7 @@ export const siloeVideoscrollData = {
   B03: {
     src: "/lugares/siloe/video/B03.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -383,6 +418,7 @@ export const siloeVideoscrollData = {
   B04_V1: {
     src: "/lugares/siloe/video/B04_V1.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [],
     map: {
       // https://www.google.com/maps/dir/Parque+mirador+%22YO+AMO+A+SILO%C3%89%22/3.4202917,-76.5572761/3.4202526,-76.5574417/3.4201299,-76.5575503/3.4195362,-76.5579296/3.4195593,-76.5580863/3.4198579,-76.5579207/3.4201246,-76.5578905/3.4199202,-76.5581665/@3.4198802,-76.5580285,19z/data=!4m16!4m15!1m5!1m1!1s0x8e30a5004a02f1cd:0xf9a73675a5689fd0!2m2!1d-76.5569575!2d3.4204548!1m0!1m0!1m0!1m0!1m0!1m0!1m0!1m0!3e2!5m1!1e4?authuser=1&entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D
@@ -402,6 +438,7 @@ export const siloeVideoscrollData = {
   B04_V2: {
     src: "/lugares/siloe/video/B04_V2.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -436,6 +473,7 @@ export const siloeVideoscrollData = {
   B04_V3: {
     src: "/lugares/siloe/video/B04_V3.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [],
     map: {
       points: [
@@ -464,6 +502,7 @@ export const siloeVideoscrollData = {
   B06: {
     src: "/lugares/siloe/video/B06.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -491,6 +530,7 @@ export const siloeVideoscrollData = {
   B07: {
     src: "/lugares/siloe/video/B07.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -521,7 +561,7 @@ export const siloeVideoscrollData = {
   },
   B08: {
     src: "/lugares/siloe/video/B08.mp4",
-    speed: 800,
+    speed: 2000,
     navigationHotspots: [
       {
         id: 1,
@@ -557,6 +597,7 @@ export const siloeVideoscrollData = {
   B10: {
     src: "/lugares/siloe/video/B10.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -584,6 +625,7 @@ export const siloeVideoscrollData = {
   B11: {
     src: "/lugares/siloe/video/B11.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -610,6 +652,7 @@ export const siloeVideoscrollData = {
   C01: {
     src: "/lugares/siloe/video/C01.mp4",
     speed: 800,
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
