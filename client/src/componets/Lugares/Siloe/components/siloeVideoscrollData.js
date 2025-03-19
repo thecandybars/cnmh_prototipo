@@ -1,6 +1,7 @@
 export const siloeVideoscrollData = {
   A01: {
     src: "/lugares/siloe/video/A01.mp4",
+    title: "Monumento a los Diablitos de Siloé",
     speed: 800,
     type: "scroll",
     navigationHotspots: [
@@ -39,6 +40,7 @@ export const siloeVideoscrollData = {
   // },
   A02: {
     src: "/lugares/siloe/video/A02.mp4",
+    title: "Hacia el cementerio San Jose De Siloé",
     speed: 800,
     type: "scroll",
     navigationHotspots: [
@@ -70,6 +72,7 @@ export const siloeVideoscrollData = {
   },
   A03: {
     src: "/lugares/siloe/video/A03.mp4",
+    title: "Cementerio San Jose De Siloé",
     speed: 800,
     type: "scroll",
     navigationHotspots: [
@@ -98,6 +101,7 @@ export const siloeVideoscrollData = {
   },
   A04: {
     src: "/lugares/siloe/video/A04.mp4",
+    title: "Mural del cementerio San Jose De Siloé",
     speed: 800,
     type: "scroll",
     navigationHotspots: [
@@ -129,6 +133,7 @@ export const siloeVideoscrollData = {
   },
   A05: {
     src: "/lugares/siloe/video/A05.mp4",
+    title: "Por la Diagonal 51 hacia La Sorpresa",
     speed: 800,
     type: "scroll",
     navigationHotspots: [
@@ -165,6 +170,7 @@ export const siloeVideoscrollData = {
   },
   A07: {
     src: "/lugares/siloe/video/A07.mp4",
+    title: "Puente de la glorieta Siloé visible",
     speed: 800,
     type: "scroll",
     navigationHotspots: [
@@ -198,6 +204,7 @@ export const siloeVideoscrollData = {
   },
   A08: {
     src: "/lugares/siloe/video/A08.mp4",
+    title: "Galería de Siloé",
     speed: 800,
     type: "scroll",
     navigationHotspots: [
@@ -224,9 +231,13 @@ export const siloeVideoscrollData = {
       ],
       zoom: 17,
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/A08.mp3",
+    },
   },
   A09: {
     src: "/lugares/siloe/video/A09.mp4",
+    title: "Glorieta de Siloé resiste",
     speed: 800,
     type: "scroll",
     navigationHotspots: [
@@ -253,9 +264,13 @@ export const siloeVideoscrollData = {
         [3.416044, -76.5545],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/A09.mp3",
+    },
   },
   A10: {
     src: "/lugares/siloe/video/A10.mp4",
+    title: "Incendio del Dollar City",
     speed: 800,
     type: "scroll",
     navigationHotspots: [
@@ -281,9 +296,13 @@ export const siloeVideoscrollData = {
         [3.4174791, -76.5541363],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/A10.mp3",
+    },
   },
   A11: {
     src: "/lugares/siloe/video/A11.mp4",
+    title: "Camino hacia el parque de la Horqueta",
     speed: 800,
     type: "scroll",
     navigationHotspots: [
@@ -311,9 +330,13 @@ export const siloeVideoscrollData = {
         [3.4192981, -76.5541009],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/A11.mp3",
+    },
   },
   B01: {
     src: "/lugares/siloe/video/B01.mp4",
+    title: "Hacia el parque de la Mina",
     speed: 800,
     type: "scroll",
     navigationHotspots: [
@@ -343,9 +366,13 @@ export const siloeVideoscrollData = {
         [3.4202773, -76.5559768],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/B1.mp3",
+    },
   },
   B02: {
     src: "/lugares/siloe/video/B02.mp4",
+    title: "Hacia el mural Yo amo a Siloé",
     speed: 800,
     type: "scroll",
     navigationHotspots: [
@@ -376,9 +403,14 @@ export const siloeVideoscrollData = {
         [3.4205140777858465, -76.55695918958122],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/B2.mp3",
+    },
   },
   B03: {
     src: "/lugares/siloe/video/B03.mp4",
+    title: "Hacia la tienda de doña Ana",
+
     speed: 800,
     type: "scroll",
     navigationHotspots: [
@@ -413,13 +445,30 @@ export const siloeVideoscrollData = {
         [3.4204600836768217, -76.55698526657386],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/B3.mp3",
+    },
   },
 
   B04_V1: {
     src: "/lugares/siloe/video/B04_V1.mp4",
     speed: 800,
     type: "scroll",
-    navigationHotspots: [],
+    navigationHotspots: [
+      {
+        id: 1,
+        timeIn: 0.99,
+        timeOut: 1,
+        isBlocking: true,
+        links: [
+          {
+            direction: "forward",
+            title: "B6",
+            href: "/B06",
+          },
+        ],
+      },
+    ],
     map: {
       // https://www.google.com/maps/dir/Parque+mirador+%22YO+AMO+A+SILO%C3%89%22/3.4202917,-76.5572761/3.4202526,-76.5574417/3.4201299,-76.5575503/3.4195362,-76.5579296/3.4195593,-76.5580863/3.4198579,-76.5579207/3.4201246,-76.5578905/3.4199202,-76.5581665/@3.4198802,-76.5580285,19z/data=!4m16!4m15!1m5!1m1!1s0x8e30a5004a02f1cd:0xf9a73675a5689fd0!2m2!1d-76.5569575!2d3.4204548!1m0!1m0!1m0!1m0!1m0!1m0!1m0!1m0!3e2!5m1!1e4?authuser=1&entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D
       points: [
@@ -434,6 +483,9 @@ export const siloeVideoscrollData = {
         [3.4199202, -76.5581665],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/B4v1.mp3",
+    },
   },
   B04_V2: {
     src: "/lugares/siloe/video/B04_V2.mp4",
@@ -447,12 +499,7 @@ export const siloeVideoscrollData = {
         isBlocking: true,
         links: [
           {
-            direction: "left",
-            title: "B4 V3",
-            href: "/B04_V3",
-          },
-          {
-            direction: "right",
+            direction: "forward",
             title: "B6",
             href: "/B06",
           },
@@ -469,12 +516,29 @@ export const siloeVideoscrollData = {
         [3.4228955182232066, -76.55814579136961],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/B4v2.mp3",
+    },
   },
   B04_V3: {
     src: "/lugares/siloe/video/B04_V3.mp4",
     speed: 800,
     type: "scroll",
-    navigationHotspots: [],
+    navigationHotspots: [
+      {
+        id: 1,
+        timeIn: 0.99,
+        timeOut: 1,
+        isBlocking: true,
+        links: [
+          {
+            direction: "forward",
+            title: "B6",
+            href: "/B06",
+          },
+        ],
+      },
+    ],
     map: {
       points: [
         [3.420578531647029, -76.55690856430014],
@@ -497,6 +561,9 @@ export const siloeVideoscrollData = {
         [3.4216620187286937, -76.56090531592817],
         [3.4216088446617774, -76.56109175752323],
       ],
+    },
+    audioBackground: {
+      src: "/lugares/siloe/audio/B4v3.mp3",
     },
   },
   B06: {
@@ -525,6 +592,9 @@ export const siloeVideoscrollData = {
         [3.4234980733810128, -76.55826303779749],
         [3.4233250776423865, -76.55839832646002],
       ],
+    },
+    audioBackground: {
+      src: "/lugares/siloe/audio/B6.mp3",
     },
   },
   B07: {
@@ -558,10 +628,14 @@ export const siloeVideoscrollData = {
         [3.4195817587536603, -76.55934593807895],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/B7.mp3",
+    },
   },
   B08: {
     src: "/lugares/siloe/video/B08.mp4",
     speed: 2000,
+    // type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -593,6 +667,9 @@ export const siloeVideoscrollData = {
         [3.4184087647821397, -76.5630331421271],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/B8.mp3",
+    },
   },
   B10: {
     src: "/lugares/siloe/video/B10.mp4",
@@ -621,6 +698,9 @@ export const siloeVideoscrollData = {
         [3.4186623990352714, -76.5634986350115],
       ],
     },
+    audioBackground: {
+      src: "/lugares/siloe/audio/B10.mp3",
+    },
   },
   B11: {
     src: "/lugares/siloe/video/B11.mp4",
@@ -648,35 +728,31 @@ export const siloeVideoscrollData = {
         [3.418380822620403, -76.56358432973046],
       ],
     },
-  },
-  C01: {
-    src: "/lugares/siloe/video/C01.mp4",
-    speed: 800,
-    type: "scroll",
-    navigationHotspots: [
-      {
-        id: 1,
-        timeIn: 0.99,
-        timeOut: 1,
-        isBlocking: true,
-        // links: [
-        //   {
-        //     direction: "forward",
-        //     title: "C1",
-        //     href: "/C01",
-        //   },
-        // ],
-      },
-    ],
-    map: {
-      points: [
-        [3.4184146418207106, -76.56373857742616],
-        [3.418210607536718, -76.5639225355791],
-        [3.418009542281106, -76.5642917182536],
-        [3.4175256999941337, -76.56415824892828],
-        [3.4173309418592153, -76.5641091677808],
-        [3.4176248832865963, -76.56388788336986],
-      ],
+    audioBackground: {
+      src: "/lugares/siloe/audio/B11.mp3",
     },
   },
+  // C01: {
+  //   src: "/lugares/siloe/video/C01.mp4",
+  //   speed: 800,
+  //   type: "scroll",
+  //   navigationHotspots: [
+  //     {
+  //       id: 1,
+  //       timeIn: 0.99,
+  //       timeOut: 1,
+  //       isBlocking: true,
+  //     },
+  //   ],
+  //   map: {
+  //     points: [
+  //       [3.4184146418207106, -76.56373857742616],
+  //       [3.418210607536718, -76.5639225355791],
+  //       [3.418009542281106, -76.5642917182536],
+  //       [3.4175256999941337, -76.56415824892828],
+  //       [3.4173309418592153, -76.5641091677808],
+  //       [3.4176248832865963, -76.56388788336986],
+  //     ],
+  //   },
+  // },
 };

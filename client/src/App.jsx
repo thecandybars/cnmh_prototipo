@@ -44,12 +44,14 @@ const App = () => {
         <Route path="/siloe" element={<Siloe />} />
         {/* Las rutas con VideoScroll o VideoPlayer se crean a partir de siloeVideoscrollData. EJ : /siloe/A01 */}
         {Object.keys(siloeVideoscrollData).map((key) => {
+          const type = siloeVideoscrollData[key].type;
+          if (!type) return null;
           return (
             <Route
               key={key}
               path={"/siloe/" + key}
               element={
-                siloeVideoscrollData[key].type === "scroll" ? (
+                type === "scroll" ? (
                   <VideoScrollWrapper {...siloeVideoscrollData[key]} />
                 ) : (
                   <VideoPlayer {...siloeVideoscrollData[key]} />

@@ -84,7 +84,7 @@ const muiTheme = createTheme({
     h1: {
       fontFamily: "Nunito Sans",
       fontWeight: 500,
-      fontSize: "7rem",
+      fontSize: "4rem",
     },
     h2: {
       fontFamily: "Nunito Sans",

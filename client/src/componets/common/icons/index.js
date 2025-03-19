@@ -9,5 +9,6 @@ export { default as AudioIconOutlined } from "@mui/icons-material/HeadphonesOutl
 export { default as DocumentIconOutlined } from "@mui/icons-material/TextSnippetOutlined";
 export { default as SoundOff } from "@mui/icons-material/VolumeMute";
 export { default as SoundOn } from "@mui/icons-material/VolumeUp";
+export { default as Help } from "@mui/icons-material/QuestionMark";
 // CUSTOM ICONS
 export { default as MarkerMuseoMemoria } from "./customIcons/MarkerMuseoMemoria.jsx";

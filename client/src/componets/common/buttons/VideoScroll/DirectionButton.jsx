@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Button, Typography } from "@mui/material";
 import ArrowIcon from "@mui/icons-material/KeyboardArrowUp";
 
-export default function DirectionButton({ link }) {
+export default function DirectionButton({ link, onClick }) {
   const location = useLocation();
   const pathSegments = location.pathname.split("/").filter(Boolean); // Remove empty segments
   const baseLocation = `/${pathSegments[0] || ""}`; // Toma solo el primer segmento. Para hacerlo mas robusto, deberia tomarlos todos menos el ultimo
@@ -51,6 +51,7 @@ export default function DirectionButton({ link }) {
       }}
       component={Link}
       to={sanitizeURL(baseURL, link.href)}
+      // onClick={onClick}
     >
       <ArrowIcon sx={{ ...styles.icon }} />
       <Typography variant="h5" color="black">

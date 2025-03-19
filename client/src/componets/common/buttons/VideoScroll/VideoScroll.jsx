@@ -6,7 +6,6 @@ import {
   Button,
   CircularProgress,
   Dialog,
-  // Slider,
   Typography,
   Zoom,
 } from "@mui/material";
@@ -15,7 +14,7 @@ import useWheelCounter from "../../customHooks/useWheelCounter";
 import DirectionButton from "./DirectionButton";
 import MapaConRuta from "./MapaConRuta";
 import { theme } from "../../../../utils/theme";
-import { SoundOff, SoundOn } from "../../icons";
+import { CancelIcon, Help, SoundOff, SoundOn } from "../../icons";
 
 export default function VideoScroll(props) {
   // Esta funcion existe solo para resetear el scroll antes de cargar la pagina de VideoScroll y evitar re-renderizados
@@ -23,7 +22,14 @@ export default function VideoScroll(props) {
   return <Page {...props} />;
 }
 
-function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
+function Page({
+  src,
+  speed,
+  title,
+  navigationHotspots = [],
+  map,
+  audioBackground,
+}) {
   const [loading, setLoading] = useState(true);
   const [scrollyPosition, setScrollyPosition] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -35,7 +41,16 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
   const { vh, vw } = useViewport();
 
   // Cleanup video on unmount
+  const cleanUp = () => {
+    const videoElements = document.querySelectorAll("video");
+    videoElements.forEach((video) => {
+      video.pause();
+      video.src = ""; // Clear the source to release memory
+      video.load(); // Force garbage collection
+    });
+  };
   useEffect(() => {
+    console.log("init");
     return () => {
       const videoElements = document.querySelectorAll("video");
       videoElements.forEach((video) => {
@@ -52,7 +67,6 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
     if (!audioBackground?.src) return;
 
     const audio = new Audio(audioBackground.src);
-    console.log("🚀 ~ useEffect ~ audio:", audio);
     audio.volume = VOLUME;
     audio.loop = true;
     audioRef.current = audio;
@@ -65,7 +79,6 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
       audio.load();
     };
   }, [audioBackground?.src, isPlaying]);
-  console.log("🚀 ~ useEffect ~ isPlaying:", isPlaying);
   // Play/pause
   const handlePlayPause = () => {
     if (!audioRef.current) return;
@@ -86,27 +99,7 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
   // };
   // Render Audio Controls
   const renderAudioControls = (
-    <Box sx={{ position: "fixed", bottom: 20, right: 20 }}>
-      {/* <Button
-        onClick={handlePlayPause}
-        variant="contained"
-        color="secondary"
-        sx={{ width: 60, height: 60 }}
-      >
-        {isPlaying ? <SoundOff /> : <SoundOn />}
-      </Button> */}
-      <MuteButton isOn={isPlaying} onClick={handlePlayPause} />
-      {/* <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-        <Slider
-          color="secondary"
-          value={volume}
-          onChange={handleVolumeChange}
-          min={0}
-          max={1}
-          step={0.01}
-        />
-      </Box> */}
-    </Box>
+    <MuteButton isOn={isPlaying} onClick={handlePlayPause} />
   );
 
   const renderNavigationHotspots =
@@ -125,7 +118,11 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
           }}
         >
           {item.links?.map((link) => (
-            <DirectionButton key={link.direction} link={link} />
+            <DirectionButton
+              key={link.direction}
+              link={link}
+              onClick={cleanUp} // Esta funcion esta comentada en el componente original porque congela el equipo, daña mas de lo que arregla
+            />
           ))}
         </Box>
       );
@@ -155,10 +152,11 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
   // MAPA
   const renderMapa = map?.points?.length > 0 && (
     <Box
-      margin={1}
+      marginTop={1}
       sx={{
-        borderRadius: "10px",
-        border: `8px solid ${theme.palette.secondary.main}`,
+        // borderRadius: "10px",
+        border: `3px solid black`,
+        zIndex: 1000,
       }}
     >
       <MapaConRuta
@@ -172,12 +170,33 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
     </Box>
   );
 
-  // RENDER BOTTOM
-  const renderBottom = (
-    <Box display="flex" sx={{ position: "fixed", bottom: 0, left: 0 }}>
-      {renderMapa}
-      <Typography>Hola</Typography>
-    </Box>
+  // HELP
+  const [openHelp, setOpenHelp] = useState(false);
+  const renderHelpDialog = (
+    <Dialog open={openHelp} onClose={() => setOpenHelp(false)}>
+      <Button
+        onClick={() => setOpenHelp(false)}
+        sx={{
+          position: "absolute",
+          right: "0px",
+          top: 0,
+          p: 0.5,
+          minWidth: 0,
+          color: "black",
+        }}
+      >
+        <CancelIcon />
+      </Button>
+      <Box display={"flex"} flexDirection={"column"} p={2}>
+        <Box display="flex" alignItems={"center"} gap={2}>
+          <img src="/scroll.png" height="100px" width="100px" />
+          <Typography variant="h5" color="black">
+            Desplázate hacia arriba o hacia abajo para recorrer las calles de
+            Siloé
+          </Typography>
+        </Box>
+      </Box>
+    </Dialog>
   );
 
   return (
@@ -216,12 +235,51 @@ function Page({ src, speed, navigationHotspots = [], map, audioBackground }) {
         />
       )}
 
-      {/* Audio Controls */}
-      {renderAudioControls}
-
-      {/* Map and Hotspots */}
-      {renderBottom}
+      {/* Hotspots */}
       {renderNavigationHotspots}
+
+      <Box
+        width={1}
+        display="flex"
+        justifyContent={"space-between"}
+        alignItems={"end"}
+        sx={{ position: "fixed", bottom: 0, left: 0 }}
+      >
+        {renderMapa}
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          width={1}
+          px={1}
+          // my={1}
+          // mr={1}
+          // borderRadius="0px 100px 100px 20px"
+          sx={{ bgcolor: "black" }}
+        >
+          <Typography variant="h4" color="white">
+            {title || src.slice(src.lastIndexOf("/") + 1, src.lastIndexOf("."))}
+          </Typography>
+          <Box display="flex" alignItems="center" gap={2}>
+            <Button
+              sx={{
+                color: "white",
+                border: "8px solid black",
+                bgcolor: "gray",
+                fontSize: "1.5rem",
+                width: 60,
+                height: 60,
+                borderRadius: "100%",
+              }}
+              onClick={() => setOpenHelp((prev) => !prev)}
+            >
+              <Help />
+            </Button>
+            {renderAudioControls}
+          </Box>
+          {renderHelpDialog}
+        </Box>
+      </Box>
     </div>
   );
 }
@@ -232,6 +290,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 Page.propTypes = {
   src: PropTypes.string,
+  title: PropTypes.string,
   speed: PropTypes.number,
   navigationHotspots: PropTypes.array,
   audioBackground: PropTypes.object,
@@ -247,15 +306,18 @@ const MuteButton = ({ isOn, onClick }) => {
 
   return (
     <Button
-      variant="contained"
-      color="secondary"
+      // variant="contained"
+      // color="white"
       onClick={handleOnClick}
-      onMouseEnter={() => setIcon(isOn ? <SoundOff /> : <SoundOn />)}
-      onMouseLeave={() => setIcon(isOn ? <SoundOn /> : <SoundOff />)}
+      // onMouseEnter={() => setIcon(isOn ? <SoundOff /> : <SoundOn />)}
+      // onMouseLeave={() => setIcon(isOn ? <SoundOn /> : <SoundOff />)}
       sx={{
         width: 60,
         height: 60,
         borderRadius: "50%",
+        border: "8px solid black",
+        bgcolor: "gray",
+        fontSize: "2.5rem",
       }}
     >
       {icon}
