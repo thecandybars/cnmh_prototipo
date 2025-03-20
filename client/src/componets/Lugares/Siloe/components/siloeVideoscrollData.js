@@ -13,7 +13,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "Continuar",
+            title: "Hacia el cementerio San Jose De Siloé",
             href: "/A02",
             // href: "/paradaA01",
           },
@@ -52,7 +52,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "Tumba",
+            title: "Cementerio San Jose De Siloé",
             href: "/A03",
           },
         ],
@@ -84,7 +84,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "Mural Cementerio",
+            title: "Mural del cementerio San Jose De Siloé",
             href: "/A04",
           },
         ],
@@ -113,7 +113,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "La sorpresa",
+            title: "Por la Diagonal 51 hacia La Sorpresa",
             href: "/A05",
           },
         ],
@@ -145,7 +145,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "Jenny",
+            title: "Puente de la glorieta Siloé visible",
             href: "/A07",
           },
         ],
@@ -182,7 +182,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "Galeria Miriam",
+            title: "Galería de Siloé",
             href: "/A08",
           },
         ],
@@ -216,7 +216,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "Siloe resiste",
+            title: "Glorieta de Siloé resiste",
             href: "/A09",
           },
         ],
@@ -249,7 +249,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "Dollarcity",
+            title: "Incendio del Dollar City",
             href: "/A10",
           },
         ],
@@ -282,7 +282,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "La Horqueta",
+            title: "Camino hacia el parque de la Horqueta",
             href: "/A11",
           },
         ],
@@ -314,7 +314,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "B1",
+            title: "Hacia el parque de la Mina",
             href: "/B01",
           },
         ],
@@ -348,7 +348,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "B2",
+            title: "Hacia el mural Yo amo a Siloé",
             href: "/B02",
           },
         ],
@@ -384,7 +384,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "B3",
+            title: "Hacia la tienda de doña Ana",
             href: "/B03",
           },
         ],

@@ -13,7 +13,6 @@ import useViewport from "../../customHooks/useViewport";
 import useWheelCounter from "../../customHooks/useWheelCounter";
 import DirectionButton from "./DirectionButton";
 import MapaConRuta from "./MapaConRuta";
-import { theme } from "../../../../utils/theme";
 import { CancelIcon, Help, SoundOff, SoundOn } from "../../icons";
 
 export default function VideoScroll(props) {
@@ -33,25 +32,37 @@ function Page({
   const [loading, setLoading] = useState(true);
   const [scrollyPosition, setScrollyPosition] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-  // const [volume, setVolume] = useState(0.2); // Default volume
   const VOLUME = 0.2;
+  // const [volume, setVolume] = useState(0.2); // Default volume
   const audioRef = useRef(null); // Ref to manage the audio instance
 
   const { direction } = useWheelCounter({ scale: 30 });
   const { vh, vw } = useViewport();
 
-  // Cleanup video on unmount
-  const cleanUp = () => {
-    const videoElements = document.querySelectorAll("video");
-    videoElements.forEach((video) => {
-      video.pause();
-      video.src = ""; // Clear the source to release memory
-      video.load(); // Force garbage collection
-    });
-  };
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        setIsPlaying(true);
+      } else {
+        setIsPlaying(false);
+      }
+    };
+
+    // Add the event listener
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
   useEffect(() => {
     console.log("init");
+    setLoading(false);
     return () => {
+      // Cleanup video on unmount
+      console.log("cleaning...");
       const videoElements = document.querySelectorAll("video");
       videoElements.forEach((video) => {
         video.pause();
@@ -59,7 +70,7 @@ function Page({
         video.load(); // Force garbage collection
       });
     };
-  }, []);
+  }, [src]);
 
   //  AUDIO PLAYER
   // Init
@@ -121,7 +132,7 @@ function Page({
             <DirectionButton
               key={link.direction}
               link={link}
-              onClick={cleanUp} // Esta funcion esta comentada en el componente original porque congela el equipo, daña mas de lo que arregla
+              // onClick={cleanUp} // Esta funcion esta comentada en el componente original porque congela el equipo, daña mas de lo que arregla
             />
           ))}
         </Box>
@@ -232,6 +243,7 @@ function Page({
           onChange={(e) => setScrollyPosition(e)}
           onReady={() => setLoading(false)}
           cover={true}
+          preload="metadata"
         />
       )}
 
@@ -252,9 +264,6 @@ function Page({
           justifyContent="space-between"
           width={1}
           px={1}
-          // my={1}
-          // mr={1}
-          // borderRadius="0px 100px 100px 20px"
           sx={{ bgcolor: "black" }}
         >
           <Typography variant="h4" color="white">
@@ -299,6 +308,7 @@ Page.propTypes = {
 
 const MuteButton = ({ isOn, onClick }) => {
   const [icon, setIcon] = useState(isOn ? <SoundOn /> : <SoundOff />);
+  // const [isHover, setIsHover] = useState(false);
   const handleOnClick = () => {
     onClick();
     setIcon(isOn ? <SoundOff /> : <SoundOn />);
@@ -306,11 +316,9 @@ const MuteButton = ({ isOn, onClick }) => {
 
   return (
     <Button
-      // variant="contained"
-      // color="white"
       onClick={handleOnClick}
-      // onMouseEnter={() => setIcon(isOn ? <SoundOff /> : <SoundOn />)}
-      // onMouseLeave={() => setIcon(isOn ? <SoundOn /> : <SoundOff />)}
+      // onMouseEnter={() => setIsHover(true)}
+      // onMouseLeave={() => setIsHover(false)}
       sx={{
         width: 60,
         height: 60,
@@ -318,6 +326,7 @@ const MuteButton = ({ isOn, onClick }) => {
         border: "8px solid black",
         bgcolor: "gray",
         fontSize: "2.5rem",
+        // border: isHover ? "8px solid gray" : "8px solid black",
       }}
     >
       {icon}
