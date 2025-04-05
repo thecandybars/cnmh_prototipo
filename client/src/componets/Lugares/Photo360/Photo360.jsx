@@ -1,9 +1,7 @@
 import "@photo-sphere-viewer/markers-plugin/index.css";
 import "@photo-sphere-viewer/plan-plugin/index.css";
-import { TileLayer } from "leaflet";
 import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
 import { MarkersPlugin } from "@photo-sphere-viewer/markers-plugin";
-import { PlanPlugin } from "@photo-sphere-viewer/plan-plugin";
 import { useState } from "react";
 import photo from "../../../assets/mavicure4k.png";
 import { Dialog } from "@mui/material";
@@ -34,41 +32,41 @@ export default function Photo360(props) {
 
   // PLUGINS
   const plugins = [
-    [
-      PlanPlugin,
-      {
-        defaultZoom: 14,
-        coordinates: [6.78677, 45.58241],
-        bearing: "120deg",
-        size: { width: "300px", height: "200px" },
-        layers: [
-          {
-            name: "OpenStreetMap",
-            urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-            attribution: "&copy; OpenStreetMap",
-          },
-          {
-            name: "OpenTopoMap",
-            layer: new TileLayer(
-              "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
-              {
-                subdomains: ["a", "b", "c"],
-                maxZoom: 17,
-              }
-            ),
-            attribution: "&copy; OpenTopoMap",
-          },
-        ],
-        // hotspots: [
-        //   {
-        //     coordinates: [6.7783, 44.58506],
-        //     id: "green-lake",
-        //     tooltip: "Lac vert",
-        //     color: "green",
-        //   },
-        // ],
-      },
-    ],
+    // [
+    //   PlanPlugin,
+    //   {
+    //     defaultZoom: 14,
+    //     coordinates: [6.78677, 45.58241],
+    //     bearing: "120deg",
+    //     size: { width: "300px", height: "200px" },
+    //     layers: [
+    //       {
+    //         name: "OpenStreetMap",
+    //         urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    //         attribution: "&copy; OpenStreetMap",
+    //       },
+    //       {
+    //         name: "OpenTopoMap",
+    //         layer: new TileLayer(
+    //           "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+    //           {
+    //             subdomains: ["a", "b", "c"],
+    //             maxZoom: 17,
+    //           }
+    //         ),
+    //         attribution: "&copy; OpenTopoMap",
+    //       },
+    //     ],
+    //     // hotspots: [
+    //     //   {
+    //     //     coordinates: [6.7783, 44.58506],
+    //     //     id: "green-lake",
+    //     //     tooltip: "Lac vert",
+    //     //     color: "green",
+    //     //   },
+    //     // ],
+    //   },
+    // ],
     [
       MarkersPlugin,
       {

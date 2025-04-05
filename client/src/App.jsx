@@ -10,15 +10,14 @@ import PhotoGallery from "./componets/Lugares/PhotoGallery/PhotoGallery";
 import CasaMemoriaTumaco from "./componets/Lugares/CasaMemoriaTumaco";
 import Test from "./componets/Test/Test";
 import Guardianes from "./componets/Guardianes/Guardianes";
-import Test3 from "./componets/Test/Test3";
 import Siloe from "./componets/Lugares/Siloe/Index";
 import MuralHistoria from "./componets/Lugares/Tumaco/MuralHistoria";
 import Iframe from "./componets/Test/Iframe";
 import MuralOficios from "./componets/Lugares/Tumaco/MuralOficios";
-import TestMapaConRuta from "./componets/Test/Test2";
 import { siloeVideoscrollData } from "./componets/Lugares/Siloe/components/siloeVideoscrollData";
 import VideoScrollWrapper from "./componets/common/buttons/VideoScroll/VideoScrollWrapper";
-import VideoPlayer from "./componets/common/buttons/VideoScroll/VideoPlayer";
+import Index from "./componets/Test/Photo360/Index";
+import IndexJuanFrio from "./componets/Lugares/JuanFrio/Index";
 
 const NotFoundPage = () => (
   <div>
@@ -36,8 +35,16 @@ const App = () => {
         <Route path="/galeria" element={<PhotoGallery />} />
         <Route path="/casa" element={<CasaMemoriaTumaco />} />
         <Route path="/test" element={<Test />} />
-        <Route path="/test2" element={<TestMapaConRuta />} />
-        <Route path="/test3" element={<Test3 />} />
+        <Route path="/test360" element={<Index />} />
+        <Route
+          path="/juanfrio/hornos"
+          element={<IndexJuanFrio selectedTrajectory="hornos" />}
+        />
+        <Route
+          path="/juanfrio/murales"
+          element={<IndexJuanFrio selectedTrajectory="murales" />}
+        />
+
         {/* BOJAYA */}
         {/* Este LM esta ubicado en la carpeta /public/lugares/bojaya y se accede directamente con la ruta /lugares/bojaya */}
         {/* SILOE */}
@@ -50,13 +57,7 @@ const App = () => {
             <Route
               key={key}
               path={"/siloe/" + key}
-              element={
-                type === "scroll" ? (
-                  <VideoScrollWrapper {...siloeVideoscrollData[key]} />
-                ) : (
-                  <VideoPlayer {...siloeVideoscrollData[key]} />
-                )
-              }
+              element={<VideoScrollWrapper {...siloeVideoscrollData[key]} />}
             />
           );
         })}
