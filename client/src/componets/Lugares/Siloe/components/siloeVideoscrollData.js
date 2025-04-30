@@ -1,3 +1,8 @@
+// endContentTop y endContentBottom permiten agregar contenido al final del videoScroll.
+// Puede ser un video o una foto.
+// type:video recibe un src de video y lo muestra
+// type:photo recibe un src de una carpeta que contenga fotos en formato jpg o png y las muestra en un carrusel
+
 export const siloeVideoscrollData = {
   A01: {
     src: "/lugares/siloe/video/A01.mp4",
@@ -15,7 +20,6 @@ export const siloeVideoscrollData = {
             direction: "forward",
             title: "Hacia el cementerio San Jose De Siloé",
             href: "/A02",
-            // href: "/paradaA01",
           },
         ],
       },
@@ -32,12 +36,6 @@ export const siloeVideoscrollData = {
       src: "/lugares/siloe/audio/A01.mp3",
     },
   },
-  // paradaA01: {
-  //   src: "/lugares/siloe/video/paradaA1.mp4",
-  //   type: "video",
-  //   title: "Carnaval de los Diablos",
-  //   link: "/A02",
-  // },
   A02: {
     src: "/lugares/siloe/video/A02.mp4",
     title: "Hacia el cementerio San Jose De Siloé",
@@ -97,6 +95,9 @@ export const siloeVideoscrollData = {
         [3.415002831279694, -76.55885565459644],
         [3.415018895955968, -76.55854988276963],
       ],
+    },
+    audioBackground: {
+      src: "/lugares/siloe/audio/A03.mp3",
     },
   },
   A04: {
@@ -207,6 +208,28 @@ export const siloeVideoscrollData = {
     title: "Galería de Siloé",
     speed: 800,
     type: "scroll",
+    endContentTop: {
+      type: "video",
+      src: "/lugares/siloe/video/paradaA08.mp4",
+      // title: "Titulo del video",
+      description: "Descripcion del video",
+    },
+    endContentBottom: {
+      type: "photo",
+      src: "/lugares/siloe/fotos/paradaA08",
+      images: [
+        "01.jpg",
+        "02.jpg",
+        "03.jpg",
+        "04.jpg",
+        "05.jpg",
+        "06.jpg",
+        "07.jpg",
+        "08.jpg",
+      ],
+      title: "Titulo del video",
+      description: "Descripcion del video",
+    },
     navigationHotspots: [
       {
         id: 1,
@@ -216,7 +239,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "Glorieta de Siloé resiste",
+            title: "Galeria de Siloé",
             href: "/A09",
           },
         ],
@@ -410,7 +433,6 @@ export const siloeVideoscrollData = {
   B03: {
     src: "/lugares/siloe/video/B03.mp4",
     title: "Hacia la tienda de doña Ana",
-
     speed: 800,
     type: "scroll",
     navigationHotspots: [
@@ -421,22 +443,35 @@ export const siloeVideoscrollData = {
         isBlocking: true,
         links: [
           {
-            direction: "left",
-            title: "B4_V1",
-            href: "/B04_V1",
-          },
-          {
             direction: "forward",
-            title: "B4_V2",
-            href: "/B04_V2",
-          },
-          {
-            direction: "right",
-            title: "B4_V3",
-            href: "/B04_V3",
+            title: "Mirador 'Yo amo a Siloé'",
+            href: "/B04",
           },
         ],
       },
+      // {
+      //   id: 1,
+      //   timeIn: 0.99,
+      //   timeOut: 1,
+      //   isBlocking: true,
+      //   links: [
+      //     {
+      //       direction: "left",
+      //       title: "B4_V1",
+      //       href: "/B04_V1",
+      //     },
+      //     {
+      //       direction: "forward",
+      //       title: "B4_V2",
+      //       href: "/B04_V2",
+      //     },
+      //     {
+      //       direction: "right",
+      //       title: "B4_V3",
+      //       href: "/B04_V3",
+      //     },
+      //   ],
+      // },
     ],
     map: {
       //https://www.google.com/maps/@3.4205056,-76.5569105,21z/data=!5m1!1e4?authuser=1&entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D
@@ -449,7 +484,6 @@ export const siloeVideoscrollData = {
       src: "/lugares/siloe/audio/B3.mp3",
     },
   },
-
   B04_V1: {
     src: "/lugares/siloe/video/B04_V1.mp4",
     speed: 800,
@@ -460,13 +494,13 @@ export const siloeVideoscrollData = {
         timeIn: 0.99,
         timeOut: 1,
         isBlocking: true,
-        links: [
-          {
-            direction: "forward",
-            title: "B6",
-            href: "/B06",
-          },
-        ],
+        // links: [
+        //   {
+        //     direction: "forward",
+        //     title: "B6",
+        //     href: "/B06",
+        //   },
+        // ],
       },
     ],
     map: {
@@ -500,7 +534,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "B6",
+            title: "Al campamento del M19",
             href: "/B06",
           },
         ],
@@ -533,7 +567,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "B6",
+            title: "Al campamento del M19",
             href: "/B06",
           },
         ],
@@ -579,7 +613,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "B7",
+            title: "Campamento del M19",
             href: "/B07",
           },
         ],
@@ -610,7 +644,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "B8",
+            title: "Monumento contra la opresión",
             href: "/B08",
           },
         ],
@@ -635,7 +669,7 @@ export const siloeVideoscrollData = {
   B08: {
     src: "/lugares/siloe/video/B08.mp4",
     speed: 2000,
-    // type: "scroll",
+    type: "scroll",
     navigationHotspots: [
       {
         id: 1,
@@ -645,7 +679,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "B10",
+            title: "Casa de Jaqueline Rentería",
             href: "/B10",
           },
         ],
@@ -684,7 +718,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "B11",
+            title: "Cascada",
             href: "/B11",
           },
         ],
@@ -715,7 +749,7 @@ export const siloeVideoscrollData = {
         links: [
           {
             direction: "forward",
-            title: "C1",
+            title: "Cuento sobre la finca Siloé y toma de tierra",
             href: "/C01",
           },
         ],
@@ -732,27 +766,52 @@ export const siloeVideoscrollData = {
       src: "/lugares/siloe/audio/B11.mp3",
     },
   },
-  // C01: {
-  //   src: "/lugares/siloe/video/C01.mp4",
-  //   speed: 800,
-  //   type: "scroll",
-  //   navigationHotspots: [
-  //     {
-  //       id: 1,
-  //       timeIn: 0.99,
-  //       timeOut: 1,
-  //       isBlocking: true,
-  //     },
-  //   ],
-  //   map: {
-  //     points: [
-  //       [3.4184146418207106, -76.56373857742616],
-  //       [3.418210607536718, -76.5639225355791],
-  //       [3.418009542281106, -76.5642917182536],
-  //       [3.4175256999941337, -76.56415824892828],
-  //       [3.4173309418592153, -76.5641091677808],
-  //       [3.4176248832865963, -76.56388788336986],
-  //     ],
-  //   },
-  // },
+  C01: {
+    src: "/lugares/siloe/video/C01.mp4",
+    speed: 800,
+    type: "scroll",
+    navigationHotspots: [
+      {
+        id: 1,
+        timeIn: 0.99,
+        timeOut: 1,
+        isBlocking: true,
+        links: [
+          {
+            direction: "forward",
+            title: "Metrocable",
+            href: "/C02",
+          },
+        ],
+      },
+    ],
+    map: {
+      points: [
+        [3.4184146418207106, -76.56373857742616],
+        [3.418210607536718, -76.5639225355791],
+        [3.418009542281106, -76.5642917182536],
+        [3.4175256999941337, -76.56415824892828],
+        [3.4173309418592153, -76.5641091677808],
+        [3.4176248832865963, -76.56388788336986],
+      ],
+    },
+    audioBackground: {
+      src: "/lugares/siloe/audio/B11.mp3",
+    },
+  },
+  C02: {
+    src: "/lugares/siloe/video/C02.mp4",
+    type: "video",
+    title: "MioCable",
+    startTime: 0,
+    map: {
+      points: [
+        [3.418043762178466, -76.56381478732216],
+        [3.422004184072227, -76.56130001355203],
+        [3.4200658882636485, -76.55793973085903],
+        [3.415544908483542, -76.54925502064263],
+      ],
+    },
+  },
 };
+export const videoScrollPath = "/siloe";
