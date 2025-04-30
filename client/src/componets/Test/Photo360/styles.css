@@ -1,0 +1,35 @@
+/* Target the actual loader structure shown in your console */
+.psv-container .psv-loader-container {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(3px);
+}
+
+.psv-container .psv-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.psv-container .psv-loader-canvas {
+  width: 80px !important;
+  height: 80px !important;
+}
+
+.psv-container .psv-loader-canvas circle:first-child {
+  fill: rgba(0, 0, 0, 0.5) !important;
+}
+
+.psv-container .psv-loader-canvas path {
+  stroke: #63b0a4 !important;
+  stroke-width: 12px !important;
+}
+
+.psv-container .psv-loader-text {
+  color: white !important;
+  font-size: 1.2rem !important;
+  font-family: sans-serif !important;
+  max-width: none !important;
+  max-height: none !important;
+}
