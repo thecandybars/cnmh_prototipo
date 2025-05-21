@@ -8,17 +8,17 @@ export default function MuralHistoria() {
       id: "pargos",
       titulo: "Las tres islas",
       button: {
-        top: "55%",
+        top: "45%",
         left: "75%",
       },
       zoom: {
-        amount: 3.5,
-        top: "55%",
-        left: "75%",
+        amount: 1.2,
+        top: "65%",
+        left: "85%",
       },
       textBox: {
-        top: "30%",
-        left: "10%",
+        top: "40%",
+        left: "30%",
         content:
           "Cada uno de estos pargos representan las tres islas que componen el territorio de Tumaco.",
       },
@@ -36,8 +36,8 @@ export default function MuralHistoria() {
         left: "50%",
       },
       textBox: {
-        top: "55%",
-        left: "50%",
+        top: "15%",
+        left: "10%",
         content:
           "Este es el pueblo Tumac, los primeros pobladores del territorio. ",
       },
@@ -50,9 +50,9 @@ export default function MuralHistoria() {
         left: "48%",
       },
       zoom: {
-        amount: 5,
+        amount: 4,
         top: "60%",
-        left: "48%",
+        left: "68%",
       },
       textBox: {
         top: "30%",
@@ -69,8 +69,8 @@ export default function MuralHistoria() {
         left: "32%",
       },
       zoom: {
-        amount: 5,
-        top: "57%",
+        amount: 4,
+        top: "77%",
         left: "32%",
       },
       textBox: {
@@ -88,9 +88,9 @@ export default function MuralHistoria() {
         left: "34%",
       },
       zoom: {
-        amount: 5,
+        amount: 4,
         top: "40%",
-        left: "34%",
+        left: "74%",
       },
       textBox: {
         top: "30%",
@@ -104,16 +104,16 @@ export default function MuralHistoria() {
       titulo: "El Milagro Eucarístico",
       button: {
         top: "45%",
-        left: "60%",
+        left: "65%",
       },
       zoom: {
-        amount: 3,
-        top: "45%",
-        left: "60%",
+        amount: 2,
+        top: "65%",
+        left: "80%",
       },
       textBox: {
-        top: "70%",
-        left: "20%",
+        top: "60%",
+        left: "10%",
         content:
           "Esta ola representa el Milagro Eucarístico ocurrido en 1906 en Tumaco, cuando una ola enorme que amenazaba con arrasar el territorio en un tsunami fue detenida por la intercesión de Dios y el párroco de la ciudad, fray Gerardo Lizcano.",
       },
